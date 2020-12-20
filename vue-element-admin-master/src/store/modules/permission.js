@@ -1,4 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import { generateRoutes } from '@/api/user'
+import { menu } from '@/utils/menu'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -34,6 +36,7 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 
+
 const state = {
   routes: [],
   addRoutes: []
@@ -47,16 +50,32 @@ const mutations = {
 }
 
 const actions = {
+  // generateRoutes({ commit }, roles) {
+  //   return new Promise(resolve => {
+  //     let accessedRoutes
+  //     if (roles.includes(1)) {
+  //       accessedRoutes = asyncRoutes || []
+  //     } else {
+  //       accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+  //     }
+  //     commit('SET_ROUTES', accessedRoutes)
+  //     resolve(accessedRoutes)
+  //   })
+  // }
+
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      if(roles.length>0){
+        generateRoutes({ roleId:roles[0] }).then(response => {
+           const { data } = response
+           const menus = menu(data);
+           commit('SET_ROUTES', menus)
+           console.log("测试m:",state.routes)
+          resolve(menus)
+        }).catch(error => {
+          // reject(error)
+        })
       }
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
     })
   }
 }

@@ -1,6 +1,19 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
+import {
+  login,
+  logout,
+  getInfo
+} from '@/api/user'
+import {
+  getToken,
+  setToken,
+  removeToken,
+  setUserInfo,
+  getUserInfo,
+  removeUserInfo
+} from '@/utils/auth'
+import router, {
+  resetRouter
+} from '@/router'
 import md5 from "js-md5"
 
 const state = {
@@ -8,9 +21,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roleId: [],
-  userInfo:{},
-  userId:''
+  roles: [],
+  userInfo: getUserInfo(),
+  userId: ''
 }
 
 const mutations = {
@@ -26,27 +39,40 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, roleId) => {
-    state.roleId = roleId
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   },
   SET_USERINFO: (state, userInfo) => {
     state.userInfo = userInfo
   },
   SET_USERID: (state, userId) => {
     state.userId = userId
+  },
+  SET_ORGID: (state, orgId) => {
+    state.orgId = orgId
   }
 }
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
+  login({
+    commit
+  }, userInfo) {
+    const {
+      username,
+      password
+    } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: md5(password) }).then(response => {
-        const { data } = response
-		console.log("登录返回信息：",data)
+      login({
+        username: username.trim(),
+        password: md5(password)
+      }).then(response => {
+        const {
+          data
+        } = response
+        console.log("登录返回信息：", data)
         commit('SET_TOKEN', data.token)
-		commit('SET_USERINFO', data.userInfo)
+        // commit('SET_USERINFO', data.userInfo)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -56,27 +82,40 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({
+    commit,
+    state
+  }) {
     return new Promise((resolve, reject) => {
-		console.log(state.token)
       getInfo().then(response => {
-        const { data } = response
+        const {
+          data
+        } = response
 
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roleId,name,avatar,id } = data
+        const {
+          roleIds,
+          userName,
+          avatar,
+          id,
+          orgId
+        } = data
 
         // roles must be a non-empty array
-        if (!roleId || roleId.length <= 0) {
+        if (!roleIds || roleIds.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-        commit('SET_ROLES', roleId)
-		commit('SET_USERINFO', data.userInfo)
-		commit('SET_NAME', name)
+        console.log("已存用户信息:",data)
+        commit('SET_ROLES',roleIds)
+        commit('SET_USERINFO', data)
+        commit('SET_NAME', userName)
         commit('SET_USERID', id)
         commit('SET_AVATAR', avatar)
+        commit('SET_ORGID', orgId)
+        setUserInfo(data);
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -85,17 +124,24 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
+  logout({
+    commit,
+    state,
+    dispatch
+  }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
+        removeUserInfo()
         resetRouter()
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-        dispatch('tagsView/delAllViews', null, { root: true })
+        dispatch('tagsView/delAllViews', null, {
+          root: true
+        })
 
         resolve()
       }).catch(error => {
@@ -105,7 +151,9 @@ const actions = {
   },
 
   // remove token
-  resetToken({ commit }) {
+  resetToken({
+    commit
+  }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
@@ -115,23 +163,32 @@ const actions = {
   },
 
   // dynamically modify permissions
-  async changeRoles({ commit, dispatch }, role) {
+  async changeRoles({
+    commit,
+    dispatch
+  }, role) {
     const token = role + '-token'
 
     commit('SET_TOKEN', token)
     setToken(token)
 
-    const { roles } = await dispatch('getInfo')
+    const {
+      roles
+    } = await dispatch('getInfo')
 
     resetRouter()
 
     // generate accessible routes map based on roles
-    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+    const accessRoutes = await dispatch('permission/generateRoutes', roles, {
+      root: true
+    })
     // dynamically add accessible routes
     router.addRoutes(accessRoutes)
 
     // reset visited views and cached views
-    dispatch('tagsView/delAllViews', null, { root: true })
+    dispatch('tagsView/delAllViews', null, {
+      root: true
+    })
   }
 }
 

@@ -4,6 +4,7 @@ import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
+import { menu } from '@/utils/menu'
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -26,20 +27,20 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roleId && store.getters.roleId.length > 0
+      const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
       } else {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roleId } = await store.dispatch('user/getInfo')
+          const { roleIds } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-          // dynamically add accessible routes
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roleIds)
+          // const menus = menu(accessRoutes);
           router.addRoutes(accessRoutes)
+          // dynamically add accessible routes
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record

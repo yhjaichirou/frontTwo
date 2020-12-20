@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 30000//5000 // request timeout
 })
 
 // 请求拦截 携带token  request interceptor
@@ -19,6 +19,7 @@ service.interceptors.request.use(
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
+      config.headers['AgentId'] = store.getters.userId
     }
     return config
   },
@@ -43,7 +44,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
       Message({
