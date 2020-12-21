@@ -1,67 +1,82 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAddUser">新建用户</el-button>
+    <div class="left-project">
+      <ul>
 
-    <el-table :data="usersList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="ID" width="60">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="账户" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.account }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="用户姓名" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.userName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="角色">
-        <template slot-scope="scope">
-          {{ scope.row.roleName == undefined || scope.row.roleName == ''?"无":scope.row.roleName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="所属分组">
-        <template slot-scope="scope">
-          {{ scope.row.groupName == undefined || scope.row.groupName == ''?"无":scope.row.groupName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <li class="ng-star-inserted"><a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
+            <!----><i class="item-icon font-size-md wtf wtf-work-timeline text-primary ng-star-inserted"></i>时间视图
+            <!----></a>
+        </li>
+        <li class="ng-star-inserted"><a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
+            <!----><i class="item-icon font-size-md wtf wtf-work-timeline text-primary ng-star-inserted"></i>时间视图
+            <!----></a>
+        </li>
+        <li class="ng-star-inserted"><a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
+            <!----><i class="item-icon font-size-md wtf wtf-work-timeline text-primary ng-star-inserted"></i>时间视图
+            <!----></a>
+        </li>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改用户':'新建用户'">
-      <el-form :model="user" status-icon :rules="rules" ref="ruleForm" label-width="80px" label-position="left">
-        <el-form-item label="账户" prop="account">
-          <el-input v-model="user.account" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="用户姓名">
-          <el-input v-model="user.userName" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="user.password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="确认密码" prop="rePassword">
-          <el-input type="password" v-model="user.rePassword" placeholder="请输入确认密码" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
-        <el-button type="primary" @click="confirmUser('ruleForm')">提交</el-button>
+      </ul>
+
+    </div>
+    <div class="right-project">
+      <div class="top-project-menu">
+
       </div>
-    </el-dialog>
+      <div class="project-body">
+
+      </div>
+    </div>
   </div>
 </template>
+<style lang="scss" scoped>
+  .app-container {
+    display: flex;
 
+    .roles-table {
+      margin-top: 30px;
+    }
+
+    .permission-tree {
+      margin-bottom: 30px;
+    }
+
+    .left-project {
+      width: 200px;
+      .section-item {
+          color: #666;
+          display: block;
+          padding: 9px 20px 9px 39px;
+          position: relative;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          -webkit-transition: -webkit-box-shadow .2s;
+          transition: -webkit-box-shadow .2s;
+          transition: box-shadow .2s;
+          transition: box-shadow .2s,-webkit-box-shadow .2s;
+          border-right: 4px solid transparent;
+      }
+    }
+
+    .right-project {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overflow-wrap: break-word;
+
+    }
+  }
+</style>
 <script>
   import path from 'path'
-  import { deepClone } from '@/utils'
+  import {
+    deepClone
+  } from '@/utils'
   import md5 from "js-md5"
   import {
     getUsers,
@@ -92,9 +107,9 @@
         if (value === '') {
           console.log("xinxi")
           callback(new Error('请输入密码！'));
-        } else if (this.user.password.length <6 || this.user.password.length > 15) {
+        } else if (this.user.password.length < 6 || this.user.password.length > 15) {
           callback(new Error('请输入正确的长度！'));
-        }else{
+        } else {
           callback();
         }
       };
@@ -179,7 +194,7 @@
         this.dialogVisible = true
         this.checkStrictly = true
         this.user = deepClone(scope.row)
-        console.log( this.user )
+        console.log(this.user)
       },
       handleDelete({
         $index,
@@ -190,7 +205,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           })
-          .then(async() => {
+          .then(async () => {
             await deleteUser(row.id)
             this.usersList.splice($index, 1)
             this.$message({
@@ -214,7 +229,7 @@
             return false;
           }
         });
-        if(isComfirm){
+        if (isComfirm) {
           const isEdit = this.dialogType === 'edit';
           if (isEdit) {
             this.user.password = md5(this.user.password)
@@ -279,14 +294,4 @@
     }
   }
 </script>
-<style lang="scss" scoped>
-  .app-container {
-    .roles-table {
-      margin-top: 30px;
-    }
 
-    .permission-tree {
-      margin-bottom: 30px;
-    }
-  }
-</style>

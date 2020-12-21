@@ -15,7 +15,7 @@ export function addGroup(data) {
   })
 }
 
-export function updateGroup(id, data) {
+export function updateGroup(data) {
   return request({
     url: `/group/updateGroup`,
     method: 'post',

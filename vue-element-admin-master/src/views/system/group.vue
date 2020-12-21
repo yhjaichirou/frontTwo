@@ -3,7 +3,7 @@
     <el-button type="primary" @click="addGroupEvent">新建分组</el-button>
 
     <el-table :data="groupList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="ID" width="220">
+      <el-table-column align="center" label="ID" width="60">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>

@@ -29,3 +29,32 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getUsers(orgId) {
+  return request({
+    url: '/admin/getUsers?orgId='+orgId,
+    method: 'get'
+  })
+}
+
+export function addUser(data) {
+  return request({
+    url: '/admin/addUser',
+    method: 'post',
+    data
+  })
+}
+
+export function updateUser(data) {
+  return request({
+    url: '/admin/updateUser',
+    method: 'post',
+    data
+  })
+}
+export function deleteUser(userId) {
+  return request({
+    url: '/admin/deleteUser/${userId}',
+    method: 'post'
+  })
+}

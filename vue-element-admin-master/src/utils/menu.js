@@ -3,6 +3,11 @@ import role from '@/views/system/role'
 import user from '@/views/system/user'
 import config from '@/views/system/config'
 import group from '@/views/system/group'
+import manager from '@/views/project/manager'
+import task from '@/views/project/task'
+import yj from '@/views/project/yj'
+// import reportformindex from '@/views/reportform/index'
+
 // import currrole from '@/views/system/role'
 // import currrole from '@/views/system/role'
 // import currrole from '@/views/system/role'
@@ -72,7 +77,7 @@ export function getChild(childrens) {
     var ob = {
       path: '/' + child.url, // child.url,//'/permission/role',//child.url,
       name: 'SystemConfig',
-      component: child.id==7?user:child.id==15?role:child.id==4?config:group, //() => import('@/views/system/role'),  由于import 是编译时加载 所以无法动态异步载入
+      component: child.id==7?user:child.id==15?role:child.id==4?config:group,// child.id==7?user:child.id==15?role:child.id==4?config:child.id==8?group:child.id==17?manager:child.id==18?task:child.id==19?yj:"", //() => import('@/views/system/role'),  由于import 是编译时加载 所以无法动态异步载入
       // hidden:true,
       meta: {
         title: child.name,
