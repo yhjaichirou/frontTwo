@@ -17,7 +17,7 @@
               <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
         <ul>
-          <li class="ng-star-inserted"  v-for="item in projectList" :key="item.id">
+          <li class="ng-star-inserted"  v-for="item in projectList" :key="item.id" @click="clickProject(item.id)">
             <a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
               <svg-icon icon-class="project2" />{{item.name}}</a>
           </li>
@@ -217,12 +217,10 @@
   export default {
     data() {
       return {
-        items:[
-          {id:2,name:"444"},{id:1,name:"haha"}
-        ],
         orgId:"",
         activeName: 'second',
         projectList:[],
+        thisProject:{},
         searchContent:"",
         searchStatus:1,
         user: Object.assign({}, defaultUser),
@@ -255,6 +253,12 @@
         const res = await getAllProject(this.orgId,this.searchContent,this.searchStatus)
         this.projectList = res.data
          console.log(this.projectList)
+      },
+      async clickProject(id){
+        console.log("项目ID:",id);
+        const res = await getProject(id);
+        this.thisProject = res.data;
+         console.log("项目ID:",this.thisProject)
       }
     }
   }
