@@ -217,6 +217,9 @@
   export default {
     data() {
       return {
+        items:[
+          {id:2,name:"444"},{id:1,name:"haha"}
+        ],
         orgId:"",
         activeName: 'second',
         projectList:[],
@@ -250,7 +253,8 @@
       },
       async searchProject(){
         const res = await getAllProject(this.orgId,this.searchContent,this.searchStatus)
-         console.log(res.data)
+        this.projectList = res.data
+         console.log(this.projectList)
       }
     }
   }
