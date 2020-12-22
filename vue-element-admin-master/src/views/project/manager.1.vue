@@ -11,15 +11,15 @@
         </div>
 
         <input type="text" v-model="searchContent" autocomplete="off" class="el-input__inner" placeholder="搜索项目" v-on:input="searchProject"/>
-        <el-radio-group v-model="searchStatus" size="mini" @change="searchProject">
-              <el-radio-button label="" value="0">全部</el-radio-button>
-              <el-radio-button label="1" value="1">未完成</el-radio-button>
-              <el-radio-button label="2" value="2">已完成</el-radio-button>
+        <el-radio-group v-model="status" size="mini" @change="searchProject">
+              <el-radio-button label="全部" value="0"></el-radio-button>
+              <el-radio-button label="未完成" value="1"></el-radio-button>
+              <el-radio-button label="已完成" value="2"></el-radio-button>
         </el-radio-group>
         <ul>
-          <li class="ng-star-inserted"  v-for="item in projectList" :key="item.id">
+          <li class="ng-star-inserted">
             <a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
-              <svg-icon icon-class="project2" />{{item.name}}</a>
+              <svg-icon icon-class="project2" />测试项目</a>
           </li>
         </ul>
 
