@@ -50,6 +50,9 @@ const mutations = {
   },
   SET_ORGID: (state, orgId) => {
     state.orgId = orgId
+  },
+  SET_ORGNAME: (state, orgName) => {
+    state.orgName = orgName
   }
 }
 
@@ -101,7 +104,8 @@ const actions = {
           userName,
           avatar,
           id,
-          orgId
+          orgId,
+          orgName
         } = data
 
         // roles must be a non-empty array
@@ -115,6 +119,7 @@ const actions = {
         commit('SET_USERID', id)
         commit('SET_AVATAR', avatar)
         commit('SET_ORGID', orgId)
+        commit('SET_ORGNAME', orgName)
         setUserInfo(data);
         resolve(data)
       }).catch(error => {

@@ -8,11 +8,30 @@ export function getAllProject(orgId,search,status) {
 }
 export function getProject(projectId) {
   return request({
-    url: '/project/getProject/{projectId}',
+    url: `/project/getProject/${projectId}`,
     method: 'get',
-    data
   })
 }
+export function clickUpdateStatus(projectId) {
+  return request({
+    url: '/project/clickUpdateStatus/${projectId}',
+    method: 'post',
+  })
+}
+
+export function getAllFormParam(orgId) {
+  return request({
+    url: `/project/getAllFormParam/${orgId}`,
+    method: 'get',
+  })
+}
+export function getJoiners(orgIds) {
+  return request({
+    url: `/project/getJoiners/${orgIds}`,
+    method: 'get',
+  })
+}
+
 export function addProject(data) {
   return request({
     url: '/project/addProject',

@@ -6,19 +6,21 @@
         <div class="header header--hidden">
           <div class="card-header-title"><span class="ng-star-inserted"> 项目 </span></div>
           <div>
+            <i class="el-icon-plus" @click="addProjectEvent" style="margin-right: 20px;"></i>
             <i class="el-icon-finished"></i>
           </div>
         </div>
 
-        <input type="text" v-model="searchContent" autocomplete="off" class="el-input__inner" placeholder="搜索项目" v-on:input="searchProject"/>
+        <input type="text" v-model="searchContent" autocomplete="off" class="el-input__inner" placeholder="搜索项目"
+          v-on:input="searchProject" />
         <el-radio-group v-model="searchStatus" size="mini" @change="searchProject">
-              <el-radio-button label="" value="0">全部</el-radio-button>
-              <el-radio-button label="1" value="1">未完成</el-radio-button>
-              <el-radio-button label="2" value="2">已完成</el-radio-button>
+          <el-radio-button label="0" value="0">全部</el-radio-button>
+          <el-radio-button label="1" value="1">未完成</el-radio-button>
+          <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
         <ul>
-          <li class="ng-star-inserted"  v-for="item in projectList" :key="item.id" @click="clickProject(item.id)">
-            <a class="section-item" routerlinkactive="active" skiplocationchange="true" href="/mission/work-timeline">
+          <li class="ng-star-inserted" v-for="item in projectList" :key="item.id" @click="clickProject(item.id)">
+            <a class="section-item" href="#">
               <svg-icon icon-class="project2" />{{item.name}}</a>
           </li>
         </ul>
@@ -44,32 +46,19 @@
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目名称:</span>
-                    ass
+                    {{thisProject.name}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目:</span>
-                    2020-12-20
-                  </div>
-                  <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
-                    --
-                  </div>
-                  <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name">项目编码:</span><span class="text-muted">XG-nmg123123</span>
-                  </div>
-                </div>
-                <div class="d-flex">
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">负责人:</span>
-                    ass
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">产业类型:</span>
+                    {{thisProject.categoryName}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
-                    2020-12-20
+                    {{thisProject.startDateStr}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
-                    --
+                    {{thisProject.completeDateStr}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property align-items-start">
@@ -79,61 +68,64 @@
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管部门:</span>
-                    发改委
+                    {{thisProject.orgName}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管负责人:</span>
-                    2020-12-20
+                    {{thisProject.proManager}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管人联系电话:</span>
-                    18247407227
+                    {{thisProject.proManagerMobile}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name">项目成熟度:</span><span class="text-muted">续建</span>
+                    <span class="project-property-item-name project-basic-property-item-name project-basic-property-item-name">项目成熟度:</span>
+                    {{thisProject.maturity}}
                   </div>
+
                 </div>
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
-                    发改委
+                    {{thisProject.leadenter}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
-                    张国
+                    {{thisProject.leader}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
-                    2020-12-20
+                    {{thisProject.dockingDateStr}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
-                    张国时
+                    {{thisProject.coordinate}}
                   </div>
                 </div>
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
-                    发改委
+                    {{thisProject.enterManager}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
-                    16645641222
+                    {{thisProject.enterManagerMobile}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目建设阶段:</span>
-                    执行阶段
+                    {{thisProject.stage=="1"?"无所属":thisProject.stage=="2"?"立项阶段":thisProject.stage=="3"?"执行阶段":"完成阶段"}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">完成时间:</span>
-                    2020-12-20
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">预计完成时间:</span>
+                    {{thisProject.expectedDateStr}}
                   </div>
                 </div>
 
                 <div class="d-flex">
                   <div class="project-basic-property align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name">项目描述:</span><span class="text-muted">暂无</span>
+                    <span class="project-property-item-name project-basic-property-item-name">项目描述:</span>
+                    {{thisProject.content}}
                   </div>
                 </div>
 
@@ -141,9 +133,9 @@
                   <div class="project-basic-property align-items-start" style="display:flex;align-items: center;">
                     <span class="project-property-item-name project-basic-property-item-name">当前状态:</span>
                     <div class="flex-se1">
-                      <span class="circle circle-success"></span>
-                      <span class="ml-1">正常</span>
-                      <el-button type="primary" size="mini" round>更新</el-button>
+                      <span class="circle" v-bind:class="projectStatusClass"></span>
+                      <span class="ml-1">{{thisProject.status==1?"进行中":thisProject.status==2?"已完成":thisProject.status==3?"逾期":thisProject.status==7?"新建":thisProject.status==8?"提交审批中":thisProject.status==9?"审批失败":"审批通过"}}</span>
+                      <el-button type="primary" size="mini" round @click="clickUpdateStatus">更新</el-button>
                     </div>
                   </div>
 
@@ -163,29 +155,157 @@
 
               <div class="manager-card-content">
                 <div class="d-flex">
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">产业类型:</span>
-                    能源行业
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目参与人员:</span>
+                    {{thisProject.joiners}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
-                    2020-12-20
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">投资情况:</span>
+                    {{thisProject.invest}}
                   </div>
                   <div class="project-basic-property project-basic-property-border"></div>
-                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
-                    --
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目审批监管平台代码:</span>
+                    {{thisProject.approveCode}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">备注:</span>
+                    {{thisProject.remarks}}
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">其他需要解决的手续问题:</span>
+                    {{thisProject.otherBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">存在的困难和问题:</span>
+                    {{thisProject.diffAndProblem}}
                   </div>
                 </div>
 
-                <div class="project-basic-property align-items-start"><span class="project-property-item-name project-basic-property-item-name">项目描述:</span><span
-                    class="text-muted">暂无</span>
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否完成审核备:</span>
+                    {{thisProject.lxIsComapprove}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级:</span>
+                    {{thisProject.lxHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门:</span>
+                    {{thisProject.lxIsSendappdepart}}
+                  </div>
                 </div>
 
-                <span class="project-basic-property-line"></span>
-
-                <div class="project-basic-property align-items-start"><span class="project-property-item-name project-basic-property-item-name">项目描述:</span><span
-                    class="text-muted">暂无</span>
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成建设用地规划许可证:</span>
+                    {{thisProject.ydcardIsHascard}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级:</span>
+                    {{thisProject.ydcardHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门:</span>
+                    {{thisProject.ydcardIsSendappdepart}}
+                  </div>
                 </div>
 
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成节能审查：</span>
+                    {{thisProject.energyIsCensor}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.energyHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.energyIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成林地草地征占手续：</span>
+                    {{thisProject.lcIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.lcHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.lcIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">建设用地批准书或国有土地证、登记证：</span>
+                    {{thisProject.tdIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.tdHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.tdIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成环境影响评价审批文件、登记证：</span>
+                    {{thisProject.envirIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.envirHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.envirIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成建设工程施工许可证：</span>
+                    {{thisProject.sgIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.sgHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.sgIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成消防许可证：</span>
+                    {{thisProject.xfIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.xfHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.xfIsSendappdepart}}
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">是否办理完成人防许可证：</span>
+                    {{thisProject.rfIsBl}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                    {{thisProject.rfHandleLevel}}
+                  </div>
+                  <div class="project-basic-property project-basic-property-border"></div>
+                  <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                    {{thisProject.rfIsSendappdepart}}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -198,14 +318,170 @@
       </div>
     </div>
 
+
+
+
+    <!-- add form -->
+    <el-dialog title="新增项目" :visible.sync="dialogAddFormVisible">
+      <el-form :model="addform" :rules="rules" ref="ruleForm">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目名称" prop="name" :label-width="formLabelWidth">
+                <el-input v-model="addform.name" autocomplete="off" placeholder="请输入项目名称"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目编号" prop="number" :label-width="formLabelWidth">
+                <el-input v-model="addform.number" autocomplete="off" placeholder="请输入项目编号"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="产业类型" prop="industryCategory" :label-width="formLabelWidth">
+                <el-select v-model="addform.industryCategory" placeholder="请选择产业类型">
+                  <el-option :label="item.categoryName" :value="index" v-for="(item,index) in categoryList"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目成熟度" prop="maturity" :label-width="formLabelWidth">
+                <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
+                  <el-option :label="item.name" :value="item.id" v-for="item in maturity"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目描述" prop="content" :label-width="formLabelWidth">
+                <el-input type="textarea" v-model="addform.content" placeholder="请输入项目描述信息"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="对接日期" prop="dockingDate" :label-width="formLabelWidth">
+                <el-date-picker type="date" placeholder="选择日期" v-model="addform.dockingDate" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="牵头领导" prop="leader" :label-width="formLabelWidth">
+                <el-select v-model="addform.leader" placeholder="请选择牵头领导">
+                  <el-option :label="item.name" :value="item.id" v-for="item in peopleList"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="牵头单位" prop="leadenter" :label-width="formLabelWidth">
+                <el-select v-model="addform.leadenter"  placeholder="请选择可见组织范围">
+                  <el-option v-for="item in orgList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="协调负责人" prop="coordinate" :label-width="formLabelWidth">
+                <el-select v-model="addform.coordinate" placeholder="请选择协调负责人">
+                  <el-option :label="item.name" :value="item.id" v-for="item in peopleList"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目代号" prop="taskPrefix" :label-width="formLabelWidth">
+                <el-input v-model="addform.taskPrefix" autocomplete="off" placeholder="例如:LY-2020(林业2020项目)"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="可见范围" prop="visibleRange" :label-width="formLabelWidth">
+                <el-select v-model="addform.visibleRange" multiple  placeholder="请选择可见组织范围" @change="visibleRangeChange">
+                  <el-option label="选择所有" :value="orgAllId"></el-option>
+                  <el-option v-for="item in orgList" :label="item.name" :value="item.id" :key="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="参与人员" prop="joiners" :label-width="formLabelWidth">
+                <el-select v-model="addform.joiners" multiple  placeholder="请选择参与人员">
+                  <el-option label="选择所有" value="all"></el-option>
+                  <el-option v-for="item in joiners" :label="item.name" :value="item.id" :key="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="备注" :label-width="formLabelWidth">
+                <el-input v-model="addform.remarks" autocomplete="off" placeholder="请输入备注信息"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="投资情况" :label-width="formLabelWidth">
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="请输入投资情况"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="预计完成时间" :label-width="formLabelWidth">
+                <el-date-picker type="date" placeholder="选择日期" v-model="addform.expectedDate" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目审批监管平台代码" :label-width="formLabelWidth">
+                <el-input v-model="addform.approveCode" autocomplete="off" placeholder="请输入项目审批监管平台代码"></el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addProject('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import path from 'path'
-  import { deepClone } from '@/utils'
+  import {
+    deepClone
+  } from '@/utils'
   import md5 from "js-md5"
-  import { getAllProject, getProject, addProject, updateProject, deleteProject } from '@/api/project'
+  import {
+    getAllProject,
+    getProject,
+    getAllFormParam,
+    getJoiners,
+    clickUpdateStatus,
+    addProject,
+    updateProject,
+    deleteProject
+  } from '@/api/project'
 
   const defaultUser = {
     id: '',
@@ -217,18 +493,175 @@
   export default {
     data() {
       return {
-        orgId:"",
+        orgId: "",
         activeName: 'second',
-        projectList:[],
-        thisProject:{},
-        searchContent:"",
-        searchStatus:1,
-        user: Object.assign({}, defaultUser),
-        usersList: [],
-        dialogVisible: false,
-        dialogType: 'new',
-        checkStrictly: false
+        projectList: [],
+        thisProject: {},
+        projectStatusClass: "",
+        searchContent: "",
+        searchStatus: "0",
 
+        dialogAddFormVisible: false,
+        addform: {
+          id: "",
+          name: "",
+          industryCategory: "",
+          content: "",
+          number: "",
+          maturity: "",
+          dockingDate: "",
+          leader: "",
+          leadenter: "",
+          coordinate: "",
+          taskPrefix: "",
+          visibleRange: "",
+          joiners: "",
+          process: "",
+          remarks: "",
+          invest: "",
+          expectedDate: "",
+          startDate: "",
+          approveCode: "",
+
+          lxIsComapprove: "",
+          lxHandleLevel: "",
+          lxIsSendappdepart: "",
+          ydcardIsHascard: "",
+          ydcardHandleLevel: "",
+          ydcardIsSendappdepart: "",
+          energyIsCensor: "",
+          energyHandleLevel: "",
+          energyIsSendappdepart: "",
+          lcIsBl: "",
+          lcHandleLevel: "",
+          lcIsSendappdepart: "",
+          tdIsBl: "",
+          tdHandleLevel: "",
+          tdIsSendappdepart: "",
+          envirIsBl: "",
+          envirHandleLevel: "",
+          envirIsSendappdepart: "",
+          sgIsBl: "",
+          sgHandleLevel: "",
+          sgIsSendappdepart: "",
+          xfIsBl: "",
+          xfHandleLevel: "",
+          xfIsSendappdepart: "",
+          rfIsBl: "",
+          rfHandleLevel: "",
+          rfIsSendappdepart: "",
+
+          otherBl: "",
+          diffAndProblem: "",
+          proManager: "",
+          proManagerMobile: "",
+          enterManager: "",
+          enterManagerMobile: "",
+          stage: "",
+          status: "",
+          completeDate: "",
+          orgId: "",
+        },
+        categoryList: [],
+        peopleList: [],
+        orgAllId:"",
+        orgList: [],
+        joiners: [],
+        maturity: [{
+          id: 1,
+          name: '加快前期'
+        }, {
+          id: 2,
+          name: '新开工'
+        }, {
+          id: 3,
+          name: '续建'
+        }, {
+          id: 4,
+          name: '竣工'
+        }],
+        rules: {
+          name: [{
+              required: true,
+              message: '请输入项目名称',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 50,
+              message: '长度在 3 到 50 个字符',
+              trigger: 'blur'
+            }
+          ],
+          content: [{
+              required: true,
+              message: '请输入项目描述',
+              trigger: 'blur'
+          }],
+          industryCategory: [{
+            required: true,
+            message: '请选择产业类型',
+            trigger: 'change'
+          }],
+          number: [{
+            required: true,
+            message: '请输入项目编号',
+            trigger: 'change'
+          }],
+          maturity: [{
+            required: true,
+            message: '请选择项目成熟度',
+            trigger: 'change'
+          }],
+          dockingDate: [{
+            type: 'date',
+            required: true,
+            message: '请选择对接日期',
+            trigger: 'change'
+          }],
+          expectedDate: [{
+            type: 'date',
+            required: true,
+            message: '请选择预计完成事件时间',
+            trigger: 'change'
+          }],
+          leader: [{
+            required: true,
+            message: '请选择牵头领导',
+            trigger: 'change'
+          }],
+          leadenter: [{
+            required: true,
+            message: '请选择牵头单位',
+            trigger: 'change'
+          }],
+          coordinate: [{
+            required: true,
+            message: '请选择协调负责人',
+            trigger: 'change'
+          }],
+          visibleRange: [{
+            required: true,
+            message: '请选择可见范围',
+            trigger: 'change'
+          }],
+          joiners: [{
+            required: true,
+            message: '请选择参与人员',
+            trigger: 'change'
+          }]
+        },
+        formLabelWidth: '90px'
+      }
+    },
+    watch: {
+      orgList: function(val, oldval) {
+        let newindex = val.indexOf('all'),
+          oldindex = oldval.indexOf('all'); //获取val和oldval里all的索引,如果没有则返回-1
+        if (newindex != -1 && oldindex == -1 && val.length > 1) //如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
+          this.orgList = ['all'];
+        else if (newindex != -1 && oldindex != -1 && val.length > 1) //如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
+          this.orgList.splice(val.indexOf('all'), 1)
       }
     },
     computed: {
@@ -237,28 +670,91 @@
       }
     },
     created() {
-      // this.getProjectList()
       this.orgId = this.$store.getters.orgId
+      this.orgName = this.$store.getters.orgName
+      this.getProjectList()
     },
     methods: {
-      async getProjectList(){
-        const res = await getAllProject(this.orgId,this.searchContent,this.searchStatus)
+      async getProjectList() {
+        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
         this.projectList = res.data
         console.log(this.projectList)
       },
       handleClick(tab, event) {
         console.log(tab, event);
       },
-      async searchProject(){
-        const res = await getAllProject(this.orgId,this.searchContent,this.searchStatus)
+      async searchProject() {
+        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
         this.projectList = res.data
-         console.log(this.projectList)
+        console.log(this.projectList)
       },
-      async clickProject(id){
-        console.log("项目ID:",id);
-        const res = await getProject(id);
-        this.thisProject = res.data;
-         console.log("项目ID:",this.thisProject)
+      async clickProject(id) {
+        const res = await getProject(id)
+        this.thisProject = res.data
+        this.projectStatusClass = this.thisProject.status == 1 ? 'circle-ing' : this.thisProject.status == 2 ?
+          'circle-success' : 'circle-error'
+      },
+      async addProjectEvent(id) {
+        const res = await getAllFormParam(this.orgId);
+        this.categoryList = res.data.categorys
+        this.peopleList = res.data.peoples
+        this.orgList = res.data.orgs
+        var sOrgIds = "";
+        for (let s of this.orgList) {
+          sOrgIds+=','+s.id
+        }
+         this.orgAllId = sOrgIds!=''?sOrgIds.slice(1):0;
+        this.joiners = res.data.joiners
+        this.dialogAddFormVisible = true;
+      },
+      async visibleRangeChange() {
+        if(this.addform.visibleRange !='' && this.addform.visibleRange != 0){
+          const res = await getJoiners(this.addform.visibleRange);
+          this.joiners = res.data
+        }else{
+          this.joiners = []
+        }
+      },
+
+      async addProject(formName) {
+        const isEdit = this.dialogType === 'edit'
+        var isGo = false;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            isGo = true;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
+        if (isGo) {
+          if (isEdit) {
+            await updateProject(this.thisProject.key, this.thisProject)
+            for (let index = 0; index < this.rolesList.length; index++) {
+              if (this.projectList[index].id === this.thisProject.id) {
+                this.projectList.splice(index, 1, Object.assign({}, this.thisProject))
+                break
+              }
+            }
+          } else {
+            const {
+              data
+            } = await addProject(this.thisProject)
+
+            this.thisProject.id = data.id
+            this.projectList.push(this.thisProject)
+          }
+          this.dialogAddFormVisible = false;
+        }
+
+      },
+      async clickUpdateStatus() {
+        const res = await clickUpdateStatus(this.thisProject.id)
+        this.$message({
+          type: 'success',
+          message: '更新成功！'
+        })
       }
     }
   }
@@ -271,12 +767,14 @@
   i:hover {
     color: #5cb6ff;
   }
+
   .app-container .left-project .el-radio-button__inner {
-          padding: 6px 10px !important;
-          font-size: 11px;
-          border-radius: 0;
-          border: none;
-      }
+    padding: 6px 10px !important;
+    font-size: 11px;
+    border-radius: 0;
+    border: none;
+  }
+
   .app-container {
     display: flex;
     background-color: aliceblue;
@@ -302,21 +800,25 @@
     }
 
     .left-project {
-      paddding-left:0;
-      border-right:2px solid #3A71A8;
+      paddding-left: 0;
+      border-right: 2px solid #3A71A8;
       width: 200px;
+
       ul {
         padding-left: 0;
       }
+
       ul li {
         list-style-type: none;
       }
+
       .el-radio-button__inner {
-          padding: 6px 10px !important;
-          font-size: 11px;
-          border-radius: 0;
-          border: none;
+        padding: 6px 10px !important;
+        font-size: 11px;
+        border-radius: 0;
+        border: none;
       }
+
       .header {
         height: 50px;
         display: -webkit-box;
@@ -415,7 +917,7 @@
               align-items: center;
 
               .project-property-item-name {
-                color: #888;
+                color: #9c9c9c;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -428,6 +930,19 @@
                 background: #aaa;
                 height: 18px;
                 width: 18px;
+                display: inline-block;
+              }
+
+              .circle-ing {
+                background-color: #71cd33;
+              }
+
+              .circle-success {
+                background-color: #30B08F;
+              }
+
+              .circle-error {
+                background-color: brown;
               }
             }
 
