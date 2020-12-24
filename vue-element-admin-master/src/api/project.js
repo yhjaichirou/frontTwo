@@ -31,7 +31,12 @@ export function getJoiners(orgIds) {
     method: 'get',
   })
 }
-
+export function authProject(projectId) {
+  return request({
+    url: '/project/authProject/${projectId}',
+    method: 'post',
+  })
+}
 export function addProject(data) {
   return request({
     url: '/project/addProject',
@@ -48,9 +53,9 @@ export function updateProject(data) {
   })
 }
 
-export function deleteProject(groupId) {
+export function deleteProject(projectId) {
   return request({
-    url: `/project/deleteGroup/${groupId}`,
+    url: `/project/deleteGroup/${projectId}`,
     method: 'delete'
   })
 }
