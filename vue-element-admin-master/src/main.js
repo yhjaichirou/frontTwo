@@ -1,7 +1,5 @@
 import Vue from 'vue'
 
-import Cookies from 'js-cookie'
-
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import Element from 'element-ui'
@@ -21,7 +19,9 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
-
+import Cookies from 'js-cookie'
+import wlGantt from 'wl-gantt'
+import "wl-gantt/lib/wl-gantt.css"
 
 //每次路由跳转前
 // router.beforeEach((to, from, next) => {
@@ -75,6 +75,7 @@ Vue.use(Element, {
 	size: Cookies.get('size') || 'medium', // set element-ui default size
 	locale: enLang // 如果使用中文，无需设置，请删除
 })
+Vue.use(wlGantt)
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

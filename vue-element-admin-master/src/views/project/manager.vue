@@ -25,7 +25,7 @@
           <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
         <ul>
-          <li v-for="item in projectList" :key="item.id" class="ng-star-inserted" :class="currProjectIndex==item.id?'active':''" @click.prevent="clickProject(item.id)">
+          <li v-for="(item,index) in projectList" :key="item.id" class="ng-star-inserted" :class="currProjectIndex==item.id?'active':''" @click.prevent="clickProject(item.id)">
             <a class="section-item" href="#">
               <svg-icon icon-class="project2" />{{ item.name }}</a>
             <div class="ng-star-inserted-btn">
@@ -33,7 +33,7 @@
                 <svg-icon icon-class="sp" /></a>
               <a class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
                 <svg-icon icon-class="update" /></a>
-              <a class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id)">
+              <a class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
                 <svg-icon icon-class="del" /></a>
             </div>
           </li>
@@ -377,14 +377,15 @@
             </div>
 
           </el-tab-pane>
-          <el-tab-pane label="甘特图" name="third">甘特图</el-tab-pane>
+          <!-- 甘特图 -->
+          <el-tab-pane label="甘特图" name="third" />
           <el-tab-pane label="项目文件" name="fourth">项目文件</el-tab-pane>
         </el-tabs>
       </div>
     </div>
 
     <!-- add form -->
-    <el-dialog title="新增项目" :visible.sync="dialogAddFormVisible">
+    <el-dialog :visible.sync="dialogAddFormVisible" :title="dialogType==='edit'?'修改项目':'新建项目'">
       <el-form ref="ruleForm" :model="addform" :rules="rules">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -429,8 +430,8 @@
 
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="主管部门负责人" :label-width="formLabelWidth"  @change="proManagerChange">
-                <el-select v-model="addform.proManager" multiple placeholder="请选择">
+              <el-form-item label="主管部门负责人" prop="proManager" :label-width="formLabelWidth">
+                <el-select v-model="addform.proManager" placeholder="请选择" @change="proManagerChange">
                   <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -438,8 +439,8 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="企业联系人" :label-width="formLabelWidth" @change="enterManagerChange">
-                <el-select v-model="addform.enterManager" multiple placeholder="请选择">
+              <el-form-item label="企业联系人" prop="enterManager" :label-width="formLabelWidth">
+                <el-select v-model="addform.enterManager" placeholder="请选择" @change="enterManagerChange">
                   <el-option v-for="item in enterList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -447,14 +448,14 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="负责人电话" :label-width="formLabelWidth">
+              <el-form-item label="主管部门负责人电话" prop="proManagerMobile" :label-width="formLabelWidth">
                 <el-input v-model="addform.proManagerMobile" autocomplete="off" placeholder="请输入" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="联系电话" :label-width="formLabelWidth">
+              <el-form-item label="企业联系电话" prop="enterManagerMobile" :label-width="formLabelWidth">
                 <el-input v-model="addform.enterManagerMobile" autocomplete="off" placeholder="请输入" />
               </el-form-item>
             </div>
@@ -471,7 +472,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="牵头领导" prop="leader" :label-width="formLabelWidth">
                 <el-select v-model="addform.leader" placeholder="请选择牵头领导">
-                  <el-option v-for="item in peopleList" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -489,7 +490,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="协调负责人" prop="coordinate" :label-width="formLabelWidth">
                 <el-select v-model="addform.coordinate" placeholder="请选择协调负责人">
-                  <el-option v-for="item in peopleList" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -537,7 +538,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="预计完成时间" :label-width="formLabelWidth">
+              <el-form-item label="预计完成时间" prop="expectedDate" :label-width="formLabelWidth">
                 <el-date-picker v-model="addform.expectedDate" type="date" placeholder="选择日期" style="width: 100%;" />
               </el-form-item>
             </div>
@@ -632,6 +633,15 @@ const defaultProject = {
 
 export default {
   data() {
+    var val_mobil = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入主管部门联系人电话！'))
+      } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
+        callback(new Error('手机号格式不正确！'))
+      } else {
+        callback()
+      }
+    }
     return {
       orgId: '',
       activeName: 'second',
@@ -642,6 +652,7 @@ export default {
       searchContent: '',
       searchStatus: '0',
 
+      dialogType: '',
       dialogAddFormVisible: false,
       addform: Object.assign({}, defaultProject),
 
@@ -690,6 +701,24 @@ export default {
           trigger: 'blur'
         }
         ],
+        proManager: [{
+          required: true,
+          message: '请选择主管部门负责人',
+          trigger: 'change'
+        }],
+        proManagerMobile: [{
+          validator: val_mobil,
+          trigger: 'blur'
+        }],
+        enterManager: [{
+          required: true,
+          message: '请选择企业负责人',
+          trigger: 'change'
+        }],
+        enterManagerMobile: [{
+          validator: val_mobil,
+          trigger: 'blur'
+        }],
         content: [{
           required: true,
           message: '请输入项目描述',
@@ -820,16 +849,17 @@ export default {
       this.orgAllId = sOrgIds != '' ? sOrgIds.slice(1) : 0
       this.joiners = res.data.joiners
       // 编辑获取
-      console.log(id)
       if (id != null) {
         const res = await getProject(id)
         this.addform = res.data
+        this.addform.id = id
       } else {
         this.addform = defaultProject
       }
       this.dialogAddFormVisible = true
     },
     deleteProject(id, $index) {
+      console.log(id, $index)
       this.$confirm('确定要删除该项目吗？', '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -853,42 +883,44 @@ export default {
         this.joiners = []
       }
     },
-    async proManagerChange() {
-      if (this.addform.proManager != '' && this.addform.visibleRange != 0) {
-        for(var op of this.addform.peopleList){
-          if(op.id == this.addform.proManager){
-            
+    proManagerChange() {
+      var cPRO = this.addform.proManager
+      if (cPRO != '' && cPRO != 0) {
+        for (var op of this.peopleList) {
+          if (op.id == cPRO) {
+            this.addform.proManagerMobile = op.mobile
           }
         }
-        this.addform.proManagerMobile =
-      } else {
-        this.joiners = []
       }
     },
-    async enterManagerChange() {
-      if (this.addform.visibleRange != '' && this.addform.visibleRange != 0) {
-        const res = await getJoiners(this.addform.visibleRange)
-        this.joiners = res.data
-      } else {
-        this.joiners = []
+    enterManagerChange() {
+      var cPRO = this.addform.enterManager
+      if (cPRO != '' && cPRO != 0) {
+        for (var op of this.enterList) {
+          if (op.id == cPRO) {
+            this.addform.enterManagerMobile = op.mobile
+          }
+        }
       }
     },
-
     async addProject(formName) {
       const isEdit = this.dialogType === 'edit'
       var isGo = false
+      console.log(formName)
       this.$refs[formName].validate((valid) => {
+        console.log(valid)
         if (valid) {
           isGo = true
         } else {
-          console.log('error submit!!')
+          this.$message.error('提交信息错误！')
           return false
         }
       })
 
       if (isGo) {
         if (isEdit) {
-          await updateProject(this.thisProject.key, this.thisProject)
+          this.addform.id = thisProject
+          await updateProject(this.thisProject)
           for (let index = 0; index < this.projectList.length; index++) {
             if (this.projectList[index].id === this.thisProject.id) {
               this.projectList.splice(index, 1, Object.assign({}, this.thisProject))
@@ -968,6 +1000,8 @@ export default {
 
       ul {
         padding-left: 0;
+        height: calc(100% - 140px);
+        overflow: auto;
       }
       ul li.active{
         background-color: aliceblue;

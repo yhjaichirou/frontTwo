@@ -47,7 +47,7 @@ export function addProject(data) {
 
 export function updateProject(data) {
   return request({
-    url: `/project/updateGroup`,
+    url: `/project/updateProject`,
     method: 'post',
     data
   })
@@ -55,7 +55,7 @@ export function updateProject(data) {
 
 export function deleteProject(projectId) {
   return request({
-    url: `/project/deleteGroup/${projectId}`,
+    url: `/project/deleteProject/${projectId}`,
     method: 'delete'
   })
 }
