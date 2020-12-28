@@ -355,15 +355,14 @@
               </div>
             </div>
             <div class="task-list-body">
-              <el-card class="box-card">
-                <el-table style="width: 100%" max-height="250">
-                  <el-table-column fixed prop="date" label="标题" width="150" />
-                  <el-table-column prop="name" label="状态" width="120" />
-                  <el-table-column prop="province" label="省份" width="120" />
-                  <el-table-column prop="city" label="市区" width="120" />
-                  <el-table-column prop="address" label="地址" width="300" />
-                  <el-table-column prop="zip" label="邮编" width="120" />
-                  <el-table-column fixed="right" label="操作" width="120">
+              <!-- <el-card class="box-card">
+                <el-table style="width: 100%" max-height="250" :data="tableTasks">
+                  <el-table-column fixed prop="title" label="标题" />
+                  <el-table-column prop="status" label="状态" width="120" />
+                  <el-table-column prop="executor" label="负责人" width="120" />
+                  <el-table-column prop="executorMobile" label="负责人电话" width="180" />
+                  <el-table-column prop="startDateStr" label="开始时间" width="120" />
+                  <el-table-column fixed="right" label="操作" width="150">
                     <template slot-scope="scope">
                       <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, tableData)">
                         移除
@@ -371,14 +370,12 @@
                     </template>
                   </el-table-column>
                 </el-table>
-
-              </el-card>
-
+              </el-card> -->
+              <!-- <my-table-tasks task-list="tableData" /> -->
+              <yhj-task-table :task-list="tableData" valuea="222222" />
             </div>
 
           </el-tab-pane>
-          <!-- 甘特图 -->
-          <el-tab-pane label="甘特图" name="third" />
           <el-tab-pane label="项目文件" name="fourth">项目文件</el-tab-pane>
         </el-tabs>
       </div>
@@ -597,6 +594,7 @@ import {
   deleteProject,
   authProject
 } from '@/api/project'
+import yhjTaskTable from './components/tableTasks.vue'
 
 const defaultProject = {
   id: '',
@@ -632,6 +630,10 @@ const defaultProject = {
 }
 
 export default {
+  components: {
+    'yhj-task-table': yhjTaskTable
+  },
+
   data() {
     var val_mobil = (rule, value, callback) => {
       if (value === '') {
@@ -777,7 +779,38 @@ export default {
           trigger: 'change'
         }]
       },
-      formLabelWidth: '90px'
+      formLabelWidth: '90px',
+
+      // 任务列表
+      tableData: [{
+        id: '12987122',
+        title: '好滋好味鸡蛋仔aaaa',
+        status: 1,
+        executor: '荷兰优质淡奶，奶香浓而不腻',
+        executorMobile: '上海市普陀区真北路',
+        startDateStr: '王小虎夫妻店'
+      }, {
+        id: '12987122',
+        title: '好滋好味鸡蛋仔aaaa',
+        status: 1,
+        executor: '荷兰优质淡奶，奶香浓而不腻',
+        executorMobile: '上海市普陀区真北路',
+        startDateStr: '王小虎夫妻店'
+      }, {
+        id: '12987122',
+        title: '好滋好味鸡蛋仔aaaa',
+        status: 1,
+        executor: '荷兰优质淡奶，奶香浓而不腻',
+        executorMobile: '上海市普陀区真北路',
+        startDateStr: '王小虎夫妻店'
+      }, {
+        id: '12987122',
+        title: '好滋好味鸡蛋仔aaaa',
+        status: 1,
+        executor: '荷兰优质淡奶，奶香浓而不腻',
+        executorMobile: '上海市普陀区真北路',
+        startDateStr: '王小虎夫妻店'
+      }]
     }
   },
   computed: {
