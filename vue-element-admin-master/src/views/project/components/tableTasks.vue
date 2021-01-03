@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>我输局部组件---{{ valuea }}</div>
+    <!-- <div>我输局部组件---{{ valuea }}</div> -->
     <el-table
       :data="taskList"
       style="width: 100%"
@@ -11,8 +11,11 @@
             <el-form-item label="标题">
               <span>{{ props.row.title }}</span>
             </el-form-item>
-            <el-form-item label="所属店铺">
-              <span>{{ props.row.status }}</span>
+            <el-form-item label="状态">
+              <span>{{ props.row.statusStr }}</span>
+            </el-form-item>
+            <el-form-item label="指派组织">
+              <span>{{ props.row.executOrgName }}</span>
             </el-form-item>
             <el-form-item label="负责人">
               <span>{{ props.row.executor }}</span>
@@ -30,13 +33,16 @@
         </template>
       </el-table-column>
       <el-table-column prop="title" label="标题" />
-      <el-table-column prop="status" label="状态" width="120" />
-      <el-table-column prop="executor" label="负责人" width="120" />
-      <el-table-column prop="executorMobile" label="负责人电话" width="180" />
-      <el-table-column prop="startDateStr" label="开始时间" width="120" />
+      <el-table-column prop="statusStr" label="状态" width="120" />
+      <el-table-column prop="executOrgName" label="指派组织" width="220" />
+      <el-table-column prop="executorName" label="负责人" width="120" />
+      <el-table-column prop="startDateStr" label="开始时间" width="220" />
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, taskList)">
+          <el-button type="text" size="small" @click.native.prevent="updateRow(scope.$index, scope)">
+            修改
+          </el-button>
+          <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, scope)">
             移除
           </el-button>
         </template>
@@ -49,26 +55,31 @@
 <script>
 export default {
   name: 'MyLocalBtn',
-  props: ['valuea', 'taskList'],
+  props: ['taskList'],
   data() {
     return {
 
     }
   },
   methods: {
-    deleteRow({ $index, row }) {
-      this.$confirm('确定要删除该分组吗？', 'Warning', {
+    updateRow($index, scope) {
+      this.$emit("updateTask",$index,scope.row.id);
+      // await deleteGroup(scope.row.id)
+      // this.taskList.splice($index, 1)
+      // this.$message({
+      //   type: 'success',
+      //   message: '删除成功!'
+      // })
+    },
+    deleteRow($index, scope) {
+      this.$confirm('确定要删除吗？', 'Warning', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async() => {
-          await deleteGroup(row.id)
-          this.taskList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
+          this.$emit("deleteTask",$index,scope.row.id);
+
         })
         .catch(err => { console.error(err) })
     }

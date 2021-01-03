@@ -11,29 +11,28 @@
           </div>
         </div>
 
-        <input
-          v-model="searchContent"
-          type="text"
-          autocomplete="off"
-          class="el-input__inner"
-          placeholder="搜索项目"
-          @input="searchProject"
-        >
+        <input v-model="searchContent" type="text" autocomplete="off" class="el-input__inner" placeholder="搜索项目" @input="searchProject">
         <el-radio-group v-model="searchStatus" size="mini" @change="searchProject">
           <el-radio-button label="0" value="0">全部</el-radio-button>
           <el-radio-button label="1" value="1">未完成</el-radio-button>
           <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
         <ul>
-          <li v-for="(item,index) in projectList" :key="item.id" class="ng-star-inserted" :class="currProjectIndex==item.id?'active':''" @click.prevent="clickProject(item.id)">
+          <li
+            v-for="(item,index) in projectList"
+            :key="item.id"
+            class="ng-star-inserted"
+            :class="currProjectIndex==item.id?'active':''"
+            @click.prevent="clickProject(item.id)"
+          >
             <a class="section-item" href="#">
               <svg-icon icon-class="project2" />{{ item.name }}</a>
             <div class="ng-star-inserted-btn">
               <a v-if="item.status==7" class="section-item" href="#" title="提交审批" @click.prevent="authProject(item.id)">
                 <svg-icon icon-class="sp" /></a>
-              <a class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
+              <a v-if="item.status==7" class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
                 <svg-icon icon-class="update" /></a>
-              <a class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
+              <a v-if="item.status==7" class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
                 <svg-icon icon-class="del" /></a>
             </div>
           </li>
@@ -47,8 +46,8 @@
           </div>
 
         </div>
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="项目概览" name="first">
+        <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="项目概览" name="1">
 
             <div class="manager-card">
               <div class="manager-header">
@@ -86,7 +85,7 @@
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管负责人:</span>
-                    {{ thisProject.proManager }}
+                    {{ thisProject.proManagerName }}
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管人联系电话:</span>
@@ -95,18 +94,18 @@
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property align-items-start">
                     <span class="project-property-item-name project-basic-property-item-name project-basic-property-item-name">项目成熟度:</span>
-                    {{ thisProject.maturity }}
+                    {{ thisProject.maturityStr }}
                   </div>
 
                 </div>
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
-                    {{ thisProject.leadenter }}
+                    {{ thisProject.leadenterName }}
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
-                    {{ thisProject.leader }}
+                    {{ thisProject.leaderName }}
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
@@ -114,13 +113,13 @@
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
-                    {{ thisProject.coordinate }}
+                    {{ thisProject.coordinateName }}
                   </div>
                 </div>
 
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
-                    {{ thisProject.enterManager }}
+                    {{ thisProject.enterManagerName }}
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
@@ -169,7 +168,7 @@
               <div class="manager-card-content">
                 <div class="d-flex">
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目参与人员:</span>
-                    {{ thisProject.joiners }}
+                    {{ thisProject.joinersStr }}
                   </div>
                   <div class="project-basic-property project-basic-property-border" />
                   <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">投资情况:</span>
@@ -323,7 +322,7 @@
             </div>
 
           </el-tab-pane>
-          <el-tab-pane label="任务配置" name="second">
+          <el-tab-pane label="任务配置" name="2">
             <div class="task-list-type">
               <div class="task-list-type-left">
                 <!-- <el-tabs type="border-card">
@@ -334,16 +333,17 @@
                   <el-tab-pane label="已逾期的任务">已逾期的任务</el-tab-pane>
                 </el-tabs> -->
                 <ul>
-                  <li><a>全部</a></li>
-                  <li><a>未分配的任务</a></li>
-                  <li><a>我负责的任务</a></li>
-                  <li><a>已延期的任务</a></li>
-                  <li><a>已逾期的任务</a></li>
+                  <li :class="taskTypeStatus==10?'active':''" @click="getTaskSearch(10)"><a>全部</a></li>
+                  <li :class="taskTypeStatus===0?'active':''" @click="getTaskSearch(0)"><a>未分配的任务</a></li>
+                  <li :class="taskTypeStatus===1?'active':''" @click="getTaskSearch(1)"><a>未完成的任务</a></li>
+                  <li :class="taskTypeStatus===2?'active':''" @click="getTaskSearch(2)"><a>已完成的任务</a></li>
+                  <li :class="taskTypeStatus===3?'active':''" @click="getTaskSearch(3)"><a>已延期的任务</a></li>
+                  <li :class="taskTypeStatus===4?'active':''" @click="getTaskSearch(4)"><a>已逾期的任务</a></li>
                 </ul>
               </div>
               <div class="task-list-type-right">
                 <ul>
-                  <li><a class="add-task-origin nav-link ng-star-inserted" href="javascript:;" @click="addTask">
+                  <li><a class="add-task-origin nav-link ng-star-inserted" href="javascript:;" @click="openAddTask(null)">
                     <i class="el-icon-circle-plus" />
                     新建
                   </a></li>
@@ -355,33 +355,36 @@
               </div>
             </div>
             <div class="task-list-body">
-              <!-- <el-card class="box-card">
-                <el-table style="width: 100%" max-height="250" :data="tableTasks">
-                  <el-table-column fixed prop="title" label="标题" />
-                  <el-table-column prop="status" label="状态" width="120" />
-                  <el-table-column prop="executor" label="负责人" width="120" />
-                  <el-table-column prop="executorMobile" label="负责人电话" width="180" />
-                  <el-table-column prop="startDateStr" label="开始时间" width="120" />
-                  <el-table-column fixed="right" label="操作" width="150">
-                    <template slot-scope="scope">
-                      <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, tableData)">
-                        移除
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-card> -->
+
+              <el-card class="box-card">
+                <el-collapse v-model="activeNamesTask">
+                  <el-collapse-item v-for="item in taskList" :key="item.id" :title="item.name" :name="item.id" >
+                    <yhj-task-table :task-list="item.value" @updateTask="updateTask" />
+                  </el-collapse-item>
+                </el-collapse>
+              </el-card>
+
+
               <!-- <my-table-tasks task-list="tableData" /> -->
-              <yhj-task-table :task-list="tableData" valuea="222222" />
+
             </div>
 
           </el-tab-pane>
-          <el-tab-pane label="项目文件" name="fourth">项目文件</el-tab-pane>
+          <el-tab-pane label="项目文件" name="3">项目文件</el-tab-pane>
+        </el-tabs>
+        <el-tabs v-else v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="项目概览" name="1">
+            <div style="padding: 10px;">
+              <panel-group @handleSetLineChartData="handleSetLineChartData" :allProCount="allMsg.allProject"
+               :allComProCount="allMsg.allComProject" :allInvest="allMsg.allInvest" :allPeople="allMsg.allPeople" />
+            </div>
+
+          </el-tab-pane>
         </el-tabs>
       </div>
     </div>
 
-    <!-- add form -->
+    <!-- add projectform -->
     <el-dialog :visible.sync="dialogAddFormVisible" :title="dialogType==='edit'?'修改项目':'新建项目'">
       <el-form ref="ruleForm" :model="addform" :rules="rules">
         <el-row :gutter="20">
@@ -403,7 +406,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="产业类型" prop="industryCategory" :label-width="formLabelWidth">
                 <el-select v-model="addform.industryCategory" placeholder="请选择产业类型">
-                  <el-option v-for="(item,index) in categoryList" :label="item.categoryName" :value="index" />
+                  <el-option v-for="(item,index) in categoryList"  :key="item.id" :label="item.categoryName" :value="index" />
                 </el-select>
               </el-form-item>
             </div>
@@ -412,7 +415,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="项目成熟度" prop="maturity" :label-width="formLabelWidth">
                 <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
-                  <el-option v-for="item in maturity" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in maturity"  :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -461,7 +464,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="对接日期" prop="dockingDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addform.dockingDate" type="date" placeholder="选择日期" style="width: 100%;" />
+                <el-date-picker v-model="addform.dockingDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 100%;" />
               </el-form-item>
             </div>
           </el-col>
@@ -574,28 +577,121 @@
       </div>
     </el-dialog>
 
+    <!-- add task form -->
+    <el-dialog :visible.sync="dialogTaskFormVisible" :title="dialogType_Task==='edit'?'修改任务':'新建任务'">
+      <el-form ref="ruleTaskForm" :model="addTaskObj" :rules="ruleTasks">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="任务名称" prop="title" :label-width="formLabelWidth">
+                <el-input v-model="addTaskObj.title" autocomplete="off" placeholder="请输入任务名称" />
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="所属阶段" prop="stageId" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.stageId" placeholder="请选择所属阶段">
+                  <el-option v-for="item in stageList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="任务描述" prop="remark" :label-width="formLabelWidth">
+                <el-input v-model="addTaskObj.remark" type="textarea" placeholder="请输入任务描述" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="开始日期" prop="startDate" :label-width="formLabelWidth">
+                <el-date-picker v-model="addTaskObj.startDate" type="date" placeholder="选择开始日期" value-format="yyyy-MM-dd" style="width: 100%;" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="结束日期" prop="endDate" :label-width="formLabelWidth">
+                <el-date-picker v-model="addTaskObj.endDate" type="date" placeholder="选择结束日期" value-format="yyyy-MM-dd" style="width: 100%;" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="前置任务" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.preTasks" multiple placeholder="请选择前置任务">
+                  <el-option v-for="item in preTaskList" :key="item.id" :label="item.title" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="优先级" prop="priority" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.priority" placeholder="请选择优先级">
+                  <el-option v-for="item in priorityList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="执行组织" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.executOrg" placeholder="请选择组织" @change="executOrgChange">
+                  <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="任务执行人" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.executor" placeholder="请选择执行人" @change="executorChange">
+                  <el-option v-for="item in executorList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTaskFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTask('ruleTaskForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import path from 'path'
+
 import {
-  deepClone
-} from '@/utils'
-import md5 from 'js-md5'
-import {
+  getAllMsg,
   getAllProject,
   getProject,
   getAllFormParam,
+  getAllOrgs,
   getJoiners,
   clickUpdateStatus,
   addProject,
   updateProject,
   deleteProject,
-  authProject
+  authProject,
+  // 任务请求
+  getAllTaskList,
+  getAllTaskFormParam,
+  getExecutorList,
+  getTask,
+  addTask,
+  updateTask,
+  deleteTask
 } from '@/api/project'
 import yhjTaskTable from './components/tableTasks.vue'
-
+import PanelGroup from './components/PanelGroup'
 const defaultProject = {
   id: '',
   name: '',
@@ -628,10 +724,44 @@ const defaultProject = {
   completeDate: '',
   orgId: ''
 }
-
+const defaultTask = {
+  id: '',
+  proId: '',
+  title: '',
+  executor: '',
+  executorMobile: '',
+  stageId: '',
+  startDate: '',
+  endDate: '',
+  priority: '',
+  status: '',
+  remark: '',
+  annex: '',
+  preTasks: '',
+  orgId: ''
+}
+const lineChartData = {
+  newVisitis: {
+    expectedData: [100, 120, 161, 134, 105, 160, 165],
+    actualData: [120, 82, 91, 154, 162, 140, 145]
+  },
+  messages: {
+    expectedData: [200, 192, 120, 144, 160, 130, 140],
+    actualData: [180, 160, 151, 106, 145, 150, 130]
+  },
+  purchases: {
+    expectedData: [80, 100, 121, 104, 105, 90, 100],
+    actualData: [120, 90, 100, 138, 142, 130, 130]
+  },
+  shoppings: {
+    expectedData: [130, 140, 141, 142, 145, 150, 160],
+    actualData: [120, 82, 91, 154, 162, 140, 130]
+  }
+}
 export default {
   components: {
-    'yhj-task-table': yhjTaskTable
+    'yhj-task-table': yhjTaskTable,
+    PanelGroup
   },
 
   data() {
@@ -644,9 +774,19 @@ export default {
         callback()
       }
     }
+    var val_task_mobil = (rule, value, callback) => {
+      if (value === '') {
+        callback()
+      } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
+        callback(new Error('手机号格式不正确！'))
+      } else {
+        callback()
+      }
+    }
     return {
       orgId: '',
-      activeName: 'second',
+      activeName: '1',
+      activeNamesTask: ['1'],
       projectList: [],
       thisProject: {},
       currProjectIndex: '',
@@ -654,9 +794,14 @@ export default {
       searchContent: '',
       searchStatus: '0',
 
+      allMsg:{},
+
       dialogType: '',
       dialogAddFormVisible: false,
+      dialogType_Task: '',
+      dialogTaskFormVisible: false,
       addform: Object.assign({}, defaultProject),
+      addTaskObj: Object.assign({}, defaultTask),
 
       categoryList: [],
       peopleList: [],
@@ -742,7 +887,7 @@ export default {
           trigger: 'change'
         }],
         dockingDate: [{
-          type: 'date',
+          // type: 'date',
           required: true,
           message: '请选择对接日期',
           trigger: 'change'
@@ -781,36 +926,70 @@ export default {
       },
       formLabelWidth: '90px',
 
+      // 任务添加  获取前置任务
+      taskTypeStatus:10,
+      preTaskList: [],
+      executorList: [],
+      priorityList: [{
+        id: 1,
+        name: '一级'
+      }, {
+        id: 2,
+        name: '二级'
+      }, {
+        id: 3,
+        name: '三级'
+      }],
+      ruleTasks: {
+        name: [{
+          required: true,
+          message: '请输入任务名称',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 50,
+          message: '长度在 3 到 50 个字符',
+          trigger: 'blur'
+        }
+        ],
+        stageId: [{
+          required: true,
+          message: '请选择所属阶段',
+          trigger: 'change'
+        }],
+        remark: [{
+          required: true,
+          message: '请输入项目描述',
+          trigger: 'blur'
+        }],
+        startDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择开始日期',
+          trigger: 'change'
+        }],
+        endDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择结束日期',
+          trigger: 'change'
+        }],
+        priority: [{
+          required: true,
+          message: '请选择优先级',
+          trigger: 'change'
+        }],
+        executorMobile: [{
+          validator: val_task_mobil,
+          trigger: 'blur'
+        }]
+      },
       // 任务列表
-      tableData: [{
-        id: '12987122',
-        title: '好滋好味鸡蛋仔aaaa',
-        status: 1,
-        executor: '荷兰优质淡奶，奶香浓而不腻',
-        executorMobile: '上海市普陀区真北路',
-        startDateStr: '王小虎夫妻店'
-      }, {
-        id: '12987122',
-        title: '好滋好味鸡蛋仔aaaa',
-        status: 1,
-        executor: '荷兰优质淡奶，奶香浓而不腻',
-        executorMobile: '上海市普陀区真北路',
-        startDateStr: '王小虎夫妻店'
-      }, {
-        id: '12987122',
-        title: '好滋好味鸡蛋仔aaaa',
-        status: 1,
-        executor: '荷兰优质淡奶，奶香浓而不腻',
-        executorMobile: '上海市普陀区真北路',
-        startDateStr: '王小虎夫妻店'
-      }, {
-        id: '12987122',
-        title: '好滋好味鸡蛋仔aaaa',
-        status: 1,
-        executor: '荷兰优质淡奶，奶香浓而不腻',
-        executorMobile: '上海市普陀区真北路',
-        startDateStr: '王小虎夫妻店'
-      }]
+      taskList: [],
+      // 总概况
+      isHasThisProject: false,
+      lineChartData: lineChartData.newVisitis
     }
   },
   computed: {
@@ -818,27 +997,58 @@ export default {
       return this.routes
     }
   },
-  watch: {
-    orgList: function(val, oldval) {
-      const newindex = val.indexOf('all')
-      const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
-      if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
-      { this.orgList = ['all'] } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
-      { this.orgList.splice(val.indexOf('all'), 1) }
-    }
-  },
+  // watch: {
+  //   orgList: function(val, oldval) {
+  //     const newindex = val.indexOf('all')
+  //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
+  //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
+  //     {
+  //       this.orgList = ['all']
+  //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
+  //     {
+  //       this.orgList.splice(val.indexOf('all'), 1)
+  //     }
+  //   },
+  //   preTaskList: function(val, oldval) {
+  //     const newindex = val.indexOf('all')
+  //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
+  //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
+  //     {
+  //       this.preTaskList = ['all']
+  //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
+  //     {
+  //       this.preTaskList.splice(val.indexOf('all'), 1)
+  //     }
+  //   }
+  // },
   created() {
     this.orgId = this.$store.getters.orgId
     this.orgName = this.$store.getters.orgName
     this.getProjectList()
+    this.getAllOrgs()
+    this.getAllMsg()
   },
   methods: {
+    async getAllMsg() {
+      const res = await getAllMsg(this.orgId)
+      this.allMsg = res.data
+    },
+    async getAllOrgs() {
+      const res = await getAllOrgs()
+      this.orgList = res.data
+    },
     async getProjectList() {
       const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
       this.projectList = res.data
-      console.log(this.projectList)
     },
     handleClick(tab, event) {
+      if(tab.index === '0'){
+
+      }else if(tab.index === '1'){
+        this.getAllTaskList()
+      }else if(tab.index === '2'){
+
+      }
       console.log(tab, event)
     },
     async searchProject() {
@@ -846,11 +1056,15 @@ export default {
       this.projectList = res.data
       console.log(this.projectList)
     },
+    handleSetLineChartData(type) {
+      this.lineChartData = lineChartData[type]
+    },
     async clickProject(id) {
       this.currProjectIndex = id
       const res = await getProject(id)
       this.thisProject = res.data
-      this.projectStatusClass = this.thisProject.status == 1 ? 'circle-ing' : this.thisProject.status == 2
+      this.isHasThisProject = true
+      this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2
         ? 'circle-success' : 'circle-error'
     },
     async authProject(id) {
@@ -866,7 +1080,9 @@ export default {
             message: '已提交成功!'
           })
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
     async addProjectEvent(id) {
       // 表单固定值填充
@@ -879,7 +1095,7 @@ export default {
       for (const s of this.orgList) {
         sOrgIds += ',' + s.id
       }
-      this.orgAllId = sOrgIds != '' ? sOrgIds.slice(1) : 0
+      this.orgAllId = sOrgIds !== '' ? sOrgIds.slice(1) : 0
       this.joiners = res.data.joiners
       // 编辑获取
       if (id != null) {
@@ -906,21 +1122,22 @@ export default {
             message: '删除成功!'
           })
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
     async visibleRangeChange() {
-      if (this.addform.visibleRange != '' && this.addform.visibleRange != 0) {
+      this.joiners = []
+      if (this.addform.visibleRange !== '' && this.addform.visibleRange !== 0) {
         const res = await getJoiners(this.addform.visibleRange)
         this.joiners = res.data
-      } else {
-        this.joiners = []
       }
     },
     proManagerChange() {
       var cPRO = this.addform.proManager
-      if (cPRO != '' && cPRO != 0) {
+      if (cPRO !== '' && cPRO !== 0) {
         for (var op of this.peopleList) {
-          if (op.id == cPRO) {
+          if (op.id === cPRO) {
             this.addform.proManagerMobile = op.mobile
           }
         }
@@ -928,9 +1145,9 @@ export default {
     },
     enterManagerChange() {
       var cPRO = this.addform.enterManager
-      if (cPRO != '' && cPRO != 0) {
+      if (cPRO !== '' && cPRO !== 0) {
         for (var op of this.enterList) {
-          if (op.id == cPRO) {
+          if (op.id === cPRO) {
             this.addform.enterManagerMobile = op.mobile
           }
         }
@@ -952,7 +1169,7 @@ export default {
 
       if (isGo) {
         if (isEdit) {
-          this.addform.id = thisProject
+          this.addform.id = this.thisProject.id
           await updateProject(this.thisProject)
           for (let index = 0; index < this.projectList.length; index++) {
             if (this.projectList[index].id === this.thisProject.id) {
@@ -961,7 +1178,6 @@ export default {
             }
           }
         } else {
-          console.log('工程类：', this.thisProject)
           this.addform.orgId = this.orgId
           const {
             data
@@ -969,19 +1185,137 @@ export default {
           this.addform.id = data
           this.projectList.push(this.addform)
         }
+        this.$message({
+          type: 'success',
+          message: '操作成功！'
+        })
         this.dialogAddFormVisible = false
       }
     },
     async clickUpdateStatus() {
-      const res = await clickUpdateStatus(this.thisProject.id)
+      await clickUpdateStatus(this.thisProject.id)
       this.$message({
         type: 'success',
         message: '更新成功！'
       })
     },
-    addTask() {
 
+    // 任务
+    async getAllTaskList(){
+      const res = await getAllTaskList(this.thisProject.id,10)
+      this.taskList = res.data.list
+      this.activeNamesTask = res.data.activeNamesTask
+      console.log(this.activeNamesTask)
+    },
+    async getTaskSearch(typeId){
+      this.taskTypeStatus = typeId;
+      const res = await getAllTaskList(this.thisProject.id,typeId)
+      this.taskList = res.data.list
+      this.activeNamesTask = res.data.activeNamesTask
+      console.log(this.activeNamesTask)
+    },
+    async openAddTask(id) {
+      // 表单固定值填充
+      const res = await getAllTaskFormParam(this.thisProject.id)
+      this.preTaskList = res.data.preTasks
+      this.stageList = res.data.stages
+      // 编辑获取
+      if (id != null) {
+        console.log(id)
+        const res = await getTask(id)
+        this.addTaskObj = res.data
+        this.dialogType_Task = 'edit'
+        if (this.addTaskObj.executOrg !== '' && this.addTaskObj.executOrg !== 0) {
+          const res = await getExecutorList(this.addTaskObj.executOrg)
+          this.executorList = res.data
+        }
+      } else {
+        this.dialogType_Task = 'new'
+        this.addTaskObj = defaultTask
+      }
+      this.dialogTaskFormVisible = true
+    },
+    async executOrgChange() {
+      this.executorList = []
+      if (this.addTaskObj.executOrg !== '' && this.addTaskObj.executOrg !== 0) {
+        const res = await getExecutorList(this.addTaskObj.executOrg)
+        this.executorList = res.data
+      }
+    },
+    executorChange() {
+      var cPRO = this.addTaskObj.executor
+      console.log(cPRO)
+      if (cPRO !== '' && cPRO !== 0) {
+        for (var op of this.peopleList) {
+          if (op.id === cPRO) {
+            console.log(op.id)
+            this.addTaskObj.executorMobile = op.mobile
+          }
+        }
+      }
+    },
+    async addTask(formName) {
+      const isEdit = this.dialogType_Task === 'edit'
+      var isGo = false
+      console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          isGo = true
+        } else {
+          this.$message.error('提交信息错误！')
+          return false
+        }
+      })
+      console.log(this.addTaskObj)
+      if (isGo) {
+        if (isEdit) {
+          await updateTask(this.addTaskObj)
+          for (let index = 0; index < this.taskList.length; index++) {
+              console.log(this.taskList)
+              console.log(this.taskList[index].value)
+            for(let index2 = 0; index2 < this.taskList[index].value.length; index++){
+                console.log(this.taskList[index].value.[index2])
+              if (this.taskList[index].value.[index2].id === this.addTaskObj.id) {
+               this.taskList[index].value.[index2].splice(index2, 1, Object.assign({}, this.addTaskObj))
+                break
+              }
+            }
+          }
+        } else {
+          this.addTaskObj.orgId = this.orgId
+          this.addTaskObj.proId = this.thisProject.id
+          const {
+            data
+          } = await addTask(this.addTaskObj)
+          this.addTaskObj.id = data
+          for(var stageTask of this.taskList){
+            if( this.addTaskObj.stageId === stageTask.id){
+              stageTask.value.push(this.addTaskObj)
+            }
+          }
+        }
+        this.$message({
+          type: 'success',
+          message: '操作成功！'
+        })
+        this.dialogTaskFormVisible = false
+      }
+    },
+    async updateTask($index, id) {
+      // 表单固定值填充
+      this.openAddTask(id)
+    },
+    async deleteTask($index, id) {
+      // 表单固定值填充
+      alert('哈哈：' + id)
+      await deleteTask(id)
+      this.taskList.splice($index, 1)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+      })
     }
+
   }
 }
 </script>
@@ -1036,9 +1370,11 @@ export default {
         height: calc(100% - 140px);
         overflow: auto;
       }
-      ul li.active{
+
+      ul li.active {
         background-color: aliceblue;
       }
+
       ul li {
         border-bottom: 1px #eee solid;
         list-style-type: none;
@@ -1047,25 +1383,30 @@ export default {
         transition: box-shadow .2s;
         transition: box-shadow .2s, -webkit-box-shadow .2s;
         position: relative;
-        .ng-star-inserted-btn{
-           position: relative;
-           z-index: 10;
-          display:flex;
-          justify-content: center;
+
+        .ng-star-inserted-btn {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          justify-content: right;
+          min-height: 25px;
           .section-item {
+
             padding: 3px;
             -webkit-transition: -webkit-box-shadow .2s;
             transition: -webkit-box-shadow .2s;
             transition: box-shadow .2s;
             transition: box-shadow .2s, -webkit-box-shadow .2s;
           }
+
           .section-item:hover {
             color: #4e8afa;
 
           }
         }
       }
-      ul li:hover{
+
+      ul li:hover {
         box-shadow: 0 1px 10px 1px #eee;
       }
 
@@ -1151,7 +1492,7 @@ export default {
       .manager-card {
         padding: 10px 10px;
         color: #666;
-
+        background-color: white;
         .manager-header {
           display: flex;
 
@@ -1228,7 +1569,16 @@ export default {
         padding: 0 5px;
         justify-content: space-between;
         background-color: white;
+
         .task-list-type-left {
+
+        }
+        .task-list-type-left  {
+           ul{
+             li.active{
+               color: #4e8afa;
+             }
+           }
         }
 
         .task-list-type-right {
@@ -1246,8 +1596,9 @@ export default {
             padding: 5px;
             border-right: 3px solid white;
           }
-          li:nth-last-child{
-            border-right:none;
+
+          li:nth-last-child {
+            border-right: none;
           }
         }
 
@@ -1273,7 +1624,7 @@ export default {
   }
 
   .el-radio-group {
-    margin: 10px;
+    margin: 10px !important;
   }
 
   .el-tabs__header {
@@ -1285,9 +1636,15 @@ export default {
   }
 
   .el-form-item--medium .el-form-item__label {
-      line-height: 22px;
+    line-height: 22px;
   }
-  .el-form .el-col{
+
+  .el-form .el-col {
     min-height: 66px;
+  }
+
+  .el-collapse-item__header {
+    border-bottom: 1px solid #44cfe6;
+    text-align: center;
   }
 </style>

@@ -123,7 +123,21 @@ export const constantRoutes = [
         }
       }
     ]
-  },
+  }
+
+
+  // {
+  //   path: '/project',
+  //   component: Layout,
+  //   meta: { title: '测试', icon: 'table' },
+  //   children: [
+  //     { //需要跳转的页面，
+  //       path: '/detail',
+  //       component: () => import('@/views/project/taskDetail'),
+  //       meta: { title: '任务详情'},
+  //       hidden: true
+  //     }]
+  // }
   // {
   //   path: '/profile',
   //   component: Layout,

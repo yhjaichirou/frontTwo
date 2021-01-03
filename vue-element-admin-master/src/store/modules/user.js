@@ -23,7 +23,9 @@ const state = {
   introduction: '',
   roles: [],
   userInfo: getUserInfo(),
-  userId: ''
+  userId: '',
+  property:'',
+  type:''
 }
 
 const mutations = {
@@ -48,8 +50,10 @@ const mutations = {
   SET_USERID: (state, userId) => {
     state.userId = userId
   },
-  SET_ORGID: (state, orgId) => {
+  SET_ORGID: (state, orgId,property,type) => {
     state.orgId = orgId
+    state.property = property
+    state.type = type
   },
   SET_ORGNAME: (state, orgName) => {
     state.orgName = orgName
@@ -105,7 +109,9 @@ const actions = {
           avatar,
           id,
           orgId,
-          orgName
+          orgName,
+          property,
+          type
         } = data
 
         // roles must be a non-empty array
@@ -118,7 +124,7 @@ const actions = {
         commit('SET_NAME', userName)
         commit('SET_USERID', id)
         commit('SET_AVATAR', avatar)
-        commit('SET_ORGID', orgId)
+        commit('SET_ORGID', orgId,data.property,data.type)
         commit('SET_ORGNAME', orgName)
         setUserInfo(data);
         resolve(data)

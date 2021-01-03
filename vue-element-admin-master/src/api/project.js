@@ -1,8 +1,15 @@
 import request from '@/utils/request'
 
-export function getAllProject(orgId,search,status) {
+
+export function getAllMsg(orgId) {
   return request({
-    url: '/project/getAllProject?orgId='+orgId+"&search="+search+"&status="+status,
+    url: `/project/getAllMsg/${orgId}`,
+    method: 'get'
+  })
+}
+export function getAllProject(orgId, search, status) {
+  return request({
+    url: '/project/getAllProject?orgId=' + orgId + "&search=" + search + "&status=" + status,
     method: 'get'
   })
 }
@@ -12,6 +19,13 @@ export function getProject(projectId) {
     method: 'get',
   })
 }
+export function getProjectAboutSHB(projectId) {
+  return request({
+    url: `/project/getProjectAboutSHB/${projectId}`,
+    method: 'get',
+  })
+}
+
 export function clickUpdateStatus(projectId) {
   return request({
     url: '/project/clickUpdateStatus/${projectId}',
@@ -19,6 +33,12 @@ export function clickUpdateStatus(projectId) {
   })
 }
 
+export function getAllOrgs() {
+  return request({
+    url: `/project/getAllOrgs`,
+    method: 'get',
+  })
+}
 export function getAllFormParam(orgId) {
   return request({
     url: `/project/getAllFormParam/${orgId}`,
@@ -33,7 +53,7 @@ export function getJoiners(orgIds) {
 }
 export function authProject(projectId) {
   return request({
-    url: '/project/authProject/${projectId}',
+    url: `/project/authProject/${projectId}`,
     method: 'post',
   })
 }
@@ -56,6 +76,54 @@ export function updateProject(data) {
 export function deleteProject(projectId) {
   return request({
     url: `/project/deleteProject/${projectId}`,
+    method: 'delete'
+  })
+}
+
+
+//任务
+export function getAllTaskList(projectId,typeId) {
+  return request({
+    url: `/project/getAllTaskList/${projectId}/${typeId}`,
+    method: 'get',
+  })
+}
+export function getTask(projectId) {
+  return request({
+    url: `/project/getTask/${projectId}`,
+    method: 'get',
+  })
+}
+export function getExecutorList(orgId) {
+  return request({
+    url: `/project/getExecutorList/${orgId}`,
+    method: 'get',
+  })
+}
+
+export function getAllTaskFormParam(projectId) {
+  return request({
+    url: `/project/getAllTaskFormParam/${projectId}`,
+    method: 'get',
+  })
+}
+export function addTask(data) {
+  return request({
+    url: '/project/addTask',
+    method: 'post',
+    data
+  })
+}
+export function updateTask(data) {
+  return request({
+    url: `/project/updateTask`,
+    method: 'post',
+    data
+  })
+}
+export function deleteTask(projectId) {
+  return request({
+    url: `/project/deleteTask/${projectId}`,
     method: 'delete'
   })
 }
