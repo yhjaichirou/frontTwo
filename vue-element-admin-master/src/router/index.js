@@ -74,53 +74,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+     hidden: true,
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/permission',
-    component: Layout,
-    redirect: '/permission/page',
-    alwaysShow: true, // will always show the root menu
-    name: 'Permission',
-    meta: {
-      title: 'Permission',
-      icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
-    },
-    children: [
-      {
-        path: '/permission/page',
-        component: () => import('@/views/permission/page'),
-        name: 'PagePermission',
-        meta: {
-          title: 'Page Permission',
-          roles: [1] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: '/permission/directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: 'Directive Permission'
-          // if do not set roles, means: this page does not require permission
-        }
-      },
-      {
-        path: '/permission/role',
-        component: () => import('@/views/permission/role'),
-        name: 'RolePermission',
-        meta: {
-          title: 'Role Permission',
-          roles: [1]
-        }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   }
