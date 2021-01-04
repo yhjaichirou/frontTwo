@@ -1,72 +1,200 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="活动名称">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-      <el-form-item label="活动区域">
-        <el-select v-model="form.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="活动时间">
-        <el-col :span="11">
-          <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-        </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
-          <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="即时配送">
-        <el-switch v-model="form.delivery"></el-switch>
-      </el-form-item>
-      <el-form-item label="活动性质">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-          <el-checkbox label="地推活动" name="type"></el-checkbox>
-          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="特殊资源">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="线上品牌商赞助"></el-radio>
-          <el-radio label="线下场地免费"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="活动形式">
-        <el-input type="textarea" v-model="form.desc"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        <el-button>取消</el-button>
-      </el-form-item>
+    <el-form :inline="true" :model="form" class="demo-form-inline">
+      <div class="manager-card">
+        <div class="manager-header">
+          <div class="manager-bluer" />
+          <div>预警配置</div>
+        </div>
+
+        <div class="manager-card-content">
+          <el-form-item label="预警期限">
+            <el-col :span="12">
+              <el-input v-model="form.yjDay" tyle="number" :value="yjDay" placeholder="请填写项目临近预警天数" />
+            </el-col>
+            <el-col class="line" :span="2"><span>天</span></el-col>
+
+          </el-form-item>
+
+          <el-form-item label="通知时间">
+            <el-col :span="24">
+              <el-time-picker v-model="form.yjTime" placeholder="选择时间" style="width: 100%;" />
+            </el-col>
+          </el-form-item>
+
+          <el-form-item label="预警类型">
+            <el-checkbox-group v-model="form.yjType">
+              <el-checkbox label="项目预警" name="1" />
+              <el-checkbox label="任务预警" name="2" />
+              <el-checkbox label="逾期预警" name="3" />
+            </el-checkbox-group>
+          </el-form-item>
+        </div>
+      </div>
+
+      <div class="manager-card">
+        <div class="manager-header">
+          <div class="manager-bluer" />
+          <div>短信配置</div>
+        </div>
+
+        <div class="manager-card-content">
+          <el-form-item label="开通短信">
+            <el-switch v-model="form.mesMessage" />
+          </el-form-item>
+          <el-form-item label="短信默认通知人员">
+            <el-select v-model="form.defaultPel" placeholder="请选择">
+              <el-option label="系统管理一" value="shanghai" />
+              <el-option label="系统管理二" value="beijing" />
+            </el-select>
+          </el-form-item>
+
+        </div>
+      </div>
+
+      <div class="manager-card">
+        <div class="manager-header">
+          <div class="manager-bluer" />
+          <div>单位配置</div>
+        </div>
+
+        <div class="manager-card-content">
+          <el-form-item label="单位人员上限">
+            <el-col :span="20">
+              <el-input v-model="form.dwMaxPel" tyle="number" :value="yjDay" placeholder="请输入单位最多人数" />
+            </el-col>
+            <el-col class="line" :span="2"><span>人</span></el-col>
+          </el-form-item>
+        </div>
+      </div>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onSubmit()">保 存</el-button>
+    </div>
   </div>
+
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        }
-      }
-    },
-    methods: {
-      onSubmit() {
-        console.log('submit!');
+import { getConfig, updateConfig } from '@/api/config'
+export default {
+  data() {
+    return {
+      yjDay: 30,
+      form: {
+        yjDay: 30,
+        yjTime: '',
+        yjType: [],
+        mesMessage: false,
+        defaultPel: '',
+        dwMaxPel: ''
       }
     }
+  },
+  created() {
+    this.orgId = this.$store.getters.orgId
+    this.getConfig()
+  },
+  methods: {
+    async getConfig() {
+      const res = await getConfig()
+      if (res.data != null) {
+        this.form = res.data
+      }
+    },
+    async onSubmit() {
+      const res = await updateConfig(this.form)
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
+    }
   }
+}
 </script>
+<style lang="scss" scoped>
+  .app-container {
+
+    .manager-card {
+      padding: 10px 10px;
+      color: #666;
+      background-color: white;
+
+      .manager-header {
+        display: flex;
+
+        .manager-bluer {
+          width: 3px;
+          background-color: #4e8afa;
+          margin-right: 5px;
+        }
+      }
+
+      .manager-card-content {
+        padding: 10px 20px 20px;
+
+        .d-flex {
+          display: flex !important;
+
+          .project-basic-property {
+            display: flex;
+            margin-left: 0;
+            margin-bottom: 25px;
+            align-items: center;
+
+            .project-property-item-name {
+              color: #9c9c9c;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              margin-right: 10px;
+            }
+
+            .circle {
+              border-radius: 50%;
+              vertical-align: middle;
+              background: #aaa;
+              height: 18px;
+              width: 18px;
+              display: inline-block;
+            }
+
+            .circle-ing {
+              background-color: #71cd33;
+            }
+
+            .circle-success {
+              background-color: #30B08F;
+            }
+
+            .circle-error {
+              background-color: brown;
+            }
+          }
+
+          .project-basic-property-border {
+            margin-left: 26px;
+            margin-right: 26px;
+            border-right: solid 1px #eee;
+          }
+        }
+
+        .project-basic-property-line {
+          display: block;
+          margin: 30px 0;
+          border-bottom: solid 1px #f3f3f3;
+        }
+      }
+
+    }
+  }
+</style>
+<style>
+.el-form-item{
+          margin-bottom: 0px !important;
+        }
+        .el-form .el-col{
+            min-height: 22px !important;
+            margin-left: 10px !important;
+        }
+</style>
