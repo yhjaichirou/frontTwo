@@ -18,7 +18,7 @@
 
           <el-form-item label="通知时间">
             <el-col :span="24">
-              <el-time-picker v-model="form.yjTime" placeholder="选择时间" style="width: 100%;" />
+              <el-time-picker v-model="form.yjTime" placeholder="选择时间" value-format="HH:mm:ss" style="width: 100%;" />
             </el-col>
           </el-form-item>
 
@@ -43,9 +43,8 @@
             <el-switch v-model="form.mesMessage" />
           </el-form-item>
           <el-form-item label="短信默认通知人员">
-            <el-select v-model="form.defaultPel" placeholder="请选择">
-              <el-option label="系统管理一" value="shanghai" />
-              <el-option label="系统管理二" value="beijing" />
+            <el-select v-model="form.mesDefaultPel" multiple placeholder="请选择">
+              <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
 
@@ -76,17 +75,19 @@
 </template>
 
 <script>
-import { getConfig, updateConfig } from '@/api/config'
+import { getConfig, updateConfig, getUserList } from '@/api/config'
 export default {
   data() {
     return {
       yjDay: 30,
+      userList: [],
       form: {
+        id: '',
         yjDay: 30,
         yjTime: '',
         yjType: [],
         mesMessage: false,
-        defaultPel: '',
+        mesdefaultPel: '',
         dwMaxPel: ''
       }
     }
@@ -100,7 +101,11 @@ export default {
       const res = await getConfig()
       if (res.data != null) {
         this.form = res.data
+        this.form.mesMessage = res.data.mesMessage === 1
       }
+      const res2 = await getUserList()
+      this.userList = res2.data
+      console.log(this.userList)
     },
     async onSubmit() {
       const res = await updateConfig(this.form)
@@ -190,11 +195,5 @@ export default {
   }
 </style>
 <style>
-.el-form-item{
-          margin-bottom: 0px !important;
-        }
-        .el-form .el-col{
-            min-height: 22px !important;
-            margin-left: 10px !important;
-        }
+
 </style>

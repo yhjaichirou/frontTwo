@@ -13,3 +13,10 @@ export function updateConfig(data) {
     data
   })
 }
+
+export function getUserList() {
+  return request({
+    url: '/config/getUserList',
+    method: 'get'
+  })
+}

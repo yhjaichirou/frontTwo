@@ -358,12 +358,11 @@
 
               <el-card class="box-card">
                 <el-collapse v-model="activeNamesTask">
-                  <el-collapse-item v-for="item in taskList" :key="item.id" :title="item.name" :name="item.id" >
+                  <el-collapse-item v-for="item in taskList" :key="item.id" :title="item.name" :name="item.id">
                     <yhj-task-table :task-list="item.value" @updateTask="updateTask" />
                   </el-collapse-item>
                 </el-collapse>
               </el-card>
-
 
               <!-- <my-table-tasks task-list="tableData" /> -->
 
@@ -375,8 +374,13 @@
         <el-tabs v-else v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
             <div style="padding: 10px;">
-              <panel-group @handleSetLineChartData="handleSetLineChartData" :allProCount="allMsg.allProject"
-               :allComProCount="allMsg.allComProject" :allInvest="allMsg.allInvest" :allPeople="allMsg.allPeople" />
+              <panel-group
+                :all-pro-count="allMsg.allProject"
+                :all-com-pro-count="allMsg.allComProject"
+                :all-invest="allMsg.allInvest"
+                :all-people="allMsg.allPeople"
+                @handleSetLineChartData="handleSetLineChartData"
+              />
             </div>
 
           </el-tab-pane>
@@ -406,7 +410,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="产业类型" prop="industryCategory" :label-width="formLabelWidth">
                 <el-select v-model="addform.industryCategory" placeholder="请选择产业类型">
-                  <el-option v-for="(item,index) in categoryList"  :key="item.id" :label="item.categoryName" :value="index" />
+                  <el-option v-for="(item,index) in categoryList" :key="item.id" :label="item.categoryName" :value="index" />
                 </el-select>
               </el-form-item>
             </div>
@@ -415,7 +419,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="项目成熟度" prop="maturity" :label-width="formLabelWidth">
                 <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
-                  <el-option v-for="item in maturity"  :key="item.id" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in maturity" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -480,7 +484,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="牵头单位" prop="leadenter" :label-width="formLabelWidth">
-                <el-select v-model="addform.leadenter" placeholder="请选择可见组织范围">
+                <el-select v-model="addform.leadenter" placeholder="请选择牵头单位">
                   <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -539,7 +543,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="预计完成时间" prop="expectedDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addform.expectedDate" type="date" placeholder="选择日期" style="width: 100%;" />
+                <el-date-picker v-model="addform.expectedDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 100%;" />
               </el-form-item>
             </div>
           </el-col>
@@ -794,7 +798,7 @@ export default {
       searchContent: '',
       searchStatus: '0',
 
-      allMsg:{},
+      allMsg: {},
 
       dialogType: '',
       dialogAddFormVisible: false,
@@ -893,7 +897,7 @@ export default {
           trigger: 'change'
         }],
         expectedDate: [{
-          type: 'date',
+          // type: 'date',
           required: true,
           message: '请选择预计完成事件时间',
           trigger: 'change'
@@ -927,7 +931,7 @@ export default {
       formLabelWidth: '90px',
 
       // 任务添加  获取前置任务
-      taskTypeStatus:10,
+      taskTypeStatus: 10,
       preTaskList: [],
       executorList: [],
       priorityList: [{
@@ -1042,11 +1046,11 @@ export default {
       this.projectList = res.data
     },
     handleClick(tab, event) {
-      if(tab.index === '0'){
+      if (tab.index === '0') {
 
-      }else if(tab.index === '1'){
+      } else if (tab.index === '1') {
         this.getAllTaskList()
-      }else if(tab.index === '2'){
+      } else if (tab.index === '2') {
 
       }
       console.log(tab, event)
@@ -1099,9 +1103,16 @@ export default {
       this.joiners = res.data.joiners
       // 编辑获取
       if (id != null) {
-        const res = await getProject(id)
-        this.addform = res.data
+        this.dialogType = 'edit'
+        const res2 = await getProject(id)
+        this.addform = res2.data
         this.addform.id = id
+
+        this.addform.visibleRange = res2.data.visibleRange != null ? JSON.parse(res2.data.visibleRange) : ''
+        const res3 = await getJoiners(this.addform.visibleRange)
+        this.joiners = res3.data
+        this.addform.joiners = this.addform.joiners != null ? JSON.parse(this.addform.joiners) : ''
+        this.addform.stage = this.addform.stage != null ? JSON.parse(this.addform.stage) : ''
       } else {
         this.addform = defaultProject
       }
@@ -1156,7 +1167,7 @@ export default {
     async addProject(formName) {
       const isEdit = this.dialogType === 'edit'
       var isGo = false
-      console.log(formName)
+
       this.$refs[formName].validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -1170,13 +1181,8 @@ export default {
       if (isGo) {
         if (isEdit) {
           this.addform.id = this.thisProject.id
-          await updateProject(this.thisProject)
-          for (let index = 0; index < this.projectList.length; index++) {
-            if (this.projectList[index].id === this.thisProject.id) {
-              this.projectList.splice(index, 1, Object.assign({}, this.thisProject))
-              break
-            }
-          }
+          const dd = await updateProject(this.addform)
+          this.thisProject = dd
         } else {
           this.addform.orgId = this.orgId
           const {
@@ -1201,15 +1207,15 @@ export default {
     },
 
     // 任务
-    async getAllTaskList(){
-      const res = await getAllTaskList(this.thisProject.id,10)
+    async getAllTaskList() {
+      const res = await getAllTaskList(this.thisProject.id, 10)
       this.taskList = res.data.list
       this.activeNamesTask = res.data.activeNamesTask
       console.log(this.activeNamesTask)
     },
-    async getTaskSearch(typeId){
-      this.taskTypeStatus = typeId;
-      const res = await getAllTaskList(this.thisProject.id,typeId)
+    async getTaskSearch(typeId) {
+      this.taskTypeStatus = typeId
+      const res = await getAllTaskList(this.thisProject.id, typeId)
       this.taskList = res.data.list
       this.activeNamesTask = res.data.activeNamesTask
       console.log(this.activeNamesTask)
@@ -1271,12 +1277,12 @@ export default {
         if (isEdit) {
           await updateTask(this.addTaskObj)
           for (let index = 0; index < this.taskList.length; index++) {
-              console.log(this.taskList)
-              console.log(this.taskList[index].value)
-            for(let index2 = 0; index2 < this.taskList[index].value.length; index++){
-                console.log(this.taskList[index].value.[index2])
+            console.log(this.taskList)
+            console.log(this.taskList[index].value)
+            for (let index2 = 0; index2 < this.taskList[index].value.length; index++) {
+              console.log(this.taskList[index].value.[index2])
               if (this.taskList[index].value.[index2].id === this.addTaskObj.id) {
-               this.taskList[index].value.[index2].splice(index2, 1, Object.assign({}, this.addTaskObj))
+                this.taskList[index].value.[index2].splice(index2, 1, Object.assign({}, this.addTaskObj))
                 break
               }
             }
@@ -1288,8 +1294,8 @@ export default {
             data
           } = await addTask(this.addTaskObj)
           this.addTaskObj.id = data
-          for(var stageTask of this.taskList){
-            if( this.addTaskObj.stageId === stageTask.id){
+          for (var stageTask of this.taskList) {
+            if (this.addTaskObj.stageId === stageTask.id) {
               stageTask.value.push(this.addTaskObj)
             }
           }
