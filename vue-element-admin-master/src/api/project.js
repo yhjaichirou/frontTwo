@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 
-
+export function getTzqkList(orgId,projectId){
+  return request({
+    url: `/project/getTzqkList/${projectId}`,
+    method: 'get'
+  })
+}
 export function getAllMsg(orgId) {
   return request({
     url: `/project/getAllMsg/${orgId}`,
