@@ -1,12 +1,17 @@
 <template>
   <div v-if="showContainer" class="app-container">
     <div class="container-header">
-      <el-input style="width: 20%;" placeholder="请输入内容" v-model="searchContent" @input="searchProject">
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+      <el-input v-model="searchContent" style="width: 20%;" placeholder="请输入内容" @input="searchProject">
+        <i slot="prefix" class="el-input__icon el-icon-search" />
       </el-input>
 
-      <el-radio-group class="yhj-el-radio-group" v-model="searchStatus" style="margin-bottom: 30px;" @change="searchProject"
-        placeholder="搜索项目">
+      <el-radio-group
+        v-model="searchStatus"
+        class="yhj-el-radio-group"
+        style="margin-bottom: 30px;"
+        placeholder="搜索项目"
+        @change="searchProject"
+      >
         <el-radio-button label="0" value="0">全部任务</el-radio-button>
         <el-radio-button label="1" value="1">我负责的任务</el-radio-button>
         <el-radio-button label="2" value="2">进行中的任务</el-radio-button>
@@ -15,23 +20,23 @@
     </div>
     <div class="project-body">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="item in projectList">
+        <el-col v-for="item in projectList" :span="6">
           <el-card :body-style="{ padding: '0px' }">
             <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
             <div class="yhj-task-card-text">
-              <span>{{item.name}}</span>
+              <span>{{ item.name }}</span>
               <div class="yhj-card-row">
-                <span class="yhj-card-span">项目负责人</span><span class="yhj-card-span-v">{{item.proManagerName}}</span>
+                <span class="yhj-card-span">项目负责人</span><span class="yhj-card-span-v">{{ item.proManagerName }}</span>
               </div>
               <div class="yhj-card-row">
-                <span class="yhj-card-span">项目开始时间</span><span class="yhj-card-span-v">{{item.startDateStr}}</span>
+                <span class="yhj-card-span">项目开始时间</span><span class="yhj-card-span-v">{{ item.startDateStr }}</span>
               </div>
               <div class="yhj-card-row">
                 <span class="yhj-card-span">项目状态</span><span class="yhj-card-span-v">
-                  <i :class="item.status==2?statusColor2:item.status==3?statusColor3:item.status==4?statusColor4:item.status==7?statusColor7:statusColor1"></i>{{item.proManagerName}}</span>
+                  <i :class="item.status==2?statusColor2:item.status==3?statusColor3:item.status==4?statusColor4:item.status==7?statusColor7:statusColor1" />{{ item.proManagerName }}</span>
               </div>
               <div class="bottom clearfix">
-                <time class="time"></time>
+                <time class="time" />
                 <el-button type="text" class="button">查看报表</el-button>
                 <el-button type="text" class="button">
                   <svg-icon icon-class="browse" @click="openThisTask(item.id)" />
@@ -42,13 +47,13 @@
           </el-card>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple"></div>
+          <div class="grid-content bg-purple" />
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple"></div>
+          <div class="grid-content bg-purple" />
         </el-col>
         <el-col :span="6">
-          <div class="grid-content bg-purple"></div>
+          <div class="grid-content bg-purple" />
         </el-col>
       </el-row>
 
@@ -56,130 +61,127 @@
   </div>
   <div v-else class="app-container">
     <div class="container-header">
-      <el-page-header @back="goBack" content="详情页面">
-      </el-page-header>
+      <el-page-header content="详情页面" @back="goBack" />
     </div>
     <div class="project-body padding0">
-      <el-tabs type="border-card" class="width100" v-model="activeFirst" @tab-click="handleFirstClick">
+      <el-tabs v-model="activeFirst" type="border-card" class="width100" @tab-click="handleFirstClick">
         <el-tab-pane name="1">
-          <span slot="label"><i class="el-icon-date"></i>项目概况</span>
+          <span slot="label"><i class="el-icon-date" />项目概况</span>
           <el-tabs v-model="activeSecond" @tab-click="handleSecondClick">
             <el-tab-pane label="信息概况" name="1">
               <div class="tabs-second-container">
 
-                  <div class="manager-card-content">
-                    <div class="d-flex">
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目名称:</span>
-                        {{ project.name }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">产业类型:</span>
-                        {{ project.categoryName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
-                        {{ project.startDateStr }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
-                        {{ project.completeDateStr }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property align-items-start">
-                        <span class="project-property-item-name project-basic-property-item-name">项目编码:</span><span class="text-muted">XG-nmg123123</span>
-                      </div>
+                <div class="manager-card-content">
+                  <div class="d-flex">
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目名称:</span>
+                      {{ project.name }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">产业类型:</span>
+                      {{ project.categoryName }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
+                      {{ project.startDateStr }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
+                      {{ project.completeDateStr }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property align-items-start">
+                      <span class="project-property-item-name project-basic-property-item-name">项目编码:</span><span class="text-muted">XG-nmg123123</span>
+                    </div>
+                  </div>
+
+                  <div class="d-flex">
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管部门:</span>
+                      {{ project.orgName }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管负责人:</span>
+                      {{ project.proManagerName }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管人联系电话:</span>
+                      {{ project.proManagerMobile }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property align-items-start">
+                      <span class="project-property-item-name project-basic-property-item-name project-basic-property-item-name">项目成熟度:</span>
+                      {{ project.maturityStr }}
                     </div>
 
-                    <div class="d-flex">
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管部门:</span>
-                        {{ project.orgName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管负责人:</span>
-                        {{ project.proManagerName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">主管人联系电话:</span>
-                        {{ project.proManagerMobile }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property align-items-start">
-                        <span class="project-property-item-name project-basic-property-item-name project-basic-property-item-name">项目成熟度:</span>
-                        {{ project.maturityStr }}
-                      </div>
+                  </div>
 
+                  <div class="d-flex">
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
+                      {{ project.leadenterName }}
                     </div>
-
-                    <div class="d-flex">
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
-                        {{ project.leadenterName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
-                        {{ project.leaderName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
-                        {{ project.dockingDateStr }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
-                        {{ project.coordinateName }}
-                      </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
+                      {{ project.leaderName }}
                     </div>
-
-                    <div class="d-flex">
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
-                        {{ project.enterManagerName }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
-                        {{ project.enterManagerMobile }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目建设阶段:</span>
-                        {{ project.stage=="1"?"无所属":project.stage=="2"?"立项阶段":project.stage=="3"?"执行阶段":"完成阶段" }}
-                      </div>
-                      <div class="project-basic-property project-basic-property-border" />
-                      <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">预计完成时间:</span>
-                        {{ project.expectedDateStr }}
-                      </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
+                      {{ project.dockingDateStr }}
                     </div>
-
-                    <div class="d-flex">
-                      <div class="project-basic-property align-items-start">
-                        <span class="project-property-item-name project-basic-property-item-name">项目描述:</span>
-                        {{ project.content }}
-                      </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
+                      {{ project.coordinateName }}
                     </div>
+                  </div>
 
-                    <div class="d-flex">
-                      <div class="project-basic-property align-items-start" style="display:flex;align-items: center;">
-                        <span class="project-property-item-name project-basic-property-item-name">当前状态:</span>
-                        <div class="flex-se1">
-                          <span class="circle" :class="projectStatusClass" />
-                          <span class="ml-1">{{ project.status==1?"进行中":project.status==2?"已完成":project.status==3?"逾期":project.status==7?"新建":project.status==8?"提交审批中":project.status==9?"审批失败":"审批通过" }}</span>
-                          <el-button type="primary" size="mini" round @click="clickUpdateStatus">更新</el-button>
-                        </div>
+                  <div class="d-flex">
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
+                      {{ project.enterManagerName }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
+                      {{ project.enterManagerMobile }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目建设阶段:</span>
+                      {{ project.stage=="1"?"无所属":project.stage=="2"?"立项阶段":project.stage=="3"?"执行阶段":"完成阶段" }}
+                    </div>
+                    <div class="project-basic-property project-basic-property-border" />
+                    <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">预计完成时间:</span>
+                      {{ project.expectedDateStr }}
+                    </div>
+                  </div>
+
+                  <div class="d-flex">
+                    <div class="project-basic-property align-items-start">
+                      <span class="project-property-item-name project-basic-property-item-name">项目描述:</span>
+                      {{ project.content }}
+                    </div>
+                  </div>
+
+                  <div class="d-flex">
+                    <div class="project-basic-property align-items-start" style="display:flex;align-items: center;">
+                      <span class="project-property-item-name project-basic-property-item-name">当前状态:</span>
+                      <div class="flex-se1">
+                        <span class="circle" :class="projectStatusClass" />
+                        <span class="ml-1">{{ project.status==1?"进行中":project.status==2?"已完成":project.status==3?"逾期":project.status==7?"新建":project.status==8?"提交审批中":project.status==9?"审批失败":"审批通过" }}</span>
                       </div>
                     </div>
                   </div>
+                </div>
 
               </div>
             </el-tab-pane>
             <el-tab-pane label="审核备" name="2">
               <div class="tabs-second-container">
-                <div v-for="item in shbList"  class="el-steps-list">
-                  <div class="el-steps-list-title">{{item.name}}</div>
+                <div v-for="item in shbList" class="el-steps-list">
+                  <div class="el-steps-list-title">{{ item.name }}</div>
                   <div class="el-steps-list-con">
-                    <el-steps :active="item.index" finish-status="success"  simple>
-                      <el-step :title="item.setp1"></el-step>
-                      <el-step :title="item.setp2"></el-step>
-                      <el-step :title="item.setp3"></el-step>
+                    <el-steps :active="item.index" finish-status="success" simple>
+                      <el-step :title="item.setp1" />
+                      <el-step :title="item.setp2" />
+                      <el-step :title="item.setp3" />
                     </el-steps>
                   </div>
                 </div>
-
 
               </div>
             </el-tab-pane>
@@ -231,7 +233,7 @@
         </el-tab-pane>
 
         <el-tab-pane name="3">
-          <span slot="label"><i class="el-icon-date"></i>我的任务</span>
+          <span slot="label"><i class="el-icon-date" />我的任务</span>
           <el-table :data="taskMyList" style="width: 100%;margin-top:30px;" border>
             <el-table-column align="center" label="ID" width="60">
               <template slot-scope="scope">
@@ -263,12 +265,12 @@
                 {{ scope.row.endDateStr }}
               </template>
             </el-table-column>
-            <el-table-column align="header-center" label="状态" width="220">
+            <el-table-column fixed="right" align="header-center" label="状态" width="150">
               <template slot-scope="scope">
                 {{ scope.row.statusStr }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column fixed="right" align="center" label="操作">
               <template slot-scope="scope">
                 <el-button type="primary" size="small" @click="handleOpen(scope)">执行</el-button>
               </template>
@@ -277,113 +279,336 @@
         </el-tab-pane>
       </el-tabs>
 
-
-
     </div>
+
+    <el-dialog :visible.sync="zxdialogVisible" title="执行任务">
+      <el-form :model="currtask" label-width="80px" label-position="left">
+        <div class="list-li">
+          <div class="list-li-title">
+            {{ currtask.title }}
+          </div>
+        </div>
+        <div class="list-li">
+          <div class="list-li-row">
+            <div class="list-li-row-icon" :style="{color: currtask.status===1?'brown':'#27d8bc'}">
+              <i class="el-icon-remove" />
+            </div>
+            <div class="list-li-row-right">
+              <div class="list-li-row-name">{{ currtask.statusStr }}</div>
+              <div class="list-li-row-status">当前状态</div>
+            </div>
+          </div>
+          <div class="list-li-row">
+            <div class="list-li-row-icon">
+              <div class="avatar-default" style="background-color: rgb(132, 225, 126);"><span>{{ currtask.executorName ===''?'': currtask.executorName.slice(1) }}</span></div>
+            </div>
+            <div class="list-li-row-right">
+              <div class="list-li-row-name">{{ currtask.executorName }}</div>
+              <div class="list-li-row-status">负责人</div>
+            </div>
+          </div>
+          <div class="list-li-row">
+            <div class="list-li-row-icon">
+              <i class="el-icon-remove" />
+            </div>
+            <div class="list-li-row-right">
+              <div class="list-li-row-name">{{ currtask.startDateStr }}</div>
+              <div class="list-li-row-status">开始日期</div>
+            </div>
+          </div>
+          <div class="list-li-row">
+            <div class="list-li-row-icon">
+              <i class="el-icon-remove" />
+            </div>
+            <div class="list-li-row-right">
+              <div class="list-li-row-name">{{ currtask.endDateStr }}</div>
+              <div class="list-li-row-status">结束日期</div>
+            </div>
+          </div>
+        </div>
+        <div class="list-li">
+          <el-tabs v-model="zxActiveName" @tab-click="zxHandleClick">
+            <el-tab-pane name="1">
+              <span slot="label"><i class="el-icon-date" /> 任务信息</span>
+              <div class="list-li-msg-k">
+                <div class="list-li-msg">
+                  <div class="list-li-msg-title">项目名称：</div>
+                  <div class="list-li-msg-con">{{ currtask.projectName }}</div>
+                </div>
+                <div class="list-li-msg">
+                  <div class="list-li-msg-title">任务类型：</div>
+                  <div class="list-li-msg-con">{{ currtask.shb==null || currtask.shb==0 ? "非审核备": currtask.shbName }}</div>
+                </div>
+                <div class="list-li-msg">
+                  <div class="list-li-msg-title">所属阶段：</div>
+                  <div class="list-li-msg-con">{{ currtask.stageStr }}</div>
+                </div>
+              </div>
+              <div class="list-li-msg-k">
+                <div class="list-li-msg">
+                  <div class="list-li-msg-title">任务介绍：</div>
+                  <div class="list-li-msg-con">{{ currtask.remark }}</div>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane name="2">
+              <span slot="label"><i class="el-icon-c-scale-to-original" /> 依赖关系</span>
+            </el-tab-pane>
+            <el-tab-pane name="3">
+              <span slot="label"><i class="el-icon-wallet" /> 附件</span>
+              <div class="list-li-body">
+                <div class="head d-flex">
+                  <div class="text-desc">共 <span class="text-body">0</span> 个附件</div>
+                  <!-- <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :file-list="fileList"
+                    :auto-upload="false"
+                  >
+                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                    <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                  </el-upload> -->
+                  <div class="ml-auto"><a href="javascript:;" @click="addFj(currtask.id)"><i class="el-icon-plus" />
+                                         添加附件 </a>
+                    <input id="openfj" ref="openfj" type="file" style="display:none;" @change="getFile(currtask.id)">
+                  </div>
+                </div>
+                <dl class="list-li-fj-li">
+                  <div v-if="fileInfo===''">
+                    <div class="fj-nofile">
+                      <svg-icon class="fj-svg" icon-class="nofile" />
+                      <div style="margin-top: 10px;">暂无附件</div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <dd v-for="(fileInfo,index) in currtask.fileInfos" :key="fileInfo.id" class="item d-flex ng-star-inserted" style="justify-content: left;">
+                      <div class="thumb"><svg-icon class="fj-svg" icon-class="y-word" /></div>
+                      <div class="content">
+                        <div class="title">{{ fileInfo.fileName }}</div>
+                        <div class="meta">
+                          <span>{{ fileInfo.fileSize }}</span><span>来自 <span>{{ fileInfo.userName }}</span></span><span>|</span><span>{{ fileInfo.date }}</span>
+                        </div>
+                      </div>
+                      <div class="operation">
+                        <a class="mr-3 btn btn-icon" :href="fileInfo.url ==''?'javascript:;':fileInfo.url"><i class="el-icon-download" /></a>
+                        <a class="mr-3 btn btn-icon" href="javascript:;" @click="fileDelete(index,currtask.id,fileInfo.id)"><i class="el-icon-delete" /></a>
+                      </div>
+                    </dd>
+                  </div>
+
+                </dl>
+              </div>
+
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+
+        </el-tab-pane>
+        </el-tabs>
+      </el-form>
+
+      <div style="text-align:right;">
+        <el-button type="danger" @click="zxdialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmTask">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import {
-    getAllProject,
-    getProject,
-    getProjectAboutSHB
-  } from '@/api/project'
-  import {
-    getAllTasksOfProject,
-    getAllTaskMyList
-  } from '@/api/task'
-  export default {
-    data() {
-      return {
-        orgId:'',
-        orgName:'',
-        showContainer: true,
-        tabPosition: "0",
-        searchContent: "",
-        searchStatus: '0',
-        projectList: [],
-        project: {},
-        taskList: [],
-        taskMyList: [],
-        statusColor1: 'statusColor1 yhj-i',
-        statusColor2: 'el-icon-circle-check',
-        statusColor3: 'statusColor3 yhj-i',
-        statusColor4: 'statusColor4 yhj-i',
-        statusColor7: 'statusColor7 yhj-i',
+import {
+  dateFormat, dateFormatZHymdhm, renderFileSize
+} from '@/utils/dateutil'
+import {
+  getAllProject,
+  getProject,
+  getProjectAboutSHB
+} from '@/api/project'
+import {
+  getAllTasksOfProject,
+  getAllTaskMyList,
+  getTask,
+  fileDelete
+} from '@/api/task'
+const defaultTask = {
+  id: '',
+  title: '',
+  annex: '',
+  code: '',
+  comDate: '',
+  comDateStr: '',
+  createDate: '',
+  endDate: '',
+  endDateStr: '', executOrg: '',
+  executOrgName: '', executor: '', executorMobile: '', executorName: '',
+  fileInfos: [], remark: '', shb: '', shbName: '', stageId: '', stageStr: '', status: '',
+  number: '', orgId: '', orgName: '', preTasks: '', priority: '', priorityStr: '', proId: '', projectName: ''
+}
+export default {
+  data() {
+    return {
+      orgId: '',
+      orgName: '',
+      showContainer: true,
+      tabPosition: '0',
+      searchContent: '',
+      searchStatus: '0',
+      projectList: [],
+      project: {},
+      projectStatusClass: '',
+      taskList: [],
+      taskMyList: [],
+      statusColor1: 'statusColor1 yhj-i',
+      statusColor2: 'el-icon-circle-check',
+      statusColor3: 'statusColor3 yhj-i',
+      statusColor4: 'statusColor4 yhj-i',
+      statusColor7: 'statusColor7 yhj-i',
 
-        activeFirst: '1',
-        activeSecond: '1',
-        shbList: []
-      }
-    },
-    computed: {
-      routesData() {
-        return this.routes
-      }
-    },
-    created() {
-      this.orgId = this.$store.getters.orgId
-      this.orgName = this.$store.getters.orgName
-      this.getAllProject()
-    },
-    methods: {
-      async openThisTask(projectId) {
-        // this.$router.push("/project/taskDetail")
-        const res = await getProject(projectId)
-        this.project = res.data
-        this.showContainer = false
-        // this.$router.push({
-        //   path: "/project/taskDetail",
-        //   jquer:{id:1}
-        // })
-      },
-      async getAllProject() {
-        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-        this.projectList = res.data
-        console.log(this.projectList)
-      },
-      async searchProject() {
-        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-        this.projectList = res.data
-        console.log(this.projectList)
-      },
-      async getProject(id) {
-        this.currProjectIndex = id
-        const res = await getProject(id)
-        this.project = res.data
-        this.projectStatusClass = this.project.status === 1 ? 'circle-ing' : this.project.status === 2 ?
-          'circle-success' : 'circle-error'
-      },
-      goBack() {
-        this.project = {}
-        this.showContainer = true
-      },
+      activeFirst: '1',
+      activeSecond: '1',
+      shbList: [],
 
-      async handleFirstClick(tab, event){
-        if(tab.index === '1'){
-          const res = await getAllTasksOfProject(this.orgId,this.project.id)
-          this.taskList = res.data
-        }else if(tab.index === '2'){
-          console.log(tab.index)
-          const res = await getAllTaskMyList(this.orgId,this.project.id)
-          this.taskMyList = res.data
-        }
-      },
-      async handleSecondClick(tab, event){
-        if(tab.index === '1'){//审核备
-          console.log(this.project)
-          const res = await getProjectAboutSHB(this.project.id)
-          this.shbList = res.data
-        }
-      },
-
-      async handleOpen(scope){
-        const res = await operation(this.project.id,scope.row.id)
-        console.log(res)
-      }
+      zxActiveName: '1',
+      zxdialogVisible: false,
+      currtask: Object.assign({}, defaultTask),
+      fileInfo: ''
     }
+  },
+  computed: {
+    routesData() {
+      return this.routes
+    }
+  },
+  created() {
+    this.orgId = this.$store.getters.orgId
+    this.orgName = this.$store.getters.orgName
+    this.getAllProject()
+  },
+  methods: {
+    async openThisTask(projectId) {
+      // this.$router.push("/project/taskDetail")
+      const res = await getProject(projectId)
+      this.project = res.data
+      this.showContainer = false
+      // this.$router.push({
+      //   path: "/project/taskDetail",
+      //   jquer:{id:1}
+      // })
+    },
+    async getAllProject() {
+      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
+      this.projectList = res.data
+      console.log(this.projectList)
+    },
+    async searchProject() {
+      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
+      this.projectList = res.data
+      console.log(this.projectList)
+    },
+    async getProject(id) {
+      this.currProjectIndex = id
+      const res = await getProject(id)
+      this.project = res.data
+      this.projectStatusClass = this.project.status === 1 ? 'circle-ing' : this.project.status === 2
+        ? 'circle-success' : 'circle-error'
+    },
+    goBack() {
+      this.project = {}
+      this.showContainer = true
+    },
+
+    async handleFirstClick(tab, event) {
+      if (tab.index === '1') {
+        const res = await getAllTasksOfProject(this.orgId, this.project.id)
+        this.taskList = res.data
+      } else if (tab.index === '2') {
+        console.log(tab.index)
+        const res = await getAllTaskMyList(this.orgId, this.project.id)
+        this.taskMyList = res.data
+      }
+    },
+    async handleSecondClick(tab, event) {
+      if (tab.index === '1') { // 审核备
+        console.log(this.project)
+        const res = await getProjectAboutSHB(this.project.id)
+        this.shbList = res.data
+      }
+    },
+
+    // 执行任务
+    zxHandleClick() {
+
+    },
+    async handleOpen(scope) {
+      const res = await getTask(scope.row.id)
+      console.log(res.data)
+      this.currtask = res.data
+      this.zxdialogVisible = true
+      this.fileInfo = ''
+
+      console.log('asdasdas:', this.currtask)
+      // const res = await operation(this.project.id, scope.row.id)
+    },
+    // 上传附件
+    async addFj(currtaskId) {
+      this.$refs.openfj.dispatchEvent(new MouseEvent('click'))
+    },
+    getFile(currtaskId) {
+      var that = this
+      const inputFile = this.$refs.openfj.files[0]
+      if (inputFile) {
+        // if (inputFile.type !== 'image/jpeg' && inputFile.type !== 'image/png' && inputFile.type !== 'image/gif') {
+        //   alert('不是有效的图片文件！')
+        //   return
+        // }
+        console.log('文件：', inputFile)
+        this.fileInfo = Object.assign({}, this.fileInfo, {
+          fileName: inputFile.name,
+          fileSize: renderFileSize(inputFile.size),
+          date: dateFormatZHymdhm(new Date()),
+          userName: this.$store.getters.name,
+          userId: this.$store.getters.userId,
+          taskId: currtaskId
+          // lastModifiedDate: inputFile.lastModifiedDate.toLocaleString()
+        })
+        console.log(this.currtask)
+        this.currtask.fileInfos.push(this.fileInfo)
+        console.log(this.currtask.fileInfos)
+        return
+        // const reader = new FileReader()
+        // reader.readAsDataURL(inputFile)
+        // reader.onload = function(e) {
+        //   that.imgSrc = this.result
+        // }
+      } else {
+        return
+      }
+    },
+    async fileDelete($index, taskId, fileId) {
+      console.log($index, taskId, fileId)
+      if (fileId === undefined) { // 新加的内容
+        console.log('shanchu ')
+        this.currtask.fileInfos.splice($index, 1)
+      } else { // 服务器请求回来的附件删除
+        const res = await fileDelete(taskId, fileId)
+        this.currtask.fileInfos.splice($index, 1)
+      }
+    },
+    // 执行上传
+    async submitUpload() {
+
+    },
+    // 执行任务
+    async confirmTask() {
+
+    }
+
   }
+}
 </script>
 <style lang="scss" scoped>
   .app-container {
@@ -564,14 +789,17 @@
       /* 详情 */
       .tabs-second-container {
         padding: 15px;
-        .el-steps-list{
+
+        .el-steps-list {
           display: flex;
           justify-content: center;
           align-items: center;
-          .el-steps-list-title{
+
+          .el-steps-list-title {
             width: 120px;
           }
-          .el-steps-list-con{
+
+          .el-steps-list-con {
             width: 100%;
           }
         }
@@ -589,9 +817,140 @@
       }
 
     }
+
+    //执行弹框
+    .list-li {
+      margin-bottom: 26px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .list-li-title {
+        font-size: 24px;
+        word-wrap: break-word;
+      }
+
+      .list-li-row {
+        display: flex;
+        flex-direction: row;
+
+        .list-li-row-icon {
+          font-size: 30px;
+          width: 30px;
+          height: 30px;
+          .avatar-default{
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            line-height: 30px;
+            font-size: 12px;
+            vertical-align: middle;
+            text-align: center;
+            color: white;
+          }
+        }
+
+        .list-li-row-right {
+          display: flex;
+          flex-direction: column;
+          max-width: 100px;
+          margin-left: 10px;
+          position: relative;
+
+          .list-li-row-name {
+            font-size: 16px;
+          }
+
+          .list-li-row-status {
+            color: #aaa;
+            font-size: .75rem;
+          }
+        }
+      }
+
+      .list-li-body {
+        margin-top: 20px !important;
+
+        .d-flex {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 10px;
+          .content{
+            margin-left: 30px;
+            .title{
+              color: #333;
+            }
+            .meta{
+              margin-top: 10px;
+              span{
+                margin-right: 10px;
+              }
+            }
+          }
+          .operation{
+            margin-left: 30px;
+            .btn-icon{
+              margin-right: 20px;
+            }
+            .btn-icon:hover{
+              color: #4e8afa;
+            }
+          }
+          .ml-auto {
+            color: #4e8afa;
+
+            a:hover {
+              color: #4e8afa;
+              outline: 0;
+            }
+          }
+        }
+        .list-li-fj-li{
+          .fj-nofile{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+
+      .el-tabs {
+        color: #aaa;
+        width: 100%;
+
+        .el-tabs__item {
+          color: #aaa;
+        }
+      }
+
+      .list-li-msg-k {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+
+      .list-li-msg {
+        display: flex;
+        flex-direction: column;
+
+        .list-li-msg-title {
+          margin-bottom: 10px;
+        }
+
+        .list-li-msg-con {
+          color: #333;
+        }
+      }
+      .fj-svg{
+        width:3em;
+        height: 3em;
+      }
+
+    }//执行弹框
+
   }
-
-
 
   .time {
     font-size: 13px;
@@ -612,8 +971,6 @@
     float: right;
   }
 
-
-
   .clearfix:before,
   .clearfix:after {
     display: table;
@@ -625,6 +982,10 @@
   }
 </style>
 <style>
+  .el-dialog__header {
+    border-bottom: 1px solid #eee;
+  }
+
   .yhj-el-radio-group {
     margin: 0px !important;
   }

@@ -93,9 +93,9 @@ export function getAllTaskList(projectId,typeId) {
     method: 'get',
   })
 }
-export function getTask(projectId) {
+export function getTask(id) {
   return request({
-    url: `/project/getTask/${projectId}`,
+    url: `/project/getTask/${id}`,
     method: 'get',
   })
 }

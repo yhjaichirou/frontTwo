@@ -12,3 +12,16 @@ export function getAllTaskMyList(orgId,projectId) {
     method: 'get',
   })
 }
+export function getTask(id) {
+  return request({
+    url: `/project/getTask/${id}`,
+    method: 'get',
+  })
+}
+
+export function fileDelete(taskId,fileId) {
+  return request({
+    url: `/project/fileDelete/${taskId}/${fileId}`,
+    method: 'get',
+  })
+}
