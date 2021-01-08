@@ -327,6 +327,56 @@ export function renderFileSize(value){
     size=size.toFixed(2);
     return size+" "+unitArr[index];
 }
+export function renderFileThumb(fileName){
+    if(null==fileName||fileName==''){
+        return "unknown";
+    }
+    var subffix = fileName.substring(fileName.lastIndexOf('.') + 1);
+    const word = {
+      "name":"y-word",
+      "arr" : ["doc","docx"]
+    },excel = {
+      "name":"y-excel",
+      "arr" : ["doc","docx"]
+    },jpg = {
+      "name":"y-jpg",
+      "arr" : ["jpg","png","gif","jpeg","bmp","tif","tiff","tga","psd","exif"]
+    },mp4 = {
+      "name":"y-mp4",
+      "arr" : ["mp4","flv","rm","rmvb","mov","avi","video"]
+    },pdf = {
+      "name":"y-pdf",
+      "arr" : ["pdf"]
+    },ppt = {
+      "name":"y-ppt",
+      "arr" : ["ppt","pps","pptx"]
+    },txt = {
+      "name":"y-txt",
+      "arr" : ["txt"]
+    },zip = {
+      "name":"y-ppt",
+      "arr" : ["zip","rar","gzip"]
+    }
+    if(word.arr.indexOf(subffix)!=-1){
+      return word.name;
+    }else if(excel.arr.indexOf(subffix)!=-1){
+      return excel.name;
+    }else if(jpg.arr.indexOf(subffix)!=-1){
+      return jpg.name;
+    }else if(mp4.arr.indexOf(subffix)!=-1){
+      return mp4.name;
+    }else if(pdf.arr.indexOf(subffix)!=-1){
+      return pdf.name;
+    }else if(ppt.arr.indexOf(subffix)!=-1){
+      return ppt.name;
+    }else if(txt.arr.indexOf(subffix)!=-1){
+      return txt.name;
+    }else if(zip.arr.indexOf(subffix)!=-1){
+      return zip.name;
+    }else{
+      return "unknown";
+    }
+}
 
 
 export default {

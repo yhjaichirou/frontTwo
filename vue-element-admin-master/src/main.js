@@ -22,7 +22,7 @@ import * as filters from './filters' // global filters
 import Cookies from 'js-cookie'
 import wlGantt from 'wl-gantt'
 import "wl-gantt/lib/wl-gantt.css"
-
+import $ from "jquery"
 //每次路由跳转前
 // router.beforeEach((to, from, next) => {
 // // console.log(store.getters.token)
@@ -88,5 +88,6 @@ new Vue({
 	el: '#app',
 	router,
 	store,
+  $,
 	render: h => h(App)
 })

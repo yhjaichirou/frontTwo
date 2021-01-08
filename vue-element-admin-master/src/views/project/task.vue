@@ -359,22 +359,9 @@
               <div class="list-li-body">
                 <div class="head d-flex">
                   <div class="text-desc">共 <span class="text-body">0</span> 个附件</div>
-                  <!-- <el-upload
-                    ref="upload"
-                    class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-preview="handlePreview"
-                    :on-remove="handleRemove"
-                    :file-list="fileList"
-                    :auto-upload="false"
-                  >
-                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                    <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                  </el-upload> -->
-                  <div class="ml-auto"><a href="javascript:;" @click="addFj(currtask.id)"><i class="el-icon-plus" />
-                                         添加附件 </a>
-                    <input id="openfj" ref="openfj" type="file" style="display:none;" @change="getFile(currtask.id)">
+                  <div class="ml-auto">
+                    <a href="javascript:;" @click="addFj(currtask.id)"><i class="el-icon-plus" />添加附件 </a>
+                    <input id="openfj" ref="openfj" type="file" style="display:none;" @change="getFile($event,currtask.id)">
                   </div>
                 </div>
                 <dl class="list-li-fj-li">
@@ -385,16 +372,19 @@
                     </div>
                   </div>
                   <div v-else>
-                    <dd v-for="(fileInfo,index) in currtask.fileInfos" :key="fileInfo.id" class="item d-flex ng-star-inserted" style="justify-content: left;">
-                      <div class="thumb"><svg-icon class="fj-svg" icon-class="y-word" /></div>
-                      <div class="content">
-                        <div class="title">{{ fileInfo.fileName }}</div>
-                        <div class="meta">
-                          <span>{{ fileInfo.fileSize }}</span><span>来自 <span>{{ fileInfo.userName }}</span></span><span>|</span><span>{{ fileInfo.date }}</span>
+                    <dd v-for="(fileInfo,index) in currtask.fileInfos" :key="fileInfo.id" class="item d-flex ng-star-inserted">
+                      <div style="display: flex;">
+                        <div class="thumb"><svg-icon class="fj-svg" :icon-class="fileInfo.thumb" /></div>
+                        <div class="content">
+                          <div class="title">{{ fileInfo.fileName }}</div>
+                          <div class="meta">
+                            <span>{{ fileInfo.fileSize }}</span><span>来自 <span>{{ fileInfo.userName }}</span></span><span>|</span><span>{{ fileInfo.date }}</span>
+                          </div>
                         </div>
                       </div>
                       <div class="operation">
                         <a class="mr-3 btn btn-icon" :href="fileInfo.url ==''?'javascript:;':fileInfo.url"><i class="el-icon-download" /></a>
+                        <a class="mr-3 btn btn-icon" href="javascript:;" @click="submitUpload(index,currtask.id)"><i class="el-icon-upload2" /></a>
                         <a class="mr-3 btn btn-icon" href="javascript:;" @click="fileDelete(index,currtask.id,fileInfo.id)"><i class="el-icon-delete" /></a>
                       </div>
                     </dd>
@@ -407,13 +397,21 @@
           </el-tabs>
         </div>
 
-        </el-tab-pane>
-        </el-tabs>
+        <div class="list-li">
+          <div class="list-li-msg-k" style="width: 100%;">
+            <div class="list-li-msg" style="width: 100%;">
+              <div class="list-li-msg-title">任务记录：</div>
+              <div class="list-li-msg-con">
+                <el-input v-model="currtask.comContent" type="textarea" :rows="3" placeholder="请输入执行任务备注" />
+              </div>
+            </div>
+          </div>
+        </div>
       </el-form>
 
       <div style="text-align:right;">
-        <el-button type="danger" @click="zxdialogVisible=false">取消</el-button>
-        <el-button type="primary" @click="confirmTask">提交</el-button>
+        <el-button type="danger" size="small" @click="zxdialogVisible=false">取消</el-button>
+        <el-button type="primary" size="small" @click="confirmTask(currtask.id)">完成</el-button>
       </div>
     </el-dialog>
   </div>
@@ -421,8 +419,10 @@
 
 <script>
 import {
-  dateFormat, dateFormatZHymdhm, renderFileSize
+  dateFormatZHymdhm, renderFileSize, renderFileThumb
 } from '@/utils/dateutil'
+import $ from 'jquery'
+import request from '@/utils/request'
 import {
   getAllProject,
   getProject,
@@ -432,7 +432,8 @@ import {
   getAllTasksOfProject,
   getAllTaskMyList,
   getTask,
-  fileDelete
+  fileDelete,
+  confirmTask
 } from '@/api/task'
 const defaultTask = {
   id: '',
@@ -443,7 +444,7 @@ const defaultTask = {
   comDateStr: '',
   createDate: '',
   endDate: '',
-  endDateStr: '', executOrg: '',
+  endDateStr: '', executOrg: '', comContent: '',
   executOrgName: '', executor: '', executorMobile: '', executorName: '',
   fileInfos: [], remark: '', shb: '', shbName: '', stageId: '', stageStr: '', status: '',
   number: '', orgId: '', orgName: '', preTasks: '', priority: '', priorityStr: '', proId: '', projectName: ''
@@ -475,6 +476,7 @@ export default {
       zxActiveName: '1',
       zxdialogVisible: false,
       currtask: Object.assign({}, defaultTask),
+      currtaskIndex: '',
       fileInfo: ''
     }
   },
@@ -545,40 +547,38 @@ export default {
     },
     async handleOpen(scope) {
       const res = await getTask(scope.row.id)
-      console.log(res.data)
       this.currtask = res.data
       this.zxdialogVisible = true
       this.fileInfo = ''
-
-      console.log('asdasdas:', this.currtask)
+      this.currtaskIndex = scope.$index
       // const res = await operation(this.project.id, scope.row.id)
     },
     // 上传附件
     async addFj(currtaskId) {
       this.$refs.openfj.dispatchEvent(new MouseEvent('click'))
     },
-    getFile(currtaskId) {
-      var that = this
+    getFile($event, currtaskId) {
+      // var that = this
       const inputFile = this.$refs.openfj.files[0]
       if (inputFile) {
         // if (inputFile.type !== 'image/jpeg' && inputFile.type !== 'image/png' && inputFile.type !== 'image/gif') {
         //   alert('不是有效的图片文件！')
         //   return
         // }
-        console.log('文件：', inputFile)
         this.fileInfo = Object.assign({}, this.fileInfo, {
           fileName: inputFile.name,
           fileSize: renderFileSize(inputFile.size),
           date: dateFormatZHymdhm(new Date()),
           userName: this.$store.getters.name,
           userId: this.$store.getters.userId,
-          taskId: currtaskId
+          taskId: currtaskId,
+          thumb: renderFileThumb(inputFile.name),
+          inputFile: $event.target.files[0],
+          path: ''
           // lastModifiedDate: inputFile.lastModifiedDate.toLocaleString()
         })
-        console.log(this.currtask)
         this.currtask.fileInfos.push(this.fileInfo)
-        console.log(this.currtask.fileInfos)
-        return
+        console.log('文件对象集合：', this.currtask.fileInfos)
         // const reader = new FileReader()
         // reader.readAsDataURL(inputFile)
         // reader.onload = function(e) {
@@ -589,22 +589,100 @@ export default {
       }
     },
     async fileDelete($index, taskId, fileId) {
-      console.log($index, taskId, fileId)
       if (fileId === undefined) { // 新加的内容
-        console.log('shanchu ')
         this.currtask.fileInfos.splice($index, 1)
       } else { // 服务器请求回来的附件删除
-        const res = await fileDelete(taskId, fileId)
+        await fileDelete(taskId, fileId)
         this.currtask.fileInfos.splice($index, 1)
       }
     },
     // 执行上传
-    async submitUpload() {
-
+    submitUpload($index, taskId) {
+      var formData = new FormData()// new一个formData事件
+      formData.append('file', this.currtask.fileInfos[$index].inputFile) // 将file属性添加到formData里
+      // $.ajax({
+      //   url: 'http://localhost:9527/project/project/uploadFJ',
+      //   method: 'post',
+      //   data: formData,
+      //   async: false,
+      //   processData: false,
+      //   contentType: false,
+      //   // headers: {
+      //   //   'Content-Type': 'multipart/form-data' // 值得注意的是，这个地方一定要把请求头更改一下
+      //   // },
+      //   success: function(res) {
+      //     console.log('haha:', res)
+      //     if (res.code === 200) {
+      //       this.$message({
+      //         type: 'success',
+      //         message: '上传成功!'
+      //       })
+      //       // 更新路径
+      //       this.currtask.fileInfos[$index].path = res.data
+      //       return true
+      //     } else {
+      //       return false
+      //     }
+      //   }
+      // })
+      const res = request({
+        url: `/project/uploadFJ`,
+        method: 'post',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data' // 值得注意的是，这个地方一定要把请求头更改一下
+        }
+      })
+      console.log(res) // 使用 同步 就 等待状态： panding
+      if (res.code === 200) {
+        this.$message({
+          type: 'success',
+          message: '上传成功!'
+        })
+        // 更新路径
+        this.currtask.fileInfos[$index].path = res.data
+        return true
+      } else {
+        return false
+      }
     },
-    // 执行任务
-    async confirmTask() {
 
+    // 执行任务
+    async confirmTask(taskId) {
+      if (this.currtask.comContent === null || this.currtask.comContent === '') {
+        this.$message.error('任务记录信息不能为空！')
+        return
+      }
+      var isSubmit = true
+      for (var i = 0; i < this.currtask.fileInfos.length; i++) {
+        console.log('woceshi', this.currtask.fileInfos)
+        if (this.currtask.fileInfos[i].path === '') { // 有未上传的文件 先上传文件
+          var isSucc = this.submitUpload(i, this.currtask.id)
+          console.log(isSucc)
+          if (!isSucc) {
+            isSubmit = false
+            this.$message.error('上传失败！')
+            return
+          }
+        }
+      }
+      console.log('开始提交')
+      if (isSubmit) {
+        this.currtask.orgId = this.orgId
+        this.currtask.proId = this.project.id
+        // 由于异步原因 上传数据path 不显示
+        console.log('提交数据：', this.currtask)
+
+        const res = await confirmTask(this.currtask)
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '任务已完成!'
+          })
+          this.zxdialogVisible = false
+          this.taskMyList.splice(this.currtaskIndex, 1)
+        }
+      }
     }
 
   }
@@ -735,7 +813,6 @@ export default {
 
         .d-flex {
           display: flex !important;
-
           .project-basic-property {
             display: flex;
             margin-left: 0;
@@ -890,6 +967,7 @@ export default {
           }
           .operation{
             margin-left: 30px;
+            min-width: 102px;
             .btn-icon{
               margin-right: 20px;
             }

@@ -22,6 +22,14 @@ export function getTask(id) {
 export function fileDelete(taskId,fileId) {
   return request({
     url: `/project/fileDelete/${taskId}/${fileId}`,
-    method: 'get',
+    method: 'delete',
   })
 }
+export function confirmTask(data) {
+  return request({
+    url: `/project/confirmTask`,
+    method: 'post',
+    data
+  })
+}
+
