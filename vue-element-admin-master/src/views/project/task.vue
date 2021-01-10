@@ -64,10 +64,10 @@
       <el-page-header content="详情页面" @back="goBack" />
     </div>
     <div class="project-body padding0">
-      <el-tabs v-model="activeFirst" type="border-card" class="width100" @tab-click="handleFirstClick">
+      <el-tabs v-model="activeFirst" type="border-card" class="width100" @tab-click="tabFirstClick">
         <el-tab-pane name="1">
           <span slot="label"><i class="el-icon-date" />项目概况</span>
-          <el-tabs v-model="activeSecond" @tab-click="handleSecondClick">
+          <el-tabs v-model="activeSecond" @tab-click="tabSecondClick">
             <el-tab-pane label="信息概况" name="1">
               <div class="tabs-second-container">
 
@@ -229,6 +229,14 @@
                 {{ scope.row.statusStr }}
               </template>
             </el-table-column>
+            <el-table-column
+                  fixed="right"
+                  label="操作"
+                  width="100">
+                  <template slot-scope="scope">
+                    <el-button @click="handleTaskDetail(scope)" type="text" size="small">查看</el-button>
+                  </template>
+                </el-table-column>
           </el-table>
         </el-tab-pane>
 
@@ -290,7 +298,7 @@
         </div>
         <div class="list-li">
           <div class="list-li-row">
-            <div class="list-li-row-icon" :style="{color: currtask.status===1?'brown':'#27d8bc'}">
+            <div class="list-li-row-icon" :style="{color: currtask.status===2?'#27d8bc':'brown'}">
               <i class="el-icon-remove" />
             </div>
             <div class="list-li-row-right">
@@ -308,8 +316,8 @@
             </div>
           </div>
           <div class="list-li-row">
-            <div class="list-li-row-icon">
-              <i class="el-icon-remove" />
+            <div class="list-li-row-icon" style="color:#27d8bc;">
+              <i class="el-icon-date" />
             </div>
             <div class="list-li-row-right">
               <div class="list-li-row-name">{{ currtask.startDateStr }}</div>
@@ -317,8 +325,8 @@
             </div>
           </div>
           <div class="list-li-row">
-            <div class="list-li-row-icon">
-              <i class="el-icon-remove" />
+            <div class="list-li-row-icon" style="color:brown;">
+              <i class="el-icon-date" />
             </div>
             <div class="list-li-row-right">
               <div class="list-li-row-name">{{ currtask.endDateStr }}</div>
@@ -327,9 +335,9 @@
           </div>
         </div>
         <div class="list-li">
-          <el-tabs v-model="zxActiveName" @tab-click="zxHandleClick">
+          <el-tabs v-model="zxActiveName" @tab-click="tabZXClick">
             <el-tab-pane name="1">
-              <span slot="label"><i class="el-icon-date" /> 任务信息</span>
+              <span slot="label"><i class="el-icon-date" style="margin-right: 6px;"/> 任务信息</span>
               <div class="list-li-msg-k">
                 <div class="list-li-msg">
                   <div class="list-li-msg-title">项目名称：</div>
@@ -352,20 +360,38 @@
               </div>
             </el-tab-pane>
             <el-tab-pane name="2">
-              <span slot="label"><i class="el-icon-c-scale-to-original" /> 依赖关系</span>
+              <span slot="label"><i class="el-icon-c-scale-to-original" style="margin-right: 6px;"/>依赖关系</span>
+              <dl class="list-li-fj-li">
+                <div v-if="currtask.childTask === null || currtask.childTask.length === 0">
+                  <div class="fj-nofile">
+                    <div style="margin-top: 10px;text-align: center;">暂无子任务</div>
+                  </div>
+                </div>
+                <div v-else style="padding: 10px;border-bottom: 1px #eee solid;">
+                  <dd v-for="(child,index) in currtask.childTask" :key="child.id" class="item d-flex ng-star-inserted">
+                    <div style="display: flex;justify-content: space-between;align-items: center;">
+                      <div class="thumb"><svg-icon icon-class="childTask" style="width:2.5em;height:2.5em;"/></div>
+                      <div >{{ child.title }}</div>
+                      <div :style="{color: child.status===2?'#27d8bc':'brown'}">{{ child.statusStr }}</div>
+                      <div >{{ child.startDateStr }}</div>
+                      <div ><span>负责人: <span>{{ child.executorName }}</span></span></div>
+                    </div>
+                  </dd>
+                </div>
+              </dl>
             </el-tab-pane>
             <el-tab-pane name="3">
-              <span slot="label"><i class="el-icon-wallet" /> 附件</span>
+              <span slot="label"><i class="el-icon-wallet" style="margin-right: 6px;"/> 附件</span>
               <div class="list-li-body">
                 <div class="head d-flex">
-                  <div class="text-desc">共 <span class="text-body">0</span> 个附件</div>
-                  <div class="ml-auto">
+                  <div class="text-desc">共 <span class="text-body">{{currtask.fileInfos.length}}</span> 个附件</div>
+                  <div v-if="currtask.isEdit" class="ml-auto">
                     <a href="javascript:;" @click="addFj(currtask.id)"><i class="el-icon-plus" />添加附件 </a>
                     <input id="openfj" ref="openfj" type="file" style="display:none;" @change="getFile($event,currtask.id)">
                   </div>
                 </div>
                 <dl class="list-li-fj-li">
-                  <div v-if="fileInfo===''">
+                  <div v-if="currtask.fileInfos===null || currtask.fileInfos.length===0">
                     <div class="fj-nofile">
                       <svg-icon class="fj-svg" icon-class="nofile" />
                       <div style="margin-top: 10px;">暂无附件</div>
@@ -383,9 +409,10 @@
                         </div>
                       </div>
                       <div class="operation">
-                        <a class="mr-3 btn btn-icon" :href="fileInfo.url ==''?'javascript:;':fileInfo.url"><i class="el-icon-download" /></a>
-                        <a class="mr-3 btn btn-icon" href="javascript:;" @click="submitUpload(index,currtask.id)"><i class="el-icon-upload2" /></a>
-                        <a class="mr-3 btn btn-icon" href="javascript:;" @click="fileDelete(index,currtask.id,fileInfo.id)"><i class="el-icon-delete" /></a>
+                        <a class="mr-3 btn btn-icon" title="预览" href="javascript:;" @click="preView(fileInfo.url ==''?'javascript:;':fileInfo.url)"><i class="el-icon-view" /></a>
+                        <a class="mr-3 btn btn-icon" title="下载" :href="fileInfo.url ==''?'javascript:;':fileInfo.url"><i class="el-icon-download" /></a>
+                        <a v-if="currtask.isEdit" class="mr-3 btn btn-icon" title="上传" href="javascript:;" @click="submitUpload(index,currtask.id)"><i class="el-icon-upload2" /></a>
+                        <a v-if="currtask.isEdit" class="mr-3 btn btn-icon" title="删除" href="javascript:;" @click="fileDelete(index,currtask.id,fileInfo.id)"><i class="el-icon-delete" /></a>
                       </div>
                     </dd>
                   </div>
@@ -402,14 +429,19 @@
             <div class="list-li-msg" style="width: 100%;">
               <div class="list-li-msg-title">任务记录：</div>
               <div class="list-li-msg-con">
-                <el-input v-model="currtask.comContent" type="textarea" :rows="3" placeholder="请输入执行任务备注" />
+                <div v-if="currtask.isEdit">
+                  <el-input v-model="currtask.comContent" type="textarea" :rows="3" placeholder="请输入执行任务备注" />
+                </div>
+                <div v-else>
+                  {{ currtask.comContent }}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </el-form>
 
-      <div style="text-align:right;">
+      <div v-if="currtask.isEdit" style="text-align:right;">
         <el-button type="danger" size="small" @click="zxdialogVisible=false">取消</el-button>
         <el-button type="primary" size="small" @click="confirmTask(currtask.id)">完成</el-button>
       </div>
@@ -418,6 +450,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth'
 import {
   dateFormatZHymdhm, renderFileSize, renderFileThumb
 } from '@/utils/dateutil'
@@ -443,11 +476,12 @@ const defaultTask = {
   comDate: '',
   comDateStr: '',
   createDate: '',
-  endDate: '',
+  endDate: '',childTask:[],
   endDateStr: '', executOrg: '', comContent: '',
   executOrgName: '', executor: '', executorMobile: '', executorName: '',
   fileInfos: [], remark: '', shb: '', shbName: '', stageId: '', stageStr: '', status: '',
-  number: '', orgId: '', orgName: '', preTasks: '', priority: '', priorityStr: '', proId: '', projectName: ''
+  number: '', orgId: '', orgName: '', preTasks: '', priority: '', priorityStr: '', proId: '', projectName: '',
+  isEdit: false
 }
 export default {
   data() {
@@ -523,34 +557,43 @@ export default {
       this.showContainer = true
     },
 
-    async handleFirstClick(tab, event) {
+    async tabFirstClick(tab, event) {
       if (tab.index === '1') {
         const res = await getAllTasksOfProject(this.orgId, this.project.id)
         this.taskList = res.data
       } else if (tab.index === '2') {
-        console.log(tab.index)
         const res = await getAllTaskMyList(this.orgId, this.project.id)
         this.taskMyList = res.data
       }
     },
-    async handleSecondClick(tab, event) {
+    async tabSecondClick(tab, event) {
       if (tab.index === '1') { // 审核备
-        console.log(this.project)
         const res = await getProjectAboutSHB(this.project.id)
         this.shbList = res.data
       }
     },
 
+    async handleTaskDetail(scope){
+      const res = await getTask(scope.row.id)
+      this.currtask = res.data
+      this.currtask.isEdit = false
+      this.zxdialogVisible = true
+      this.currtaskIndex = scope.$index
+      console.log(this.currtask)
+    },
+
     // 执行任务
-    zxHandleClick() {
+    tabZXClick() {
 
     },
     async handleOpen(scope) {
       const res = await getTask(scope.row.id)
       this.currtask = res.data
+      this.currtask.isEdit = true
       this.zxdialogVisible = true
-      this.fileInfo = ''
+
       this.currtaskIndex = scope.$index
+      console.log("查看",this.currtask)
       // const res = await operation(this.project.id, scope.row.id)
     },
     // 上传附件
@@ -565,6 +608,7 @@ export default {
         //   alert('不是有效的图片文件！')
         //   return
         // }
+        this.fileInfo = ''
         this.fileInfo = Object.assign({}, this.fileInfo, {
           fileName: inputFile.name,
           fileSize: renderFileSize(inputFile.size),
@@ -600,55 +644,69 @@ export default {
     submitUpload($index, taskId) {
       var formData = new FormData()// new一个formData事件
       formData.append('file', this.currtask.fileInfos[$index].inputFile) // 将file属性添加到formData里
-      // $.ajax({
-      //   url: 'http://localhost:9527/project/project/uploadFJ',
-      //   method: 'post',
-      //   data: formData,
-      //   async: false,
-      //   processData: false,
-      //   contentType: false,
-      //   // headers: {
-      //   //   'Content-Type': 'multipart/form-data' // 值得注意的是，这个地方一定要把请求头更改一下
-      //   // },
-      //   success: function(res) {
-      //     console.log('haha:', res)
-      //     if (res.code === 200) {
-      //       this.$message({
-      //         type: 'success',
-      //         message: '上传成功!'
-      //       })
-      //       // 更新路径
-      //       this.currtask.fileInfos[$index].path = res.data
-      //       return true
-      //     } else {
-      //       return false
-      //     }
-      //   }
-      // })
-      const res = request({
-        url: `/project/uploadFJ`,
+      var that = this
+      var isUpload = false
+      $.ajax({
+        url: 'http://localhost:8886/project/project/uploadFJ',
         method: 'post',
         data: formData,
+        async: false,
+        processData: false,
+        contentType: false,
+        async: false,
         headers: {
-          'Content-Type': 'multipart/form-data' // 值得注意的是，这个地方一定要把请求头更改一下
+          'X-Token': getToken(), // 值得注意的是，这个地方一定要把请求头更改一下
+          'agentId': that.$store.getters.userId
+        },
+        success: function(res) {
+          if (res.code === 200) {
+            that.$message({
+              type: 'success',
+              message: '上传成功!'
+            })
+            // 更新路径
+            that.currtask.fileInfos[$index].path = res.data
+            isUpload = true
+          } else {
+            isUpload = false
+          }
         }
       })
-      console.log(res) // 使用 同步 就 等待状态： panding
-      if (res.code === 200) {
-        this.$message({
-          type: 'success',
-          message: '上传成功!'
-        })
-        // 更新路径
-        this.currtask.fileInfos[$index].path = res.data
-        return true
-      } else {
-        return false
-      }
+      return isUpload
+      //  无法使用框架上传  使用同步无效
+      // const res = request({
+      //   url: `/project/uploadFJ`,
+      //   method: 'post',
+      //   data: formData,
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data' // 值得注意的是，这个地方一定要把请求头更改一下
+      //   }
+      // })
+      // console.log(res) // 使用 同步 就 等待状态： panding
+      // if (res.code === 200) {
+      //   this.$message({
+      //     type: 'success',
+      //     message: '上传成功!'
+      //   })
+      //   // 更新路径
+      //   this.currtask.fileInfos[$index].path = res.data
+      //   return true
+      // } else {
+      //   return false
+      // }
     },
 
     // 执行任务
     async confirmTask(taskId) {
+      //首先判断子任务是否完成
+      if(this.currtask.childTask!==null && this.currtask.childTask.length !==0 ){
+        for(var ta of this.currtask.childTask){
+          if(ta.status === 1){
+            this.$message.error('请先完成子项任务！')
+            return
+          }
+        }
+      }
       if (this.currtask.comContent === null || this.currtask.comContent === '') {
         this.$message.error('任务记录信息不能为空！')
         return

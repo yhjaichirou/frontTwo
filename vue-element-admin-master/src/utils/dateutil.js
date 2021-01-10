@@ -337,7 +337,7 @@ export function renderFileThumb(fileName){
       "arr" : ["doc","docx"]
     },excel = {
       "name":"y-excel",
-      "arr" : ["doc","docx"]
+      "arr" : ["xlsx","xls"]
     },jpg = {
       "name":"y-jpg",
       "arr" : ["jpg","png","gif","jpeg","bmp","tif","tiff","tga","psd","exif"]
