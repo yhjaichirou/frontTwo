@@ -102,6 +102,7 @@ export default {
       if (res.data != null) {
         this.form = res.data
         this.form.mesMessage = res.data.mesMessage === 1
+        this.form.mesDefaultPel = this.form.mesDefaultPel != null ? JSON.parse(this.form.mesDefaultPel) : ''
       }
       const res2 = await getUserList()
       this.userList = res2.data

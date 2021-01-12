@@ -37,6 +37,31 @@ export function getUsers(orgId) {
   })
 }
 
+export function getRoleList(orgId,roleId) {
+  return request({
+    url: `/admin/getRoleList/${orgId}/${roleId}`,
+    method: 'get'
+  })
+}
+export function getOrgList(loginOrgId,roleId) {
+  return request({
+    url: `/admin/getOrgList/${loginOrgId}/${roleId}`,
+    method: 'get'
+  })
+}
+export function getGroupList(orgId) {
+  return request({
+    url: `/admin/getGroupList/${orgId}`,
+    method: 'get'
+  })
+}
+
+export function getUser(id) {
+  return request({
+    url: `/admin/getUser/${id}`,
+    method: 'get'
+  })
+}
 export function addUser(data) {
   return request({
     url: '/admin/addUser',
@@ -54,7 +79,7 @@ export function updateUser(data) {
 }
 export function deleteUser(userId) {
   return request({
-    url: '/admin/deleteUser/${userId}',
-    method: 'post'
+    url: `/admin/deleteUser/${userId}`,
+    method: 'delete'
   })
 }
