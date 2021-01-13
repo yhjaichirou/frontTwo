@@ -2,30 +2,40 @@
   <div class="app-container">
     <el-button type="primary" @click="handleAddPeople">新建单位成员</el-button>
 
-    <el-table :data="usersList" style="width: 100%;margin-top:30px;" border>
+    <el-table :data="peopleList" style="width: 100%;margin-top:30px;" border>
       <el-table-column align="center" label="ID" width="60">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="账户" width="220">
+      <el-table-column align="center" label="人员姓名" width="220">
         <template slot-scope="scope">
-          {{ scope.row.account }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="用户姓名" width="220">
+      <el-table-column align="center" label="手机号" width="220">
         <template slot-scope="scope">
-          {{ scope.row.userName }}
+          {{ scope.row.mobile }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="角色">
+      <el-table-column align="header-center" label="身份证号">
         <template slot-scope="scope">
-          {{ scope.row.roleName == undefined || scope.row.roleName == ''?"无":scope.row.roleName }}
+          {{ scope.row.idcard }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="所属分组">
+      <el-table-column align="header-center" label="职务">
         <template slot-scope="scope">
-          {{ scope.row.groupName == undefined || scope.row.groupName == ''?"无":scope.row.groupName }}
+          {{ scope.row.job }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="年龄" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.age }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="性别" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.sex }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -36,19 +46,19 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改用户':'新建用户'">
-      <el-form ref="ruleForm" :model="user" status-icon :rules="rules" label-width="80px" label-position="left">
-        <el-form-item label="账户" prop="account">
-          <el-input v-model="user.account" placeholder="请输入" />
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改人员':'新建人员'">
+      <el-form ref="ruleForm" :model="people" status-icon :rules="rules" label-width="80px" label-position="left">
+        <el-form-item label="人员姓名" prop="name">
+          <el-input v-model="people.name" placeholder="请输入人员姓名" />
         </el-form-item>
-        <el-form-item label="用户姓名">
-          <el-input v-model="user.userName" placeholder="请输入" />
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="people.mobile" placeholder="请输入手机号" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="user.password" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
+        <el-form-item label="身份证号" prop="idcard">
+          <el-input v-model="people.idcard" type="text" placeholder="请输入身份证号" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="确认密码" prop="rePassword">
-          <el-input v-model="user.rePassword" type="password" placeholder="请输入确认密码" autocomplete="off" />
+        <el-form-item label="职务" prop="job">
+          <el-input v-model="people.job" type="text" placeholder="请输入职务" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
@@ -62,55 +72,51 @@
 <script>
 import path from 'path'
 import { deepClone } from '@/utils'
-import md5 from 'js-md5'
 import {
-  getUsers,
-  addUser,
-  deleteUser,
-  updateUser
-} from '@/api/user'
+  getPeopleList,
+  getPeople,
+  deletePeople,
+  addPeople,
+  updatePeople
+} from '@/api/depart'
 
-const defaultUser = {
+const defaultPeople = {
   id: '',
-  userName: '',
-  account: '',
-  password: ''
+  name: '',
+  mobile: '',
+  orgId:'',
+  orgName: '',
+  sex:'',
+  job:'',
+  age:'',
+  status:'',
+  openid:'',
+  idcard:''
 }
 
 export default {
   data() {
-    var validateAccount = (rule, value, callback) => {
+    var validateMoblie = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('账户信息不能为空！'))
+        callback(new Error('请输入手机号！'))
       } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
         callback(new Error('手机号格式不正确！'))
       } else {
         callback()
       }
     }
-    var validatePass = (rule, value, callback) => {
+    var validateIdcard = (rule, value, callback) => {
       if (value === '') {
-        console.log('xinxi')
-        callback(new Error('请输入密码！'))
-      } else if (this.user.password.length < 6 || this.user.password.length > 15) {
-        callback(new Error('请输入正确的长度！'))
-      } else {
-        callback()
-      }
-    }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码！'))
-      } else if (value !== this.user.rePassword) {
-        console.log(this.user.rePassword)
-        callback(new Error('两次输入密码不一致！'))
+        callback(new Error('请输入身份证号！'))
+      } else if (!(/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value))) {
+        callback(new Error('身份证号不正确！'))
       } else {
         callback()
       }
     }
     return {
-      user: Object.assign({}, defaultUser),
-      usersList: [],
+      people: Object.assign({}, defaultPeople),
+      peopleList: [],
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: false,
@@ -119,23 +125,30 @@ export default {
         label: 'title'
       },
       ruleForm: {
-        account: '',
-        password: '',
-        rePassword: ''
+        name: '',
+        mobile: '',
+        idcard: '',
+        job: ''
       },
       rules: {
-        account: [{
-          validator: validateAccount,
+        name: [{
+          required: true,
+          message: '请输入姓名',
           trigger: 'blur'
         }],
-        password: [{
-          validator: validatePass,
+        mobile: [{
+          validator: validateMoblie,
           trigger: 'blur'
         }],
-        rePassword: [{
-          validator: validatePass2,
+        idcard: [{
+          validator: validateIdcard,
           trigger: 'blur'
-        }]
+        }],
+        job: [{
+          required: true,
+          message: '请输入职位',
+          trigger: 'blur'
+        }],
       }
     }
   },
@@ -147,7 +160,7 @@ export default {
   created() {
     // Mock: get all routes and roles list from server
     // this.getRoutes()
-    this.getUsers()
+    this.getPeopleList()
   },
   methods: {
     generateArr(routes) {
@@ -164,13 +177,13 @@ export default {
       return data
     },
 
-    async getUsers() {
+    async getPeopleList() {
       var orgId = this.$store.getters.orgId
-      const res = await getUsers(orgId)
-      this.usersList = res.data
+      const res = await getPeopleList(orgId)
+      this.peopleList = res.data
     },
-    handleAddUser() {
-      this.user = Object.assign({}, defaultUser)
+    handleAddPeople() {
+      this.people = Object.assign({}, defaultPeople)
       this.dialogType = 'new'
       this.dialogVisible = true
     },
@@ -178,29 +191,8 @@ export default {
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.checkStrictly = true
-      this.user = deepClone(scope.row)
+      this.people = deepClone(scope.row)
       console.log(this.user)
-    },
-    handleDelete({
-      $index,
-      row
-    }) {
-      this.$confirm('确定删除用户吗？', 'Warning', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async() => {
-          await deleteUser(row.id)
-          this.usersList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(err => {
-          console.error(err)
-        })
     },
 
     async confirmUser(formName) {
@@ -216,66 +208,61 @@ export default {
       })
       if (isComfirm) {
         const isEdit = this.dialogType === 'edit'
+        var UUserCard = this.people.idcard
+        this.people.sex = parseInt(UUserCard.substr(16, 1)) % 2 == 1? "男":"女"
+        var myDate = new Date()
+        var month = myDate.getMonth() + 1
+        var day = myDate.getDate()
+        var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1
+        if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) {
+          age++
+        }
+        this.people.age = age
         if (isEdit) {
-          this.user.password = md5(this.user.password)
-          await updateUser(this.user)
-          for (let index = 0; index < this.usersList.length; index++) {
-            if (this.usersList[index].id === this.user.id) {
-              this.usersList.splice(index, 1, Object.assign({}, this.user))
+          await updatePeople(this.people)
+          for (let index = 0; index < this.peopleList.length; index++) {
+            if (this.peopleList[index].id === this.people.id) {
+              this.peopleList.splice(index, 1, Object.assign({}, this.people))
               break
             }
           }
         } else {
-          this.user.roleId = this.$store.getters.roles[0]
-          this.user.orgId = this.$store.getters.orgId
-          this.user.password = md5(this.user.password)
+          this.people.orgId = this.$store.getters.orgId
           const {
             data
-          } = await addUser(this.user)
-          this.user.id = data
-          this.usersList.push(this.user)
+          } = await addPeople(this.people)
+          this.people.id = data
+          this.peopleList.push(this.people)
         }
-
-        const {
-          id,
-          account,
-          password
-        } = this.user
-        this.dialogVisible = false
-        this.$notify({
-          title: 'Success',
-          dangerouslyUseHTMLString: true,
-          message: `
-              <div>登录账户: ${account}</div>
-              <div>密码: ${password}</div>
-            `,
-          type: 'success'
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
         })
+        this.dialogVisible = false
       }
     },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
+    handleDelete({
+      $index,
+      row
+    }) {
+      this.$confirm('确定删除该人员吗？', 'Warning', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await deletePeople(row.id)
+          this.peopleList.splice($index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
 
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ...parent,
-          path: '',
-          noShowingChildren: true
-        }
-        return onlyOneChild
-      }
-
-      return false
-    }
   }
 }
 </script>

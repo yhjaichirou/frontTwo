@@ -361,20 +361,14 @@
           <el-tab-pane label="任务配置" name="3">
             <div class="task-list-type">
               <div class="task-list-type-left">
-                <!-- <el-tabs type="border-card">
-                  <el-tab-pane label="全部"></el-tab-pane>
-                  <el-tab-pane label="未分配的任务">未分配的任务</el-tab-pane>
-                  <el-tab-pane label="我负责的任务">我负责的任务</el-tab-pane>
-                  <el-tab-pane label="已延期的任务">已延期的任务</el-tab-pane>
-                  <el-tab-pane label="已逾期的任务">已逾期的任务</el-tab-pane>
-                </el-tabs> -->
                 <ul>
-                  <li :class="taskTypeStatus==10?'active':''" @click="getTaskSearch(10)"><a>全部</a></li>
-                  <li :class="taskTypeStatus===0?'active':''" @click="getTaskSearch(0)"><a>未分配的任务</a></li>
-                  <li :class="taskTypeStatus===1?'active':''" @click="getTaskSearch(1)"><a>未完成的任务</a></li>
-                  <li :class="taskTypeStatus===2?'active':''" @click="getTaskSearch(2)"><a>已完成的任务</a></li>
-                  <li :class="taskTypeStatus===3?'active':''" @click="getTaskSearch(3)"><a>已延期的任务</a></li>
-                  <li :class="taskTypeStatus===4?'active':''" @click="getTaskSearch(4)"><a>已逾期的任务</a></li>
+                  <li :class="taskTypeStatus==10?'active':''" @click="getTaskSearch(10)"><a>全部({{allCountMap.ALL}})</a></li>
+                  <li :class="taskTypeStatus===0?'active':''" @click="getTaskSearch(0)"><a>未分配的任务({{allCountMap.NOMACK}})</a></li>
+                  <li :class="taskTypeStatus===5?'active':''" @click="getTaskSearch(5)"><a>未开始的任务({{allCountMap.YESMACK}})</a></li>
+                  <li :class="taskTypeStatus===1?'active':''" @click="getTaskSearch(1)"><a>未完成的任务({{allCountMap.NOCOM}})</a></li>
+                  <li :class="taskTypeStatus===2?'active':''" @click="getTaskSearch(2)"><a>已完成的任务({{allCountMap.COMPLETE}})</a></li>
+                  <li :class="taskTypeStatus===3?'active':''" @click="getTaskSearch(3)"><a>已延期的任务({{allCountMap.DELAY}})</a></li>
+                  <li :class="taskTypeStatus===4?'active':''" @click="getTaskSearch(4)"><a>已逾期的任务({{allCountMap.OVERDUE}})</a></li>
                 </ul>
               </div>
               <div class="task-list-type-right">
@@ -405,7 +399,48 @@
             </div>
 
           </el-tab-pane>
-          <el-tab-pane label="项目文件" name="4">项目文件</el-tab-pane>
+          <el-tab-pane label="项目文件" name="4">
+
+            <div class="manager-card">
+              <div class="el-alert el-alert--success is-light">
+                <!---->
+                <div class="el-alert__content"><span class="el-alert__title">项目总文件数：</span>
+                  <span class="el-alert__m"><count-to :start-val="0" :end-val="fileMap.total" :duration="2600" class="card-panel-num" /></span>
+                  <!---->
+                  <!----><i class="el-alert__closebtn el-icon-close" style="display: none;" /></div>
+              </div>
+
+              <el-table :data="fileMap.list" style="width: 100%">
+                <el-table-column prop="thumb" label="类型" width="150">
+                  <template slot-scope="scope">
+                    <svg-icon class="fj-svg" :icon-class="scope.row.thumb" />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="fileName" label="文件名" />
+                <el-table-column prop="taskName" label="所属任务" />
+                <el-table-column prop="date" label="上传时间" width="280" />
+                <el-table-column fixed="right" label="操作" width="180">
+                  <template slot-scope="scope">
+                    <el-button type="text" size="small">
+                      <a class="mr-3 btn btn-icon" :href="scope.row.url ==''?'javascript:;':scope.row.url">下载</a>
+                    </el-button>
+
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                    @size-change="handlePageSizeChange"
+                    @current-change="handlePageCurrentChange"
+                    :current-page="fileMap.pn"
+                    :page-sizes="[20, 50, 100]"
+                    :page-size="fileMap.ps"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="fileMap.total">
+              </el-pagination>
+            </div>
+
+
+          </el-tab-pane>
         </el-tabs>
         <el-tabs v-else v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
@@ -685,8 +720,8 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="前置任务" :label-width="formLabelWidth">
-                <el-select v-model="addTaskObj.preTasks" multiple placeholder="请选择前置任务">
+              <el-form-item label="归属上级" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.pid" placeholder="请选择所属上级任务">
                   <el-option v-for="item in preTaskList" :key="item.id" :label="item.title" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -748,12 +783,14 @@ import {
   authProject,
   // 任务请求
   getAllTaskList,
+  getAllCountMap,
   getAllTaskFormParam,
   getExecutorList,
   getTask,
   addTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  getFileList
 } from '@/api/project'
 import yhjTaskTable from './components/tableTasks.vue'
 import PanelGroup from './components/PanelGroup'
@@ -791,6 +828,7 @@ const defaultProject = {
 }
 const defaultTask = {
   id: '',
+  pid:'',
   proId: '',
   title: '',
   executor: '',
@@ -1053,9 +1091,13 @@ export default {
       },
       // 任务列表
       taskList: [],
+      allCountMap:{"ALL":0,"NOMACK":0,"NOCOM":0,"COMPLETE":0,"DELAY":0,"OVERDUE":0},
       // 总概况
       isHasThisProject: false,
-      lineChartData: lineChartData.newVisitis
+      lineChartData: lineChartData.newVisitis,
+
+      //项目文件
+      fileMap:{"pn":1,"ps":20,"list":[],"total":0}
     }
   },
   computed: {
@@ -1094,7 +1136,11 @@ export default {
     this.getAllOrgs()
     this.getAllMsg()
   },
+  inject: ['reload'],
   methods: {
+    fresh(){
+      this.reload()
+    },
     // 切换项目内容项
     handleClick(tab, event) {
       if (tab.index === '0') {
@@ -1103,6 +1149,8 @@ export default {
         this.getTzqkList()
       } else if (tab.index === '2') {
         this.getAllTaskList()
+      } else if (tab.index === "3"){//项目文件
+        this.getFileList(this.fileMap.pn,this.fileMap.ps)
       }
       console.log(tab, event)
     },
@@ -1275,18 +1323,20 @@ export default {
     },
 
     // 任务
-    async getAllTaskList() {
-      const res = await getAllTaskList(this.thisProject.id, 10)
+    async getTaskList(typeId){
+      this.taskTypeStatus = typeId
+      const res = await getAllTaskList(this.thisProject.id, this.taskTypeStatus)
       this.taskList = res.data.list
       this.activeNamesTask = res.data.activeNamesTask
+      const res2 = await getAllCountMap(this.thisProject.id)
+      this.allCountMap = res2.data
       console.log(this.activeNamesTask)
     },
+    async getAllTaskList() {
+      this.getTaskList(10)
+    },
     async getTaskSearch(typeId) {
-      this.taskTypeStatus = typeId
-      const res = await getAllTaskList(this.thisProject.id, typeId)
-      this.taskList = res.data.list
-      this.activeNamesTask = res.data.activeNamesTask
-      console.log(this.activeNamesTask)
+      this.getTaskList(typeId)
     },
     async openAddTask(id) {
       // 表单固定值填充
@@ -1372,6 +1422,8 @@ export default {
           type: 'success',
           message: '操作成功！'
         })
+        // this.fresh()
+        this.handleClick({index:"1"})
         this.dialogTaskFormVisible = false
       }
     },
@@ -1388,8 +1440,21 @@ export default {
         type: 'success',
         message: '删除成功!'
       })
-    }
+    },
 
+
+    // 项目文件
+    async getFileList(pn,ps){
+      const res = await getFileList(this.thisProject.id,this.fileMap.pn, this.fileMap.ps)
+      this.fileMap = res.data
+      console.log("文件",res.data)
+    },
+    async handlePageSizeChange(val) {
+      this.getFileList(this.fileMap.pn, val);
+    },
+    async handlePageCurrentChange(val) {
+      this.getFileList(val,this.fileMap.ps);
+    }
   }
 }
 </script>
@@ -1546,6 +1611,9 @@ export default {
       width: 100%;
       position: relative;
 
+      .el-tabs__content {
+          background-color: aliceblue;
+      }
       .right-btns {
         position: absolute;
         right: 8px;
@@ -1578,7 +1646,10 @@ export default {
             margin-right: 5px;
           }
         }
-
+        .fj-svg{
+          width:2em;
+          height: 2em;
+        }
         .manager-card-content {
           padding: 10px 20px 20px;
 
@@ -1712,11 +1783,31 @@ export default {
           color: #4e8afa;
         }
 
+
+
+      }
+
+      .task-list-body{
+        //阶段划分 上下线条
+        .el-collapse {
+            border:none;
+        }
+        .el-collapse-item{
+
+        }
+        .el-collapse-item__wrap {
+            border-bottom: none !important;
+        }
+      }
+
+      .el-collapse-item__wrap {
+          border-bottom: none !important;
       }
 
     }
 
   }
+
 </style>
 <style>
   .el-radio-button--mini .el-radio-button__inner {
@@ -1733,9 +1824,7 @@ export default {
     margin: 0px;
   }
 
-  .right-project .el-tabs__content {
-    background-color: aliceblue;
-  }
+
 
   .el-form-item--medium .el-form-item__label {
     line-height: 22px;
@@ -1748,5 +1837,9 @@ export default {
   .el-collapse-item__header {
     border-bottom: 1px solid #44cfe6;
     text-align: center;
+  }
+
+  .el-collapse-item__wrap {
+      border-bottom: none !important;
   }
 </style>

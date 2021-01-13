@@ -289,7 +289,7 @@
 
     </div>
 
-    <el-dialog :visible.sync="zxdialogVisible" title="执行任务">
+    <el-dialog :visible.sync="zxdialogVisible" :title="this.currtask.isEdit?'执行任务':'任务详情'">
       <el-form :model="currtask" label-width="80px" label-position="left">
         <div class="list-li">
           <div class="list-li-title">
@@ -470,6 +470,7 @@ import {
 } from '@/api/task'
 const defaultTask = {
   id: '',
+  pid:'',
   title: '',
   annex: '',
   code: '',

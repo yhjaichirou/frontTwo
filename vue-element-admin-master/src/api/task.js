@@ -32,4 +32,10 @@ export function confirmTask(data) {
     data
   })
 }
+export function taskDb(taskId) {
+  return request({
+    url: `/project/taskDb/${taskId}`,
+    method: 'post',
+  })
+}
 

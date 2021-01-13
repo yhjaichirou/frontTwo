@@ -93,6 +93,13 @@ export function getAllTaskList(projectId,typeId) {
     method: 'get',
   })
 }
+export function getAllCountMap(projectId) {
+  return request({
+    url: `/project/getAllCountMap/${projectId}`,
+    method: 'get',
+  })
+}
+
 export function getTask(id) {
   return request({
     url: `/project/getTask/${id}`,
@@ -130,5 +137,11 @@ export function deleteTask(projectId) {
   return request({
     url: `/project/deleteTask/${projectId}`,
     method: 'delete'
+  })
+}
+export function getFileList(projectId,pn,ps) {
+  return request({
+    url: `/project/getFileList/${projectId}/${pn}/${ps}`,
+    method: 'get'
   })
 }
