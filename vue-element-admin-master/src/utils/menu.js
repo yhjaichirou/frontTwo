@@ -1,4 +1,6 @@
 import Layout from '@/layout'
+
+import first from '@/views/dashboard/index'
 import role from '@/views/system/role'
 import user from '@/views/system/user'
 import config from '@/views/system/config'
@@ -58,6 +60,27 @@ export function menu(value) {
           roles: [b[v].roleId]
         },
         children: childs
+      }
+      if(b[v].id === 1){
+       ob = {
+          path: b[v].url,
+          component: Layout,
+          meta: {
+            title: "",
+            icon: b[v].icon,
+            roles: [b[v].roleId]
+          },
+          children: [{
+            path: '/',
+            component: () => import('@/views/dashboard/index'),
+            name: '首页',
+            meta: {
+              title: '首页',
+              icon: 'dashboard',
+              affix: true
+            }
+          }]
+        }
       }
       rout.push(ob);
     }
