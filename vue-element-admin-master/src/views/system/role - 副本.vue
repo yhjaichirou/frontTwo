@@ -46,11 +46,8 @@
             :data="routesData"
             :props="defaultProps"
             show-checkbox
-            node-key="id"
-            :default-expanded-keys="[2, 3]"
-            :default-checked-keys="role.menus"
+            node-key="path"
             class="permission-tree"
-            @node-click="nodeClick"
           />
         </el-form-item>
       </el-form>
@@ -69,9 +66,8 @@ import { menu } from '@/utils/menu'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
-  id: '',
-  roleName: '',
-  menus: [],
+  key: '',
+  name: '',
   description: '',
   routes: []
 }
@@ -84,10 +80,10 @@ export default {
       rolesList: [],
       dialogVisible: false,
       dialogType: 'new',
-      checkStrictly: true, // 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false : 关联
+      checkStrictly: false,
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'title'
       }
     }
   },
@@ -104,12 +100,36 @@ export default {
   methods: {
     async getRoutes() {
       const res = await getRoutes()
-      // var serviceRoutes = menu(res.data)
-      this.routes = res.data
+      var serviceRoutes = menu(res.data)
+      this.routes = this.generateRoutes(serviceRoutes)
+      console.log('好奇', this.routes)
     },
     async getRoles() {
       const res = await getRoles()
       this.rolesList = res.data
+    },
+
+    // Reshape the routes structure so that it looks the same as the sidebar
+    generateRoutes(routes, basePath = '/') {
+      const res = []
+      for (let route of routes) {
+        // skip some route
+        if (route.hidden) { continue }
+        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
+        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
+          route = onlyOneShowingChild
+        }
+        const data = {
+          path: path.resolve(basePath, route.path),
+          title: route.meta && route.meta.title
+        }
+        // recursive child routes
+        if (route.children) {
+          data.children = this.generateRoutes(route.children, data.path)
+        }
+        res.push(data)
+      }
+      return res
     },
     generateArr(routes) {
       let data = []
@@ -135,20 +155,17 @@ export default {
     handleEdit(scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
+      this.checkStrictly = true
       this.role = deepClone(scope.row)
-      var menus = this.role.menus
-      menus = menus === null || menus === '' ? [] : menus.split(',')
-      this.role.menus = menus.map(Number)
-      console.log(this.role.menus)
-      // this.$nextTick(() => {
-      //   this.$refs.tree.setCheckedNodes(this.role.menus)
-      //   // set checked state of a node not affects its father and child nodes
-      //   this.checkStrictly = false
-      // })
-    },
-    nodeClick(e) {
-      console.log('节点被点击：', e)
-      this.checkStrictly = false
+      this.$nextTick(() => {
+        console.log('开发编辑：', this.routes)
+        const routes = this.generateRoutes(this.routes)
+        const checkRouts = this.generateArr(routes)
+        console.log(checkRouts)
+        this.$refs.tree.setCheckedNodes(checkRouts)
+        // set checked state of a node not affects its father and child nodes
+        this.checkStrictly = false
+      })
     },
     handleDelete({ $index, row }) {
       this.$confirm('Confirm to remove the role?', 'Warning', {
@@ -185,14 +202,12 @@ export default {
     },
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
+
       const checkedKeys = this.$refs.tree.getCheckedKeys()
-      const hafCheckedKeys = this.$refs.tree.getHalfCheckedKeys()
-      const finishChecked = checkedKeys.concat(hafCheckedKeys)
-      console.log('提交的树形数据：', finishChecked)
-      // this.routes = this.generateTree(deepClone(this.routes), '/', checkedKeys)
-      this.role.menus = finishChecked
+      this.routes = this.generateTree(deepClone(this.routes), '/', checkedKeys)
+
       if (isEdit) {
-        await updateRole(this.role)
+        await updateRole(this.role.key, this.role)
         for (let index = 0; index < this.rolesList.length; index++) {
           if (this.rolesList[index].key === this.role.key) {
             this.rolesList.splice(index, 1, Object.assign({}, this.role))
@@ -201,17 +216,19 @@ export default {
         }
       } else {
         const { data } = await addRole(this.role)
-        this.role.id = data
+        this.role.key = data.key
         this.rolesList.push(this.role)
       }
 
-      const { roleName } = this.role
+      const { description, key, name } = this.role
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>${roleName},已更新！</div>
+            <div>Role Key: ${key}</div>
+            <div>Role Name: ${name}</div>
+            <div>Description: ${description}</div>
           `,
         type: 'success'
       })
