@@ -4,11 +4,34 @@
       <div class="left-project">
 
         <div class="header header--hidden">
-          <div class="card-header-title"><span class="ng-star-inserted"> 项目 </span></div>
-          <div>
-            <i class="el-icon-plus" style="margin-right: 20px;" @click="addProjectEvent(null)" />
-            <i class="el-icon-finished" />
-          </div>
+          <div class="card-header-title"><span class="ng-star-inserted"> 项目管控 </span></div>
+          <div>总览</div>
+        </div>
+
+        <div class="allItem">
+          <div style="color: rgb(102, 102, 102); float: left;">全部项目</div>
+          <div style="float: left; font-size: 14px; color: rgb(153, 153, 153);" class="allItemCount">（4）</div>
+          <div class="addItem"><i class="el-icon-plus" @click="addProjectEvent(null)" /></div>
+        </div>
+        <div class="starItem" @click="searchProject(12)">
+          <div class="starItemImg"><i class="el-icon-star-on" /></div>
+          <div class="starItemText">我的星标</div>
+          <div class="starItemCount">0</div>
+        </div>
+        <div class="starItem" @click="searchProject(0)">
+          <div class="starItemImg"><i class="el-icon-user-solid" /></div>
+          <div class="starItemText">我的项目</div>
+          <div class="starItemCount">0</div>
+        </div>
+        <div class="starItem" @click="searchProject(1)">
+          <div class="starItemImg"><i class="el-icon-warning" /></div>
+          <div class="starItemText">未完成项目</div>
+          <div class="starItemCount">0</div>
+        </div>
+        <div class="starItem" @click="searchProject(2)">
+          <div class="starItemImg"><i class="el-icon-success" /></div>
+          <div class="starItemText">已完成项目</div>
+          <div class="starItemCount">0</div>
         </div>
 
         <input v-model="searchContent" type="text" autocomplete="off" class="el-input__inner" placeholder="搜索项目" @input="searchProject">
@@ -17,35 +40,111 @@
           <el-radio-button label="1" value="1">未完成</el-radio-button>
           <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
-        <ul>
-          <li
-            v-for="(item,index) in projectList"
-            :key="item.id"
-            class="ng-star-inserted"
-            :class="currProjectIndex==item.id?'active':''"
-            @click.prevent="clickProject(item.id)"
-          >
-            <a class="section-item" href="#">
-              <svg-icon icon-class="project2" />{{ item.name }}</a>
-            <div class="ng-star-inserted-btn">
-              <a v-if="item.status==7" class="section-item" href="#" title="提交审批" @click.prevent="authProject(item.id)">
-                <svg-icon icon-class="sp" /></a>
-              <a v-if="item.status==7" class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
-                <svg-icon icon-class="update" /></a>
-              <a v-if="item.status==7" class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
-                <svg-icon icon-class="del" /></a>
-            </div>
-          </li>
-        </ul>
 
       </div>
       <div class="right-project">
-        <div class="right-btns">
-          <div style="display: flex;align-items: center;justify-content: center;">
-            <svg-icon icon-class="setting" style="width: 1.5em;height: 1.5em;" />设置
+        <div class="header header--hidden">
+          <div class="card-header-title">
+            <span class="ng-star-inserted"> 项目管控 </span>
+          </div>
+
+          <div class="right-btns">
+            <input v-model="searchContent" type="text" autocomplete="off" class="el-input__inner" placeholder="搜索项目" @input="searchProject">
+            <div style="display: flex;align-items: center;justify-content: center;">
+              <svg-icon icon-class="setting" style="width: 1.5em;height: 1.5em;" />设置
+            </div>
+            <div class="right-btns-li">
+              <i class="el-icon-s-unfold" @click="handleSortShow(1)" />
+              <i class="el-icon-menu" style="margin-left: 10px;" @click="handleSortShow(2)" />
+            </div>
+          </div>
+        </div>
+
+        <div class="right-content">
+          <div v-if="sortShow" class="">
+            <ul>
+              <li
+                v-for="(item,index) in projectList"
+                :key="item.id"
+                class="ng-star-inserted"
+                :class="currProjectIndex==item.id?'active':''"
+                @click.prevent="clickProject(item.id)"
+              >
+                <a class="section-item" href="#">
+                  <svg-icon icon-class="project2" />{{ item.name }}</a>
+                <div class="ng-star-inserted-btn">
+                  <a v-if="item.status==7" class="section-item" href="#" title="提交审批" @click.prevent="authProject(item.id)">
+                    <svg-icon icon-class="sp" /></a>
+                  <a v-if="item.status==7" class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
+                    <svg-icon icon-class="update" /></a>
+                  <a v-if="item.status==7" class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
+                    <svg-icon icon-class="del" /></a>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+          <div v-else class="">
+            <div style="padding: 10px;">
+              <el-row :gutter="40" class="panel-group">
+                <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+                  <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+                    <div class="card-panel-icon-wrapper icon-people">
+                      <svg-icon icon-class="project3" class-name="card-panel-icon" />
+                    </div>
+                    <div class="card-panel-description">
+                      <div class="card-panel-text">
+                        我创建的项目
+                      </div>
+                      <count-to :start-val="0" :end-val="allProCount" :duration="2600" class="card-panel-num" />
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+                  <div class="card-panel" @click="handleSetLineChartData('messages')">
+                    <div class="card-panel-icon-wrapper icon-message">
+                      <svg-icon icon-class="projejctCom" class-name="card-panel-icon" />
+                    </div>
+                    <div class="card-panel-description">
+                      <div class="card-panel-text">
+                        已完成的项目
+                      </div>
+                      <count-to :start-val="0" :end-val="allComProCount" :duration="3000" class="card-panel-num" />
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+                  <div class="card-panel" @click="handleSetLineChartData('purchases')">
+                    <div class="card-panel-icon-wrapper icon-money">
+                      <svg-icon icon-class="money" class-name="card-panel-icon" />
+                    </div>
+                    <div class="card-panel-description">
+                      <div class="card-panel-text">
+                        项目总资金
+                      </div>
+                      <count-to :start-val="0" :end-val="allInvest" :duration="3200" class="card-panel-num" />
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+                  <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+                    <div class="card-panel-icon-wrapper icon-people">
+                      <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+                    </div>
+                    <div class="card-panel-description">
+                      <div class="card-panel-text">
+                        项目总成员
+                      </div>
+                      <count-to :start-val="0" :end-val="allPeople" :duration="2600" class="card-panel-num" />
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
           </div>
 
         </div>
+
         <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
 
@@ -346,7 +445,8 @@
               <div class="el-alert el-alert--success is-light">
                 <!---->
                 <div class="el-alert__content"><span class="el-alert__title">项目总投资金额：</span>
-                  <span class="el-alert__m"><count-to :start-val="0" :end-val="2000" :duration="2600" class="card-panel-num" /></span>
+                  <span class="el-alert__m">
+                    <count-to :start-val="0" :end-val="2000" :duration="2600" class="card-panel-num" /></span>
                   <!---->
                   <!----><i class="el-alert__closebtn el-icon-close" style="display: none;" /></div>
               </div>
@@ -405,7 +505,8 @@
               <div class="el-alert el-alert--success is-light">
                 <!---->
                 <div class="el-alert__content"><span class="el-alert__title">项目总文件数：</span>
-                  <span class="el-alert__m"><count-to :start-val="0" :end-val="fileMap.total" :duration="2600" class="card-panel-num" /></span>
+                  <span class="el-alert__m">
+                    <count-to :start-val="0" :end-val="fileMap.total" :duration="2600" class="card-panel-num" /></span>
                   <!---->
                   <!----><i class="el-alert__closebtn el-icon-close" style="display: none;" /></div>
               </div>
@@ -887,6 +988,7 @@ export default {
     }
     return {
       tzqkList: [],
+      sortShow: true,
       orgId: '',
       activeName: '1',
       activeNamesTask: ['1'],
@@ -1090,13 +1192,25 @@ export default {
       },
       // 任务列表
       taskList: [],
-      allCountMap: { 'ALL': 0, 'NOMACK': 0, 'NOCOM': 0, 'COMPLETE': 0, 'DELAY': 0, 'OVERDUE': 0 },
+      allCountMap: {
+        'ALL': 0,
+        'NOMACK': 0,
+        'NOCOM': 0,
+        'COMPLETE': 0,
+        'DELAY': 0,
+        'OVERDUE': 0
+      },
       // 总概况
       isHasThisProject: false,
       lineChartData: lineChartData.newVisitis,
 
       // 项目文件
-      fileMap: { 'pn': 1, 'ps': 20, 'list': [], 'total': 0 }
+      fileMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      }
     }
   },
   computed: {
@@ -1140,6 +1254,9 @@ export default {
     fresh() {
       this.reload()
     },
+    handleSortShow(tt) {
+      this.sortShow = tt === 1
+    },
     // 切换项目内容项
     handleClick(tab, event) {
       if (tab.index === '0') {
@@ -1170,7 +1287,8 @@ export default {
       this.projectList = res.data
     },
 
-    async searchProject() {
+    async searchProject(searchStatus) { // searchStatus  == 12  查询星标
+      this.searchStatus = searchStatus
       const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
       this.projectList = res.data
       console.log(this.projectList)
@@ -1422,7 +1540,9 @@ export default {
           message: '操作成功！'
         })
         // this.fresh()
-        this.handleClick({ index: '1' })
+        this.handleClick({
+          index: '1'
+        })
         this.dialogTaskFormVisible = false
       }
     },
@@ -1501,61 +1621,7 @@ export default {
     .left-project {
       paddding-left: 0;
       border-right: 2px solid #3A71A8;
-      width: 200px;
-
-      ul {
-        padding-left: 0;
-        height: calc(100% - 140px);
-        overflow: auto;
-      }
-
-      ul li.active {
-        background-color: aliceblue;
-      }
-
-      ul li {
-        border-bottom: 1px #eee solid;
-        list-style-type: none;
-        -webkit-transition: -webkit-box-shadow .2s;
-        transition: -webkit-box-shadow .2s;
-        transition: box-shadow .2s;
-        transition: box-shadow .2s, -webkit-box-shadow .2s;
-        position: relative;
-
-        .ng-star-inserted-btn {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          justify-content: right;
-          min-height: 25px;
-
-          .section-item {
-
-            padding: 3px;
-            -webkit-transition: -webkit-box-shadow .2s;
-            transition: -webkit-box-shadow .2s;
-            transition: box-shadow .2s;
-            transition: box-shadow .2s, -webkit-box-shadow .2s;
-          }
-
-          .section-item:hover {
-            color: #4e8afa;
-
-          }
-        }
-      }
-
-      ul li:hover {
-        box-shadow: 0 1px 10px 1px #eee;
-      }
-
-      .el-radio-button__inner {
-        padding: 6px 10px !important;
-        font-size: 11px;
-        border-radius: 0;
-        border: none;
-      }
-
+      width: 300px;
       .header {
         height: 50px;
         display: -webkit-box;
@@ -1565,6 +1631,40 @@ export default {
         align-items: center;
         margin: 0 10px;
         color: #333;
+        border-bottom: 2px solid antiquewhite;
+      }
+      .allItem{
+        cursor: pointer;
+        margin: 0 10px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 15px;
+        .addItem{
+          float: right;
+          margin-right: 6px;
+        }
+      }
+
+      .starItem{
+        color: rgb(102, 102, 102);
+        padding-left: 10px;
+        height: 40px;
+        cursor: pointer;
+        line-height: 40px;
+      }
+      .starItemImg{
+        position: absolute;
+      }
+      .starItemText{
+        color: rgb(102, 102, 102);
+        float: left;
+        margin-left: 20px;
+      }
+
+      .starItemCount{
+      font-size: 12px;
+      float: right;
+      margin-right: 20px;
       }
 
       .el-input__inner {
@@ -1609,10 +1709,37 @@ export default {
       overflow-wrap: break-word;
       width: 100%;
       position: relative;
-
-      .el-tabs__content {
-          background-color: aliceblue;
+      .header {
+        min-height: 50px;
+        height: 50px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 10px;
+        color: #333;
+        border-bottom: 2px solid antiquewhite;
+        .right-btns{
+          display: flex;
+          align-items: center;
+        }
+        .right-btns-li{
+          margin-left: 10px;
+        }
+        .el-input__inner {
+          height: 28px;
+          line-height: 28px;
+          margin: 0px 10px;
+          width: 150px;
+          padding: 2px 10px;
+          font-size: 11px;
+        }
       }
+      .el-tabs__content {
+        background-color: aliceblue;
+      }
+
       .right-btns {
         position: absolute;
         right: 8px;
@@ -1620,9 +1747,60 @@ export default {
         z-index: 2;
         cursor: pointer;
       }
-
       .right-btns:hover {
         color: #4e8afa;
+      }
+
+      .right-content{
+        ul {
+          padding-left: 0;
+          height: calc(100% - 140px);
+          overflow: auto;
+        }
+
+        ul li.active {
+          background-color: aliceblue;
+        }
+        ul li {
+          cursor: pointer;
+          border-bottom: 1px #eee solid;
+          list-style-type: none;
+          -webkit-transition: -webkit-box-shadow .2s;
+          transition: -webkit-box-shadow .2s;
+          transition: box-shadow .2s;
+          transition: box-shadow .2s, -webkit-box-shadow .2s;
+          position: relative;
+          padding: 10px;
+          .ng-star-inserted-btn {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: right;
+            min-height: 25px;
+
+            .section-item {
+              padding: 3px;
+              -webkit-transition: -webkit-box-shadow .2s;
+              transition: -webkit-box-shadow .2s;
+              transition: box-shadow .2s;
+              transition: box-shadow .2s, -webkit-box-shadow .2s;
+            }
+            .section-item:hover {
+              color: #4e8afa;
+            }
+          }
+        }
+
+        ul li:hover {
+          box-shadow: 0 1px 10px 1px #eee;
+        }
+
+        .el-radio-button__inner {
+          padding: 6px 10px !important;
+          font-size: 11px;
+          border-radius: 0;
+          border: none;
+        }
       }
 
       .project-basic-property-line {
@@ -1645,10 +1823,12 @@ export default {
             margin-right: 5px;
           }
         }
-        .fj-svg{
-          width:2em;
+
+        .fj-svg {
+          width: 2em;
           height: 2em;
         }
+
         .manager-card-content {
           padding: 10px 20px 20px;
 
@@ -1658,6 +1838,7 @@ export default {
             background: #eef1f6;
             padding: 10px 0;
             justify-content: space-between;
+
             .property-text {
               width: 25%;
             }
@@ -1698,7 +1879,8 @@ export default {
                 background-color: brown;
               }
             }
-            .property-oo{
+
+            .property-oo {
               width: 33%;
             }
           }
@@ -1712,25 +1894,27 @@ export default {
 
         //投资情况
         .el-alert--success.is-light {
-            background-color: #e7faf0;
-            color: #13ce66;
-        	padding: 8px 16px;
-        	border-radius: 4px;
-        	overflow: hidden;
-        	opacity: 1;
-        	-webkit-box-align: center;
-        	-ms-flex-align: center;
-        	align-items: center;
-        	-webkit-transition: opacity .2s;
-        	transition: opacity .2s;
+          background-color: #e7faf0;
+          color: #13ce66;
+          padding: 8px 16px;
+          border-radius: 4px;
+          overflow: hidden;
+          opacity: 1;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          -webkit-transition: opacity .2s;
+          transition: opacity .2s;
         }
+
         .el-alert__content {
-            display: table-cell;
-            padding: 0 8px;
+          display: table-cell;
+          padding: 0 8px;
         }
+
         .el-alert__title {
-            font-size: 13px;
-            line-height: 18px;
+          font-size: 13px;
+          line-height: 18px;
         }
       }
 
@@ -1784,27 +1968,27 @@ export default {
 
       }
 
-      .task-list-body{
+      .task-list-body {
+
         //阶段划分 上下线条
         .el-collapse {
-            border:none;
+          border: none;
         }
-        .el-collapse-item{
 
-        }
+        .el-collapse-item {}
+
         .el-collapse-item__wrap {
-            border-bottom: none !important;
+          border-bottom: none !important;
         }
       }
 
       .el-collapse-item__wrap {
-          border-bottom: none !important;
+        border-bottom: none !important;
       }
 
     }
 
   }
-
 </style>
 <style>
   .el-radio-button--mini .el-radio-button__inner {
@@ -1835,6 +2019,115 @@ export default {
   }
 
   .el-collapse-item__wrap {
-      border-bottom: none !important;
+    border-bottom: none !important;
   }
+</style>
+<style lang="scss" scoped>
+.panel-group {
+  margin-top: 18px;
+
+  .card-panel-col {
+    margin-bottom: 32px;
+  }
+
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    background: #fff;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .05);
+
+    &:hover {
+      .card-panel-icon-wrapper {
+        color: #fff;
+      }
+
+      .icon-people {
+        background: #40c9c6;
+      }
+
+      .icon-message {
+        background: #36a3f7;
+      }
+
+      .icon-money {
+        background: #f4516c;
+      }
+
+      .icon-shopping {
+        background: #34bfa3
+      }
+    }
+
+    .icon-people {
+      color: #40c9c6;
+    }
+
+    .icon-message {
+      color: #36a3f7;
+    }
+
+    .icon-money {
+      color: #f4516c;
+    }
+
+    .icon-shopping {
+      color: #34bfa3
+    }
+
+    .card-panel-icon-wrapper {
+      float: left;
+      margin: 14px 0 0 14px;
+      padding: 16px;
+      transition: all 0.38s ease-out;
+      border-radius: 6px;
+    }
+
+    .card-panel-icon {
+      float: left;
+      font-size: 48px;
+    }
+
+    .card-panel-description {
+      float: right;
+      font-weight: bold;
+      margin: 26px;
+      margin-left: 0px;
+
+      .card-panel-text {
+        line-height: 18px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width:550px) {
+  .card-panel-description {
+    display: none;
+  }
+
+  .card-panel-icon-wrapper {
+    float: none !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+
+    .svg-icon {
+      display: block;
+      margin: 14px auto !important;
+      float: none !important;
+    }
+  }
+}
 </style>

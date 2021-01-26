@@ -48,9 +48,9 @@
             show-checkbox
             node-key="id"
             :default-expanded-keys="[2, 3]"
-            :default-checked-keys="role.menus"
+            :default-checked-keys="currMenus"
             class="permission-tree"
-            @node-click="nodeClick"
+            @check="checkClick"
           />
         </el-form-item>
       </el-form>
@@ -71,7 +71,7 @@ import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role
 const defaultRole = {
   id: '',
   roleName: '',
-  menus: [],
+  menus: '',
   description: '',
   routes: []
 }
@@ -82,6 +82,7 @@ export default {
       role: Object.assign({}, defaultRole),
       routes: [],
       rolesList: [],
+      currMenus: [],
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: true, // 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false : 关联
@@ -133,21 +134,21 @@ export default {
       this.dialogVisible = true
     },
     handleEdit(scope) {
+      this.currMenus = []
+      console.log(this.currMenus, this.checkStrictly)
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.role = deepClone(scope.row)
       var menus = this.role.menus
       menus = menus === null || menus === '' ? [] : menus.split(',')
-      this.role.menus = menus.map(Number)
-      console.log(this.role.menus)
+      this.currMenus = menus.map(Number)
       // this.$nextTick(() => {
       //   this.$refs.tree.setCheckedNodes(this.role.menus)
       //   // set checked state of a node not affects its father and child nodes
       //   this.checkStrictly = false
       // })
     },
-    nodeClick(e) {
-      console.log('节点被点击：', e)
+    checkClick(e) {
       this.checkStrictly = false
     },
     handleDelete({ $index, row }) {
@@ -188,9 +189,13 @@ export default {
       const checkedKeys = this.$refs.tree.getCheckedKeys()
       const hafCheckedKeys = this.$refs.tree.getHalfCheckedKeys()
       const finishChecked = checkedKeys.concat(hafCheckedKeys)
-      console.log('提交的树形数据：', finishChecked)
       // this.routes = this.generateTree(deepClone(this.routes), '/', checkedKeys)
-      this.role.menus = finishChecked
+      this.currMenus = finishChecked
+      if (finishChecked.length > 0) {
+        this.role.menus = finishChecked.join(',')
+        console.log('hjhjhjhjh', this.role.menus)
+      }
+
       if (isEdit) {
         await updateRole(this.role)
         for (let index = 0; index < this.rolesList.length; index++) {
@@ -215,6 +220,7 @@ export default {
           `,
         type: 'success'
       })
+      this.checkStrictly = true
     },
     // reference: src/view/layout/components/Sidebar/SidebarItem.vue
     onlyOneShowingChild(children = [], parent) {
