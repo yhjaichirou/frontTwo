@@ -1802,6 +1802,9 @@ export default {
       }
 
     }
+    .el-radio-group {
+      margin: 10px !important;
+    }
 
   }
 
@@ -1811,10 +1814,6 @@ export default {
     padding: 5px 10px;
     font-size: 11px;
     border-radius: 0;
-  }
-
-  .el-radio-group {
-    margin: 10px !important;
   }
 
   .el-tabs__header {

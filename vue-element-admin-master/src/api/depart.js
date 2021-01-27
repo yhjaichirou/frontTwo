@@ -14,6 +14,13 @@ export function getDepart(orgId) {
   })
 }
 
+export function getDepartList(orgId,pn,ps) {
+  return request({
+    url: `/depart/getDepartList/${orgId}/${pn}/${ps}`,
+    method: 'get'
+  })
+}
+
 export function addDepart(data) {
   return request({
     url: '/depart/addDepart',
