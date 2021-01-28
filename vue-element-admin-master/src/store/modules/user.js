@@ -50,9 +50,13 @@ const mutations = {
   SET_USERID: (state, userId) => {
     state.userId = userId
   },
-  SET_ORGID: (state, orgId,property,type) => {
+  SET_ORGID: (state, orgId) => {
     state.orgId = orgId
+  },
+  SET_PROPERTY: (state, property) => {
     state.property = property
+  },
+  SET_TYPE: (state, type) => {
     state.type = type
   },
   SET_ORGNAME: (state, orgName) => {
@@ -124,8 +128,10 @@ const actions = {
         commit('SET_NAME', userName)
         commit('SET_USERID', id)
         commit('SET_AVATAR', avatar)
-        commit('SET_ORGID', orgId,data.property,data.type)
+        commit('SET_ORGID', orgId)
         commit('SET_ORGNAME', orgName)
+        commit('SET_TYPE', type)
+        commit('SET_PROPERTY', property)
         setUserInfo(data);
         resolve(data)
       }).catch(error => {

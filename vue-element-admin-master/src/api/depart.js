@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getOrgtypes() {
+export function getOrgtypes(ordId) {
   return request({
-    url: `/depart/getOrgtypes`,
+    url: `/depart/getOrgtypes/${ordId}`,
     method: 'get'
   })
 }
@@ -14,10 +14,10 @@ export function getDepart(orgId) {
   })
 }
 
-export function getDepartList(orgId,pn,ps) {
+export function getDepartList(orgId,pn,ps,searchContent,searchStatus) {
   return request({
-    url: `/depart/getDepartList/${orgId}/${pn}/${ps}`,
-    method: 'get'
+    url: "/depart/getDepartList?orgId="+orgId+"&pn="+pn+"&ps="+ps+"&searchContent="+searchContent+"&searchStatus="+searchStatus,
+    method: 'get',
   })
 }
 
@@ -37,9 +37,9 @@ export function updateDepart(data) {
   })
 }
 
-export function deleteDepart(id) {
+export function deleteDepart(departId) {
   return request({
-    url: `/depart/deleteDepart/${id}`,
+    url: `/depart/deleteDepart/${departId}`,
     method: 'delete'
   })
 }
