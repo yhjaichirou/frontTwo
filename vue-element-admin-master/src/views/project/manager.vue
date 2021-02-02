@@ -612,7 +612,14 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="投资情况" :label-width="formLabelWidth">
-                <el-input v-model="addform.invest" autocomplete="off" placeholder="请输入投资情况" />
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="投资情况" :label-width="formLabelWidth">
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="请输入投资情况" @change="investChange" />
               </el-form-item>
             </div>
           </el-col>
@@ -1810,6 +1817,19 @@ export default {
 
 </style>
 <style>
+  .el-dialog{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    margin: 0px auto !important;
+    height: 80%;
+  }
+  .el-dialog .el-dialog__body{
+    height: 80%;
+    overflow: auto;
+  }
   .el-radio-button--mini .el-radio-button__inner {
     padding: 5px 10px;
     font-size: 11px;
