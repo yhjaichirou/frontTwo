@@ -13,8 +13,8 @@
           placeholder="搜索项目"
           @change="searchProject"
         >
-          <el-radio-button label="0" value="0">全部任务</el-radio-button>
-          <el-radio-button label="1" value="1">我负责的任务</el-radio-button>
+         <!-- <el-radio-button label="0" value="0">全部任务</el-radio-button>
+          <el-radio-button label="1" value="1">我负责的任务</el-radio-button> -->
         </el-radio-group>
       </div>
 
@@ -69,7 +69,7 @@
       />
 
       <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改单位':'新建单位'">
-        <el-form ref="ruleForm" :model="depart" :rules="rule">
+        <el-form ref="ruleForm" :model="depart" :rules="rules">
           <el-row :gutter="20">
             <el-col :span="12">
               <div class="grid-content bg-purple">
@@ -111,7 +111,7 @@
             </el-col>
             <el-col :span="12">
               <div class="grid-content bg-purple">
-                <el-form-item label="所属行业" prop="type" :label-width="formLabelWidth">
+                <el-form-item label="所属行业" prop="typeArr" :label-width="formLabelWidth">
                   <el-cascader
                     v-model="depart.typeArr"
                     :options="typeList"
@@ -124,7 +124,7 @@
         </el-form>
         <div style="text-align:right;">
           <el-button type="danger" @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary" @click="confirmDepart">提交</el-button>
+          <el-button type="primary" @click="confirmDepart('ruleForm')">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -175,7 +175,6 @@ export default {
       }
     }
     return {
-      typevalue: [],
       orgId: '',
       typeList: [],
       searchContent: '',
@@ -212,6 +211,7 @@ export default {
           trigger: 'blur'
         }],
         managerMobile: [{
+          required: true,
           validator: val_mobil,
           trigger: 'blur'
         }],
@@ -220,7 +220,7 @@ export default {
           message: '请选择单位性质',
           trigger: 'change'
         }],
-        type: [{
+        typeArr: [{
           required: true,
           message: '请选择行业',
           trigger: 'change'
@@ -292,44 +292,55 @@ export default {
           console.error(err)
         })
     },
-    async confirmDepart() {
+    async confirmDepart(formName) {
       const isEdit = this.dialogType === 'edit'
+      var isGo = false
 
-      if (isEdit) {
-        await updateDepart(this.depart)
-        for (let index = 0; index < this.departList.length; index++) {
-          if (this.departList[index].id === this.depart.id) {
-            this.departList.splice(index, 1, Object.assign({}, this.depart))
-            break
-          }
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          isGo = true
+        } else {
+          this.$message.error('提交信息错误！')
+          return false
         }
-      } else {
-        var orgId = this.$store.getters.orgId
-        this.depart.orgId = orgId
-        console.log(this.depart.type)
+      })
+      if (isGo) {
+        if (isEdit) {
+          await updateDepart(this.depart)
+          for (let index = 0; index < this.departList.length; index++) {
+            if (this.departList[index].id === this.depart.id) {
+              this.departList.splice(index, 1, Object.assign({}, this.depart))
+              break
+            }
+          }
+        } else {
+          var orgId = this.$store.getters.orgId
+          this.depart.orgId = orgId
+          console.log(this.depart.type)
+          const {
+            data
+          } = await addDepart(this.depart)
+          this.depart.id = data
+          this.departList.push(this.depart)
+        }
         const {
-          data
-        } = await addDepart(this.depart)
-        this.depart.id = data
-        this.departList.push(this.depart)
+          id,
+          name,
+          managerName
+        } = this.depart
+        this.dialogVisible = false
+        this.$notify({
+          title: '提交成功！',
+          dangerouslyUseHTMLString: true,
+          message: `
+              <div>组织ID: ${id}</div>
+              <div>组织名称: ${name}</div>
+              <div>负责人: ${managerName}</div>
+            `,
+          type: 'success'
+        })
       }
 
-      const {
-        id,
-        name,
-        managerName
-      } = this.depart
-      this.dialogVisible = false
-      this.$notify({
-        title: '提交成功！',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>组织ID: ${id}</div>
-            <div>组织名称: ${name}</div>
-            <div>负责人: ${managerName}</div>
-          `,
-        type: 'success'
-      })
     },
     async handlePageSizeChange(val) {
       this.getFileList(this.fileMap.pn, val)

@@ -56,6 +56,14 @@ export function getJoiners(orgIds) {
     method: 'get',
   })
 }
+export function getLeadersOfOrgId(orgId) {
+  return request({
+    url: `/project/getLeadersOfOrgId/${orgId}`,
+    method: 'get',
+  })
+}
+
+
 export function authProject(projectId) {
   return request({
     url: `/project/authProject/${projectId}`,

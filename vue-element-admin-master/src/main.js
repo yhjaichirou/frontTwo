@@ -8,6 +8,7 @@ import './styles/element-variables.scss'
 import enLang from 'element-ui/lib/locale/lang/zh-CN'
 
 import '@/styles/index.scss' // global css
+import '@/styles/iconfont/iconfont.css';
 
 import App from './App'
 import store from './store'

@@ -28,6 +28,11 @@
           {{ scope.row.job }}
         </template>
       </el-table-column>
+      <el-table-column align="header-center" label="是否为领导">
+        <template slot-scope="scope">
+          {{ scope.row.isLeader==1?'是':'否' }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="年龄" width="100">
         <template slot-scope="scope">
           {{ scope.row.age }}
@@ -60,6 +65,10 @@
         <el-form-item label="职务" prop="job">
           <el-input v-model="people.job" type="text" placeholder="请输入职务" autocomplete="off" />
         </el-form-item>
+        <el-form-item label="是否为领导">
+          <el-radio v-model="people.isLeader" label="1">是</el-radio>
+          <el-radio v-model="people.isLeader" label="0">否</el-radio>
+        </el-form-item>
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
@@ -91,7 +100,8 @@ const defaultPeople = {
   age:'',
   status:'',
   openid:'',
-  idcard:''
+  idcard:'',
+  isLeader:"0"
 }
 
 export default {
@@ -137,10 +147,12 @@ export default {
           trigger: 'blur'
         }],
         mobile: [{
+          required: true,
           validator: validateMoblie,
           trigger: 'blur'
         }],
         idcard: [{
+          required: true,
           validator: validateIdcard,
           trigger: 'blur'
         }],
@@ -275,5 +287,19 @@ export default {
     .permission-tree {
       margin-bottom: 30px;
     }
+
   }
+  .el-dialog{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    margin: 0px auto !important;
+    height: 50%;
+  }
+  .el-dialog .el-dialog__body{
+    overflow: auto;
+  }
+  
 </style>
