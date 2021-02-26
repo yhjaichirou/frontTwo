@@ -13,26 +13,61 @@
       </a>
     </div>
 
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading..." border fit highlight-current-row>
-      <el-table-column align="center" label="Id" width="95">
+    <el-table v-loading="listLoading" :data="dataMap.list" element-loading-text="Loading..." border fit highlight-current-row>
+      <el-table-column align="center" label="序号" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column>
       <el-table-column label="Title">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="行业类别" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.author }}</el-tag>
+          <el-tag>{{ scope.row.categoryName }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Readings" width="115" align="center">
+      <el-table-column label="对接时间" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
         </template>
+      </el-table-column>
+      <el-table-column label="牵头单位" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="牵头领导" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="协调负责人" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="协调负责人" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="协调负责人" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="协调负责人" width="110" align="center">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
+        </template>
+      </el-table-column>
+      able-column label="Readings" width="115" align="center">
+      <template slot-scope="scope">
+        {{ scope.row.pageviews }}
+      </template>
       </el-table-column>
       <el-table-column align="center" label="Date" width="220">
         <template slot-scope="scope">
@@ -41,6 +76,16 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+      :current-page="dataMap.pn"
+      :page-sizes="[20, 50, 100]"
+      :page-size="dataMap.ps"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="dataMap.total"
+      @size-change="handlePageSizeChange"
+      @current-change="handlePageCurrentChange"
+    />
   </div>
 </template>
 
@@ -62,17 +107,33 @@ export default {
       downloadLoading: false,
       filename: '',
       autoWidth: true,
-      bookType: 'xlsx'
+      bookType: 'xlsx',
+      search: '',
+      searchStatus: '',
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      }
     }
   },
   created() {
-    this.fetchData()
+    this.orgId = this.$store.getters.orgId
+    this.fetchData(1, 20)
   },
   methods: {
-    async fetchData() {
+    async handlePageSizeChange(val) {
+      this.fetchData(this.dataMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.fetchData(val, this.dataMap.ps)
+    },
+    async fetchData(pn, ps) {
       this.listLoading = true
-      const res = await getProjectForm(this.orgId, this.searchStatus)
-      this.list = res.data.items
+      const res = await getProjectForm(pn, ps, this.orgId, this.search, this.searchStatus)
+      console.log('数据：', res)
+      this.dataMap = res.data.list
       this.listLoading = false
     },
     handleDownload() {

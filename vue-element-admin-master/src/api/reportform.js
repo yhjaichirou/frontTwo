@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getProjectForm(orgId, status) {
+export function getProjectForm(pn,ps,orgId, search,status) {
   return request({
-    url: '/project/getProjectForm?orgId=' + orgId + "&search=" + search + "&status=" + status,
+    url: '/reportForm/getProjectForm?pn='+pn+'&ps='+ps+'&orgId=' + orgId + "&search=" + search + "&status=" + status,
     method: 'get'
   })
 }
