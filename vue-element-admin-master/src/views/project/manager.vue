@@ -35,12 +35,12 @@
 
       </div>
       <div class="right-project">
-        <div class="right-btns">
+        <!-- <div class="right-btns">
           <div style="display: flex;align-items: center;justify-content: center;">
             <svg-icon icon-class="setting" style="width: 1.5em;height: 1.5em;" />设置
           </div>
 
-        </div>
+        </div> -->
         <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
 
@@ -151,7 +151,7 @@
                     <div class="flex-se1">
                       <span class="circle" :class="projectStatusClass" />
                       <span class="ml-1">{{ thisProject.status==1?"进行中":thisProject.status==2?"已完成":thisProject.status==3?"逾期":thisProject.status==7?"新建":thisProject.status==8?"提交审批中":thisProject.status==9?"审批失败":"审批通过" }}</span>
-                      <el-button type="primary" size="mini" round @click="clickUpdateStatus">更新</el-button>
+                      <el-button type="primary" size="mini" round @click="dialogFormVisible = true" style="margin-left: 10px;">更新</el-button>
                     </div>
                   </div>
 
@@ -382,7 +382,7 @@
             </div>
             <div class="task-list-body">
 
-              <el-card class="box-card">
+              <el-card class="box-card" style="box-shadow:none;">
                 <el-collapse v-model="activeNamesTask">
                   <el-collapse-item v-for="item in taskList" :key="item.id" :title="item.name" :name="item.id">
                     <yhj-task-table :task-list="item.value" @updateTask="updateTask" />
@@ -444,6 +444,7 @@
     </div>
 
     <!-- add projectform -->
+
     <el-dialog :visible.sync="dialogAddFormVisible" :title="dialogType==='edit'?'修改项目':'新建项目'">
       <el-form ref="ruleForm" :model="addform" :rules="rules">
         <el-row :gutter="20">
@@ -796,6 +797,18 @@
       </div>
     </el-dialog>
 
+    <!-- 更新状态 -->
+    <el-dialog title="更新状态" :visible.sync="dialogFormVisible">
+      <el-radio v-model="updateProStatus" label="1">未完成</el-radio>
+      <el-radio v-model="updateProStatus" label="2">已完成</el-radio>
+      <el-radio v-model="updateProStatus" label="3">已延期</el-radio>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="clickUpdateStatus" >确 定</el-button>
+      </div>
+    </el-dialog>
+
+
   </div>
 </template>
 
@@ -930,7 +943,8 @@
         dialogImageUrl: '',
         dialogVisible: false,
         disabled: false,
-
+        dialogFormVisible: false,
+        updateProStatus:"",
         tzqkList: [],
         orgId: '',
         activeName: '1',
@@ -1285,6 +1299,7 @@
         this.orgList = res.data
       },
       async getProjectList() {
+        console.log(this.searchContent, this.searchStatus)
         const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
         this.projectList = res.data
       },
@@ -1472,7 +1487,8 @@
         }
       },
       async clickUpdateStatus() {
-        await clickUpdateStatus(this.thisProject.id)
+        await clickUpdateStatus(this.thisProject.id , this.updateProStatus)
+        this.dialogFormVisible = false
         this.$message({
           type: 'success',
           message: '更新成功！'
@@ -1784,14 +1800,14 @@
       display: flex;
       -ms-flex-direction: column;
       flex-direction: column;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
       overflow-wrap: break-word;
       width: 100%;
       position: relative;
+      height:100%;
+      .el-tabs--card{
+        height:100%;
 
-      .el-tabs__content {
-        background-color: aliceblue;
       }
 
       .right-btns {
@@ -1839,26 +1855,28 @@
             display: flex !important;
             margin: 10px auto;
             background: #eef1f6;
-            padding: 10px 0;
             justify-content: space-between;
-
+            border-bottom: 1px solid #eee;
+            line-height:40px;
             .property-text {
               width: 25%;
             }
 
             .project-basic-property {
               display: flex;
-              margin: 0 3px;
               align-items: center;
               justify-content: space-between;
+               margin-right:10px;
 
               .project-property-item-name {
-                color: #9c9c9c;
+                color: #667ab7;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 margin-right: 10px;
-                border-left: solid 2px #0e76e5;
-                padding-left: 5px;
+                border-left: solid 3px #88bcf4;
+                padding:0px 5px;
+                border-top-right-radius:10px;
+                background-color:#c5dcf0;
               }
 
               .circle {
@@ -2029,5 +2047,11 @@
 
   .el-collapse-item__wrap {
     border-bottom: none !important;
+  }
+
+
+  .el-tabs__content {
+    overflow:auto !important;
+    height:calc(100% - 41px) !important;
   }
 </style>

@@ -31,10 +31,12 @@ export function getProjectAboutSHB(projectId) {
   })
 }
 
-export function clickUpdateStatus(projectId) {
+export function clickUpdateStatus(projectId,status) {
+  var data = {projectId:projectId,status:status}
   return request({
-    url: '/project/clickUpdateStatus/${projectId}',
+    url: '/project/clickUpdateStatus',
     method: 'post',
+    data
   })
 }
 
