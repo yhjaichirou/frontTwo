@@ -68,41 +68,59 @@ export const constantRoutes = [{
     hidden: true
   },
   {
-    path: '/excel',
+    path: '/system',
     component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'Excel',
-    meta: {
-      title: 'Excel',
-      icon: 'excel'
-    },
-    children: [
-      {
-        path: 'export-excel',
-        component: () => import('@/views/excel/export-excel'),
-        name: 'ExportExcel',
-        meta: { title: 'Export Excel' }
-      },
-      {
-        path: 'export-selected-excel',
-        component: () => import('@/views/excel/select-excel'),
-        name: 'SelectExcel',
-        meta: { title: 'Export Selected' }
-      },
-      {
-        path: 'export-merge-header',
-        component: () => import('@/views/excel/merge-header'),
-        name: 'MergeHeader',
-        meta: { title: 'Merge Header' }
-      },
-      {
-        path: 'upload-excel',
-        component: () => import('@/views/excel/upload-excel'),
-        name: 'UploadExcel',
-        meta: { title: 'Upload Excel' }
+    // component: () => import('@/views/system/setting'),
+    hidden: true,
+    redirect: '/system/setting',
+    children: [{
+      path: 'setting',
+      component: () => import('@/views/system/setting'),
+      name: '个人设置',
+      meta: {
+        title: '个人设置',
+        icon: 'setting',
+        affix: false //固定不可关闭
       }
-    ]
-  }
+    }]
+
+  },
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   name: 'Excel',
+  //   meta: {
+  //     title: 'Excel',
+  //     icon: 'excel'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'export-excel',
+  //       component: () => import('@/views/excel/export-excel'),
+  //       name: 'ExportExcel',
+  //       meta: { title: 'Export Excel' }
+  //     },
+  //     {
+  //       path: 'export-selected-excel',
+  //       component: () => import('@/views/excel/select-excel'),
+  //       name: 'SelectExcel',
+  //       meta: { title: 'Export Selected' }
+  //     },
+  //     {
+  //       path: 'export-merge-header',
+  //       component: () => import('@/views/excel/merge-header'),
+  //       name: 'MergeHeader',
+  //       meta: { title: 'Merge Header' }
+  //     },
+  //     {
+  //       path: 'upload-excel',
+  //       component: () => import('@/views/excel/upload-excel'),
+  //       name: 'UploadExcel',
+  //       meta: { title: 'Upload Excel' }
+  //     }
+  //   ]
+  // }
   // {
   //   path: '/',
   //   component: Layout,

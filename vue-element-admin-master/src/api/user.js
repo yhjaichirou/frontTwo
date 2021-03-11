@@ -15,6 +15,13 @@ export function getInfo() {
   })
 }
 
+export function getUserInfo(userId) {
+  return request({
+    url: `/admin/getUserInfo/${userId}`,
+    method: 'get'
+  })
+}
+
 export function generateRoutes(data) {
   return request({
     url: '/admin/getRouter',

@@ -793,7 +793,7 @@ dayjs.extend(isBetween);
 import { flattenDeep, getMax, flattenDeepParents, regDeepParents } from "wl-core"; // 导入数组操作函数
 import ContextMenu from "./components/wl-contextmenu";
 /* GTT end */
-
+const baseURL = process.env.VUE_APP_BASE_API
 const defaultTask = {
   id: '',
   pid:'',
@@ -1266,7 +1266,7 @@ export default {
       var that = this
       var isUpload = false
       $.ajax({
-        url: 'http://localhost:8886/project/project/uploadFJ',
+        url: baseURL+'project/uploadFJ',
         method: 'post',
         data: formData,
         async: false,

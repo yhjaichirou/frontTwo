@@ -62,6 +62,7 @@ const mutations = {
   SET_ORGNAME: (state, orgName) => {
     state.orgName = orgName
   }
+
 }
 
 const actions = {
@@ -110,7 +111,7 @@ const actions = {
         const {
           roleIds,
           userName,
-          avatar,
+          avater,
           id,
           orgId,
           orgName,
@@ -127,7 +128,7 @@ const actions = {
         commit('SET_USERINFO', data)
         commit('SET_NAME', userName)
         commit('SET_USERID', id)
-        commit('SET_AVATAR', avatar)
+        commit('SET_AVATAR', avater)
         commit('SET_ORGID', orgId)
         commit('SET_ORGNAME', orgName)
         commit('SET_TYPE', type)

@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="off" label-position="left">
 
       <div class="title-container">
         <h3 class="title">项目管理平台</h3>
@@ -17,7 +17,7 @@
           name="username"
           type="text"
           tabindex="1"
-          autocomplete="on"
+          autocomplete="new-username"
         />
       </el-form-item>
 
@@ -34,7 +34,7 @@
             placeholder="Password"
             name="password"
             tabindex="2"
-            autocomplete="on"
+            autocomplete="new-password"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
@@ -82,23 +82,32 @@ export default {
   components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+      if(value.trim() === ''){
+        callback(new Error('账号不能为空！'))
+      } else if (!validUsername(value)) {
+        var myreg = /^1[3456789]\d{9}$/
+        if (!myreg.test(value)) {
+            callback(new Error('账号格式不正确！'))
+        } else {
+            callback()
+        }
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if(value.trim() === ''){
+        callback(new Error('密码不能为空！'))
+      } else if (value.length < 6 || value.length> 18) {
+        callback(new Error('密码不能少于5位'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -113,26 +122,26 @@ export default {
     }
   },
   watch: {
-    $route: {
-      handler: function(route) {
-        const query = route.query
-        if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
-        }
-      },
-      immediate: true
-    }
+    // $route: {
+    //   handler: function(route) {
+    //     const query = route.query
+    //     if (query) {
+    //       this.redirect = query.redirect
+    //       this.otherQuery = this.getOtherQuery(query)
+    //     }
+    //   },
+    //   immediate: true
+    // }
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
   },
-  mounted() {
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
-      this.$refs.password.focus()
-    }
+  mounted() {//打开就自定验证 
+    // if (this.loginForm.username === '') {
+    //   this.$refs.username.focus()
+    // } else if (this.loginForm.password === '') {
+    //   this.$refs.password.focus()
+    // }
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
@@ -231,10 +240,10 @@ $cursor: #fff;
       height: 47px;
       caret-color: $cursor;
 
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
+      // &:-webkit-autofill {
+      //   box-shadow: 0 0 0px 1000px $bg inset !important;
+      //   -webkit-text-fill-color: $cursor !important;
+      // }
     }
   }
 
