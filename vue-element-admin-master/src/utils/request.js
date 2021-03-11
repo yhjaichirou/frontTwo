@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 30000//5000 // request timeout
+  timeout: 30000// 5000 // request timeout
 })
 
 // 请求拦截 携带token  request interceptor
@@ -20,6 +20,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
       config.headers['AgentId'] = store.getters.userId
+      // config.headers['Access-Control-Allow-Origin'] = "*"
     }
     return config
   },
@@ -74,11 +75,11 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: "服务请求失败！",//error.message,
+      message: '服务请求失败！', // error.message,
       type: 'error',
       duration: 5 * 1000
     })
-    return Promise.reject("服务请求失败！") //error
+    return Promise.reject('服务请求失败！') // error
   }
 )
 
