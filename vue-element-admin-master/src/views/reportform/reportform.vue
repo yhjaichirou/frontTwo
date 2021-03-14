@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="container-header">
 
-      <el-tabs :tab-position="tabPosition" style="height: 200px;">
+      <el-tabs :tab-position="tabPosition" >
           <el-tab-pane label="全市重点对接企业项目推进台账">
               <div>
                 <FilenameOption v-model="search" />
@@ -221,11 +221,13 @@ export default {
     flex-direction: column;
 
     .container-header {
-      padding: 20px;
+      padding: 0px 20px 20px 20px;
       background-color: white;
+      height: 100%;
     }
-    .el-tabs__content{
-      margin-top:20px;
+    ::v-deep .el-tabs__content{
+      margin: 20px 0px;
+      padding: 0px !important;
     }
   }
 </style>

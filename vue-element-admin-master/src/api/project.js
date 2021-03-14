@@ -155,3 +155,13 @@ export function getFileList(projectId,pn,ps) {
     method: 'get'
   })
 }
+
+
+
+/* gantt */
+export function getProjectGanttData(projectId,querystatus,pn,ps) {
+  return request({
+    url: `/project/getProjectGanttData/${projectId}/${querystatus}/${pn}/${ps}`,
+    method: 'get'
+  })
+}

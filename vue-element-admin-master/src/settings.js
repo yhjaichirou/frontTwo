@@ -1,5 +1,5 @@
 module.exports = {
-  title: '项目管理平台',
+  title: '项目监管平台',
 
   /**
    * @type {boolean} true | false

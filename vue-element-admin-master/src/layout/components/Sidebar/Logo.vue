@@ -24,8 +24,8 @@ export default {
   },
   data() {
     return {
-      title: '项目管理平台',
-      logo: 'https://brinch.wlcbhc.com:8088/file/project/logo.png'// 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '项目监管平台',
+      logo: '/logo2.png'//https://brinch.wlcbhc.com:8088/file/project/logo.png'// 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
 }
