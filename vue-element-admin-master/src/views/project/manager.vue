@@ -18,8 +18,13 @@
           <el-radio-button label="2" value="2">已完成</el-radio-button>
         </el-radio-group>
         <ul>
-          <li v-for="(item,index) in projectList" :key="item.id" class="ng-star-inserted" :class="currProjectIndex==item.id?'active':''"
-            @click.prevent="clickProject(item.id)">
+          <li
+            v-for="(item,index) in projectList"
+            :key="item.id"
+            class="ng-star-inserted"
+            :class="currProjectIndex==item.id?'active':''"
+            @click.prevent="clickProject(item.id)"
+          >
             <a class="section-item" href="#">
               <svg-icon icon-class="project2" />{{ item.name }}</a>
             <div class="ng-star-inserted-btn">
@@ -151,7 +156,7 @@
                     <div class="flex-se1">
                       <span class="circle" :class="projectStatusClass" />
                       <span class="ml-1">{{ thisProject.status==1?"进行中":thisProject.status==2?"已完成":thisProject.status==3?"逾期":thisProject.status==7?"新建":thisProject.status==8?"提交审批中":thisProject.status==9?"审批失败":"审批通过" }}</span>
-                      <el-button type="primary" size="mini" round @click="dialogFormVisible = true" style="margin-left: 10px;">更新</el-button>
+                      <el-button type="primary" size="mini" round style="margin-left: 10px;" @click="dialogFormVisible = true">更新</el-button>
                     </div>
                   </div>
 
@@ -354,6 +359,7 @@
               </el-table>
             </div>
           </el-tab-pane>
+
           <el-tab-pane label="任务配置" name="3">
             <div class="task-list-type">
               <div class="task-list-type-left">
@@ -370,9 +376,9 @@
               <div class="task-list-type-right">
                 <ul>
                   <li><a class="add-task-origin nav-link ng-star-inserted" href="javascript:;" @click="openAddTask(null)">
-                      <i class="el-icon-circle-plus" />
-                      新建
-                    </a></li>
+                    <i class="el-icon-circle-plus" />
+                    新建
+                  </a></li>
                   <!-- <li> <a class="add-task-origin nav-link ng-star-inserted" href="javascript:;" thynavlink="">
                       <i class="wtf wtf-circle-plus text-primary"></i>
                       新建
@@ -389,12 +395,10 @@
                   </el-collapse-item>
                 </el-collapse>
               </el-card>
-
               <!-- <my-table-tasks task-list="tableData" /> -->
-
             </div>
-
           </el-tab-pane>
+
           <el-tab-pane label="项目文件" name="4">
 
             <div class="manager-card">
@@ -425,17 +429,29 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <el-pagination :current-page="fileMap.pn" :page-sizes="[20, 50, 100]" :page-size="fileMap.ps" layout="total, sizes, prev, pager, next, jumper"
-                :total="fileMap.total" @size-change="handlePageSizeChange" @current-change="handlePageCurrentChange" />
+              <el-pagination
+                :current-page="fileMap.pn"
+                :page-sizes="[20, 50, 100]"
+                :page-size="fileMap.ps"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="fileMap.total"
+                @size-change="handlePageSizeChange"
+                @current-change="handlePageCurrentChange"
+              />
             </div>
 
           </el-tab-pane>
         </el-tabs>
-        <el-tabs v-else v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tabs v-else v-model="activeName" type="card">
           <el-tab-pane label="项目概览" name="1">
             <div style="padding: 10px;">
-              <panel-group :all-pro-count="allMsg.allProject" :all-com-pro-count="allMsg.allComProject" :all-invest="allMsg.allInvest"
-                :all-people="allMsg.allPeople" @handleSetLineChartData="handleSetLineChartData" />
+              <panel-group
+                :all-pro-count="allMsg.allProject"
+                :all-com-pro-count="allMsg.allComProject"
+                :all-invest="allMsg.allInvest"
+                :all-people="allMsg.allPeople"
+                @handleSetLineChartData="handleSetLineChartData"
+              />
             </div>
 
           </el-tab-pane>
@@ -549,12 +565,17 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="对接日期" prop="dockingDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addform.dockingDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
-                  style="width: 100%;" :picker-options="endTime"/>
+                <el-date-picker
+                  v-model="addform.dockingDate"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                  :picker-options="endTime"
+                />
               </el-form-item>
             </div>
           </el-col>
-
 
           <el-col :span="12">
             <div class="grid-content bg-purple">
@@ -602,14 +623,14 @@
           <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="投资情况" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额" @input="investChange" suffix-icon="iconfont icon-jinbi"/>
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
-          <el-col :span="24" :class="visibleInvest" >
+          <el-col :span="24" :class="visibleInvest">
             <el-form-item label="投资明细" prop="investInfos" :label-width="formLabelWidth">
               <div>
-                <el-row >
+                <el-row>
                   <el-col :span="8" style="min-height: 40px;height: 40px;">
                     <div class="grid-content bg-purple" style="line-height: 22px;">投资类型</div>
                   </el-col>
@@ -620,7 +641,7 @@
                     <div class="grid-content bg-purple" style="line-height: 22px;">投资时间</div>
                   </el-col>
                 </el-row>
-                <InvestInfo v-for="(item,index) in addform.investInfos" :key="index" :index="index" :item="item" @delete="deleteInvestInfo"></InvestInfo>
+                <InvestInfo v-for="(item,index) in addform.investInfos" :key="index" :index="index" :item="item" @delete="deleteInvestInfo" />
 
               </div>
               <el-button size="mini" type="primary" @click="addInvestInfo">添 加</el-button>
@@ -630,8 +651,13 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="预计完成时间" prop="expectedDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addform.expectedDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
-                  style="width: 100%;" />
+                <el-date-picker
+                  v-model="addform.expectedDate"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                />
               </el-form-item>
             </div>
           </el-col>
@@ -665,36 +691,41 @@
                 <el-upload
                   action="#"
                   list-type="picture-card"
-                  :auto-upload="false">
-                    <i slot="default" class="el-icon-plus"></i>
-                    <div slot="file" slot-scope="{file}">
-                      <img
-                        class="el-upload-list__item-thumbnail"
-                        :src="file.url" alt=""
+                  :auto-upload="false"
+                  :before-upload="beforeAvatarUpload"
+                  limit="1"
+                >
+                  <i slot="default" class="el-icon-plus" />
+                  <div slot="file" slot-scope="{file}">
+                    <img
+                      class="el-upload-list__item-thumbnail"
+                      :src="file.url"
+                      alt=""
+                    >
+                    <span class="el-upload-list__item-actions">
+                      <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)"
                       >
-                      <span class="el-upload-list__item-actions">
-                        <span
-                          class="el-upload-list__item-preview"
-                          @click="handlePictureCardPreview(file)"
-                        >
-                          <i class="el-icon-zoom-in"></i>
-                        </span>
-                        <span
-                          v-if="!disabled"
-                          class="el-upload-list__item-delete"
-                          @click="handleDownload(file)"
-                        >
-                          <i class="el-icon-download"></i>
-                        </span>
-                        <span
-                          v-if="!disabled"
-                          class="el-upload-list__item-delete"
-                          @click="handleRemove(file)"
-                        >
-                          <i class="el-icon-delete"></i>
-                        </span>
+                        <i class="el-icon-zoom-in" />
                       </span>
-                    </div>
+                      <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleDownload(file)"
+                      >
+                        <i class="el-icon-download" />
+                      </span>
+                      <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleRemove(file)"
+                      >
+                        <i class="el-icon-delete" />
+                      </span>
+                    </span>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过5Mb</div>
+                  </div>
                 </el-upload>
               </el-form-item>
             </div>
@@ -703,8 +734,8 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAddFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addProject('ruleForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogAddFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="addProject('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -739,16 +770,26 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="开始日期" prop="startDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addTaskObj.startDate" type="date" placeholder="选择开始日期" value-format="yyyy-MM-dd"
-                  style="width: 100%;" />
+                <el-date-picker
+                  v-model="addTaskObj.startDate"
+                  type="date"
+                  placeholder="选择开始日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="结束日期" prop="endDate" :label-width="formLabelWidth">
-                <el-date-picker v-model="addTaskObj.endDate" type="date" placeholder="选择结束日期" value-format="yyyy-MM-dd"
-                  style="width: 100%;" />
+                <el-date-picker
+                  v-model="addTaskObj.endDate"
+                  type="date"
+                  placeholder="选择结束日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                />
               </el-form-item>
             </div>
           </el-col>
@@ -804,839 +845,849 @@
       <el-radio v-model="updateProStatus" label="3">已延期</el-radio>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="clickUpdateStatus" >确 定</el-button>
+        <el-button type="primary" @click="clickUpdateStatus">确 定</el-button>
       </div>
     </el-dialog>
-
 
   </div>
 </template>
 
 <script>
-  import CountTo from 'vue-count-to'
-  import {
-    getTzqkList,
-    getAllMsg,
-    getAllProject,
-    getProject,
-    getAllFormParam,
-    getAllOrgs,
-    getJoiners,
-    getLeadersOfOrgId,
-    clickUpdateStatus,
-    addProject,
-    updateProject,
-    deleteProject,
-    authProject,
-    // 任务请求
-    getAllTaskList,
-    getAllCountMap,
-    getAllTaskFormParam,
-    getExecutorList,
-    getTask,
-    addTask,
-    updateTask,
-    deleteTask,
-    getFileList
-  } from '@/api/project'
-  import { getOrgtypes } from '@/api/depart'
-  import yhjTaskTable from './components/tableTasks.vue'
-  import PanelGroup from './components/PanelGroup'
-  import InvestInfo from './components/InvestInfo'
-  const defaultProject = {
-    id: '',
-    name: '',
-    industryCategory: '',
-    content: '',
-    number: '',
-    maturity: '',
-    dockingDate: '',
-    leader: '',
-    leadenter: '',
-    coordinate: '',
-    taskPrefix: '',
-    visibleRange: '',
-    joiners: '',
-    process: '',
-    remarks: '',
-    invest: '',
-    expectedDate: '',
-    startDate: '',
-    approveCode: '',
+import { getToken } from '@/utils/auth'
+import CountTo from 'vue-count-to'
+import {
+  getTzqkList,
+  getAllMsg,
+  getAllProject,
+  getProject,
+  getAllFormParam,
+  getAllOrgs,
+  getJoiners,
+  getLeadersOfOrgId,
+  clickUpdateStatus,
+  addProject,
+  updateProject,
+  deleteProject,
+  authProject,
+  // 任务请求
+  getAllTaskList,
+  getAllCountMap,
+  getAllTaskFormParam,
+  getExecutorList,
+  getTask,
+  addTask,
+  updateTask,
+  deleteTask,
+  getFileList
+} from '@/api/project'
+import { getOrgtypes } from '@/api/depart'
+import yhjTaskTable from './components/tableTasks.vue'
+import PanelGroup from './components/PanelGroup'
+import InvestInfo from './components/InvestInfo'
+const defaultProject = {
+  id: '',
+  name: '',
+  industryCategory: '',
+  content: '',
+  number: '',
+  maturity: '',
+  dockingDate: '',
+  leader: '',
+  leadenter: '',
+  coordinate: '',
+  taskPrefix: '',
+  visibleRange: '',
+  joiners: '',
+  process: '',
+  remarks: '',
+  invest: '',
+  expectedDate: '',
+  startDate: '',
+  approveCode: '',
 
-    otherBl: '',
-    diffAndProblem: '',
-    proManager: '',
-    proManagerMobile: '',
-    enterManager: '',
-    enterManagerMobile: '',
-    stage: '',
-    status: '',
-    completeDate: '',
-    orgId: '',
-    investInfos:[{}],
-    typeArr:[]
+  otherBl: '',
+  diffAndProblem: '',
+  proManager: '',
+  proManagerMobile: '',
+  enterManager: '',
+  enterManagerMobile: '',
+  stage: '',
+  status: '',
+  completeDate: '',
+  orgId: '',
+  investInfos: [{}],
+  typeArr: []
 
+}
+const defaultTask = {
+  id: '',
+  pid: '',
+  proId: '',
+  title: '',
+  executor: '',
+  executorMobile: '',
+  stageId: '',
+  startDate: '',
+  endDate: '',
+  priority: '',
+  status: '',
+  remark: '',
+  annex: '',
+  preTasks: '',
+  orgId: ''
+}
+const lineChartData = {
+  newVisitis: {
+    expectedData: [100, 120, 161, 134, 105, 160, 165],
+    actualData: [120, 82, 91, 154, 162, 140, 145]
+  },
+  messages: {
+    expectedData: [200, 192, 120, 144, 160, 130, 140],
+    actualData: [180, 160, 151, 106, 145, 150, 130]
+  },
+  purchases: {
+    expectedData: [80, 100, 121, 104, 105, 90, 100],
+    actualData: [120, 90, 100, 138, 142, 130, 130]
+  },
+  shoppings: {
+    expectedData: [130, 140, 141, 142, 145, 150, 160],
+    actualData: [120, 82, 91, 154, 162, 140, 130]
   }
-  const defaultTask = {
-    id: '',
-    pid: '',
-    proId: '',
-    title: '',
-    executor: '',
-    executorMobile: '',
-    stageId: '',
-    startDate: '',
-    endDate: '',
-    priority: '',
-    status: '',
-    remark: '',
-    annex: '',
-    preTasks: '',
-    orgId: ''
-  }
-  const lineChartData = {
-    newVisitis: {
-      expectedData: [100, 120, 161, 134, 105, 160, 165],
-      actualData: [120, 82, 91, 154, 162, 140, 145]
-    },
-    messages: {
-      expectedData: [200, 192, 120, 144, 160, 130, 140],
-      actualData: [180, 160, 151, 106, 145, 150, 130]
-    },
-    purchases: {
-      expectedData: [80, 100, 121, 104, 105, 90, 100],
-      actualData: [120, 90, 100, 138, 142, 130, 130]
-    },
-    shoppings: {
-      expectedData: [130, 140, 141, 142, 145, 150, 160],
-      actualData: [120, 82, 91, 154, 162, 140, 130]
+}
+export default {
+  components: {
+    'yhj-task-table': yhjTaskTable,
+    PanelGroup,
+    CountTo,
+    InvestInfo
+  },
+  data() {
+    var val_mobil = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入主管部门联系人电话！'))
+      } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
+        callback(new Error('手机号格式不正确！'))
+      } else {
+        callback()
+      }
     }
-  }
-  export default {
-    components: {
-      'yhj-task-table': yhjTaskTable,
-      PanelGroup,
-      CountTo,
-      InvestInfo
-    },
-    data() {
-      var val_mobil = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入主管部门联系人电话！'))
-        } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
-          callback(new Error('手机号格式不正确！'))
-        } else {
-          callback()
-        }
+    var val_task_mobil = (rule, value, callback) => {
+      if (value === '') {
+        callback()
+      } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
+        callback(new Error('手机号格式不正确！'))
+      } else {
+        callback()
       }
-      var val_task_mobil = (rule, value, callback) => {
-        if (value === '') {
-          callback()
-        } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
-          callback(new Error('手机号格式不正确！'))
-        } else {
-          callback()
+    }
+    return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false,
+      dialogFormVisible: false,
+      updateProStatus: '',
+      tzqkList: [],
+      orgId: '',
+      activeName: '1',
+      activeNamesTask: ['1'],
+      projectList: [],
+      thisProject: {},
+      currProjectIndex: '',
+      projectStatusClass: '',
+      searchContent: '',
+      searchStatus: '0',
+      typeList: [],
+      allMsg: {},
+      endTime: {
+        disabledDate: time => {
+          return time.getTime() > Date.now()
         }
-      }
-      return {
-        dialogImageUrl: '',
-        dialogVisible: false,
-        disabled: false,
-        dialogFormVisible: false,
-        updateProStatus:"",
-        tzqkList: [],
-        orgId: '',
-        activeName: '1',
-        activeNamesTask: ['1'],
-        projectList: [],
-        thisProject: {},
-        currProjectIndex: '',
-        projectStatusClass: '',
-        searchContent: '',
-        searchStatus: '0',
-        typeList:[],
-        allMsg: {},
-        endTime: {
-            disabledDate: time => {
-              return time.getTime() > Date.now()
-            }
-        },
-        dialogType: '',
-        dialogAddFormVisible: false,
-        visibleInvest: 'hiden',
-        dialogType_Task: '',
-        dialogTaskFormVisible: false,
-        addform: Object.assign({}, defaultProject),
-        addTaskObj: Object.assign({}, defaultTask),
+      },
+      dialogType: '',
+      dialogAddFormVisible: false,
+      visibleInvest: 'hiden',
+      dialogType_Task: '',
+      dialogTaskFormVisible: false,
+      addform: Object.assign({}, defaultProject),
+      addTaskObj: Object.assign({}, defaultTask),
 
-        categoryList: [],
-        leaderList: [],
-        peopleList: [],
-        enterList: [],
-        orgAllId: '',
-        peopleAllId: '',
-        orgList: [],
-        joiners: [],
+      categoryList: [],
+      leaderList: [],
+      peopleList: [],
+      enterList: [],
+      orgAllId: '',
+      peopleAllId: '',
+      orgList: [],
+      joiners: [],
+      maturity: [{
+        id: 1,
+        name: '加快前期'
+      }, {
+        id: 2,
+        name: '新开工'
+      }, {
+        id: 3,
+        name: '续建'
+      }, {
+        id: 4,
+        name: '竣工'
+      }],
+      stageList: [{
+        id: 1,
+        name: '无所属'
+      }, {
+        id: 2,
+        name: '立项阶段'
+      }, {
+        id: 3,
+        name: '执行阶段'
+      }, {
+        id: 4,
+        name: '验收阶段'
+      }],
+      rules: {
+        name: [{
+          required: true,
+          message: '请输入项目名称',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 50,
+          message: '长度在 3 到 50 个字符',
+          trigger: 'blur'
+        }
+        ],
+        proManager: [{
+          required: true,
+          message: '请选择主管部门负责人',
+          trigger: 'change'
+        }],
+        proManagerMobile: [{
+          validator: val_mobil,
+          trigger: 'blur'
+        }],
+        enterManager: [{
+          required: true,
+          message: '请选择企业负责人',
+          trigger: 'change'
+        }],
+        enterManagerMobile: [{
+          validator: val_mobil,
+          trigger: 'blur'
+        }],
+        content: [{
+          required: true,
+          message: '请输入项目描述',
+          trigger: 'blur'
+        }],
+        typeArr: [{
+          required: true,
+          message: '请选择行业类型',
+          trigger: 'change'
+        }],
+        number: [{
+          required: true,
+          message: '请输入项目编号',
+          trigger: 'change'
+        }],
         maturity: [{
-          id: 1,
-          name: '加快前期'
-        }, {
-          id: 2,
-          name: '新开工'
-        }, {
-          id: 3,
-          name: '续建'
-        }, {
-          id: 4,
-          name: '竣工'
+          required: true,
+          message: '请选择项目成熟度',
+          trigger: 'change'
         }],
-        stageList: [{
-          id: 1,
-          name: '无所属'
-        }, {
-          id: 2,
-          name: '立项阶段'
-        }, {
-          id: 3,
-          name: '执行阶段'
-        }, {
-          id: 4,
-          name: '验收阶段'
+        dockingDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择对接日期',
+          trigger: 'change'
         }],
-        rules: {
-          name: [{
-              required: true,
-              message: '请输入项目名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 50,
-              message: '长度在 3 到 50 个字符',
-              trigger: 'blur'
-            }
-          ],
-          proManager: [{
-            required: true,
-            message: '请选择主管部门负责人',
-            trigger: 'change'
-          }],
-          proManagerMobile: [{
-            validator: val_mobil,
-            trigger: 'blur'
-          }],
-          enterManager: [{
-            required: true,
-            message: '请选择企业负责人',
-            trigger: 'change'
-          }],
-          enterManagerMobile: [{
-            validator: val_mobil,
-            trigger: 'blur'
-          }],
-          content: [{
-            required: true,
-            message: '请输入项目描述',
-            trigger: 'blur'
-          }],
-          typeArr: [{
-            required: true,
-            message: '请选择行业类型',
-            trigger: 'change'
-          }],
-          number: [{
-            required: true,
-            message: '请输入项目编号',
-            trigger: 'change'
-          }],
-          maturity: [{
-            required: true,
-            message: '请选择项目成熟度',
-            trigger: 'change'
-          }],
-          dockingDate: [{
-            // type: 'date',
-            required: true,
-            message: '请选择对接日期',
-            trigger: 'change'
-          }],
-          expectedDate: [{
-            // type: 'date',
-            required: true,
-            message: '请选择预计完成事件时间',
-            trigger: 'change'
-          }],
-          leader: [{
-            required: true,
-            message: '请选择牵头领导',
-            trigger: 'change'
-          }],
-          leadenter: [{
-            required: true,
-            message: '请选择牵头单位',
-            trigger: 'change'
-          }],
-          coordinate: [{
-            required: true,
-            message: '请选择协调负责人',
-            trigger: 'change'
-          }],
-          visibleRange: [{
-            required: true,
-            message: '请选择可见范围',
-            trigger: 'change'
-          }],
-          joiners: [{
-            required: true,
-            message: '请选择参与人员',
-            trigger: 'change'
-          }],
-          invest: [{
-            required: true,
-            message: '请输入投资金额',
-            trigger: 'blur'
-          }]
-        },
-        formLabelWidth: '90px',
+        expectedDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择预计完成事件时间',
+          trigger: 'change'
+        }],
+        leader: [{
+          required: true,
+          message: '请选择牵头领导',
+          trigger: 'change'
+        }],
+        leadenter: [{
+          required: true,
+          message: '请选择牵头单位',
+          trigger: 'change'
+        }],
+        coordinate: [{
+          required: true,
+          message: '请选择协调负责人',
+          trigger: 'change'
+        }],
+        visibleRange: [{
+          required: true,
+          message: '请选择可见范围',
+          trigger: 'change'
+        }],
+        joiners: [{
+          required: true,
+          message: '请选择参与人员',
+          trigger: 'change'
+        }],
+        invest: [{
+          required: true,
+          message: '请输入投资金额',
+          trigger: 'blur'
+        }]
+      },
+      formLabelWidth: '90px',
 
-        // 任务添加  获取前置任务
-        taskTypeStatus: 10,
-        preTaskList: [],
-        executorList: [],
-        priorityList: [{
-          id: 1,
-          name: '一级'
-        }, {
-          id: 2,
-          name: '二级'
-        }, {
-          id: 3,
-          name: '三级'
-        }],
-        ruleTasks: {
-          name: [{
-              required: true,
-              message: '请输入任务名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 50,
-              message: '长度在 3 到 50 个字符',
-              trigger: 'blur'
-            }
-          ],
-          stageId: [{
-            required: true,
-            message: '请选择所属阶段',
-            trigger: 'change'
-          }],
-          remark: [{
-            required: true,
-            message: '请输入项目描述',
-            trigger: 'blur'
-          }],
-          startDate: [{
-            // type: 'date',
-            required: true,
-            message: '请选择开始日期',
-            trigger: 'change'
-          }],
-          endDate: [{
-            // type: 'date',
-            required: true,
-            message: '请选择结束日期',
-            trigger: 'change'
-          }],
-          priority: [{
-            required: true,
-            message: '请选择优先级',
-            trigger: 'change'
-          }],
-          executorMobile: [{
-            validator: val_task_mobil,
-            trigger: 'blur'
-          }]
+      // 任务添加  获取前置任务
+      taskTypeStatus: 10,
+      preTaskList: [],
+      executorList: [],
+      priorityList: [{
+        id: 1,
+        name: '一级'
+      }, {
+        id: 2,
+        name: '二级'
+      }, {
+        id: 3,
+        name: '三级'
+      }],
+      ruleTasks: {
+        name: [{
+          required: true,
+          message: '请输入任务名称',
+          trigger: 'blur'
         },
-        // 任务列表
-        taskList: [],
-        allCountMap: {
-          'ALL': 0,
-          'NOMACK': 0,
-          'NOCOM': 0,
-          'COMPLETE': 0,
-          'DELAY': 0,
-          'OVERDUE': 0
-        },
-        // 总概况
-        isHasThisProject: false,
-        lineChartData: lineChartData.newVisitis,
-
-        // 项目文件
-        fileMap: {
-          'pn': 1,
-          'ps': 20,
-          'list': [],
-          'total': 0
+        {
+          min: 3,
+          max: 50,
+          message: '长度在 3 到 50 个字符',
+          trigger: 'blur'
         }
+        ],
+        stageId: [{
+          required: true,
+          message: '请选择所属阶段',
+          trigger: 'change'
+        }],
+        remark: [{
+          required: true,
+          message: '请输入项目描述',
+          trigger: 'blur'
+        }],
+        startDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择开始日期',
+          trigger: 'change'
+        }],
+        endDate: [{
+          // type: 'date',
+          required: true,
+          message: '请选择结束日期',
+          trigger: 'change'
+        }],
+        priority: [{
+          required: true,
+          message: '请选择优先级',
+          trigger: 'change'
+        }],
+        executorMobile: [{
+          validator: val_task_mobil,
+          trigger: 'blur'
+        }]
+      },
+      // 任务列表
+      taskList: [],
+      allCountMap: {
+        'ALL': 0,
+        'NOMACK': 0,
+        'NOCOM': 0,
+        'COMPLETE': 0,
+        'DELAY': 0,
+        'OVERDUE': 0
+      },
+      // 总概况
+      isHasThisProject: false,
+      lineChartData: lineChartData.newVisitis,
+
+      // 项目文件
+      fileMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
       }
+    }
+  },
+  computed: {
+    routesData() {
+      return this.routes
+    }
+  },
+  // watch: {
+  //   orgList: function(val, oldval) {
+  //     const newindex = val.indexOf('all')
+  //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
+  //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
+  //     {
+  //       this.orgList = ['all']
+  //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
+  //     {
+  //       this.orgList.splice(val.indexOf('all'), 1)
+  //     }
+  //   },
+  //   preTaskList: function(val, oldval) {
+  //     const newindex = val.indexOf('all')
+  //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
+  //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
+  //     {
+  //       this.preTaskList = ['all']
+  //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
+  //     {
+  //       this.preTaskList.splice(val.indexOf('all'), 1)
+  //     }
+  //   }
+  // },
+  created() {
+    this.orgId = this.$store.getters.orgId
+    this.orgName = this.$store.getters.orgName
+    this.getProjectList()
+    this.getAllOrgs()
+    this.getAllMsg()
+    this.getOrgtypes()
+  },
+  // inject: ['reload'],
+  methods: {
+    handleRemove(file) {
+      console.log(file)
     },
-    computed: {
-      routesData() {
-        return this.routes
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
+      if (!isLt5M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!')
+      }
+      return isJPG && isLt5M
     },
-    // watch: {
-    //   orgList: function(val, oldval) {
-    //     const newindex = val.indexOf('all')
-    //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
-    //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
-    //     {
-    //       this.orgList = ['all']
-    //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
-    //     {
-    //       this.orgList.splice(val.indexOf('all'), 1)
-    //     }
-    //   },
-    //   preTaskList: function(val, oldval) {
-    //     const newindex = val.indexOf('all')
-    //     const oldindex = oldval.indexOf('all') // 获取val和oldval里all的索引,如果没有则返回-1
-    //     if (newindex != -1 && oldindex == -1 && val.length > 1) // 如果新的选择里有勾选了选择所有选择所有 则 只直线勾选所有整个选项
-    //     {
-    //       this.preTaskList = ['all']
-    //     } else if (newindex != -1 && oldindex != -1 && val.length > 1) // 如果操作前有勾选了选择所有且当前也选中了勾选所有且勾选数量大于1  则移除掉勾选所有
-    //     {
-    //       this.preTaskList.splice(val.indexOf('all'), 1)
-    //     }
-    //   }
-    // },
-    created() {
-      this.orgId = this.$store.getters.orgId
-      this.orgName = this.$store.getters.orgName
-      this.getProjectList()
-      this.getAllOrgs()
-      this.getAllMsg()
-      this.getOrgtypes()
+    handleDownload(file) {
+      console.log(file)
     },
-    // inject: ['reload'],
-    methods: {
-      handleRemove(file) {
-        console.log(file)
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url
-        this.dialogVisible = true
-      },
-      handleDownload(file) {
-        console.log(file)
-      },
-      // 上传
-      submitUpload() {
-        var formData = new FormData()// new一个formData事件
-        formData.append('file', this.addform.fileInfos[$index].inputFile) // 将file属性添加到formData里
-        var that = this
-        var isUpload = false
-        $.ajax({
-          url: 'http://localhost:8886/project/project/uploadFJ',
-          method: 'post',
-          data: formData,
-          async: false,
-          processData: false,
-          contentType: false,
-          async: false,
-          headers: {
-            'X-Token': getToken(), // 值得注意的是，这个地方一定要把请求头更改一下
-            'agentId': that.$store.getters.userId
-          },
-          success: function(res) {
-            if (res.code === 200) {
-              that.$message({
-                type: 'success',
-                message: '上传成功!'
-              })
-              // 更新路径
-              that.addform.image = res.data
-              isUpload = true
-            } else {
-              isUpload = false
-            }
-          }
-        })
-        return isUpload
-      },
-      // fresh() {
-      //   this.reload()
-      // },
-      async getOrgtypes() {
-        console.log(this.orgId)
-        const res = await getOrgtypes(this.orgId)
-        this.typeList = res.data
-      },
-      // 切换项目内容项
-      handleClick(tab, event) {
-        if (tab.index === '0') {
-
-        } else if (tab.index === '1') {
-          this.getTzqkList()
-        } else if (tab.index === '2') {
-          this.getAllTaskList()
-        } else if (tab.index === '3') { // 项目文件
-          this.getFileList(this.fileMap.pn, this.fileMap.ps)
-        }
-        console.log(tab, event)
-      },
-      async getTzqkList() {
-        const res = await getTzqkList(this.orgId, this.thisProject.id)
-        this.tzqkList = res.data
-      },
-      async getAllMsg() {
-        const res = await getAllMsg(this.orgId)
-        this.allMsg = res.data
-      },
-      async getAllOrgs() {
-        const res = await getAllOrgs()
-        this.orgList = res.data
-      },
-      async getProjectList() {
-        console.log(this.searchContent, this.searchStatus)
-        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-        this.projectList = res.data
-      },
-
-      async searchProject() {
-        const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-        this.projectList = res.data
-        console.log(this.projectList)
-      },
-      handleSetLineChartData(type) {
-        this.lineChartData = lineChartData[type]
-      },
-      async clickProject(id) {
-        this.currProjectIndex = id
-        const res = await getProject(id)
-        this.thisProject = res.data
-        this.isHasThisProject = true
-        this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2 ?
-          'circle-success' : 'circle-error'
-      },
-      async authProject(id) {
-        this.$confirm('请确认项目及任务无误，提交后将无法修改，确定提交吗？', '提交审核', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          })
-          .then(async () => {
-            await authProject(id)
-            this.$message({
+    // 上传
+    submitUpload() {
+      var formData = new FormData()// new一个formData事件
+      formData.append('file', this.addform.fileInfos[0].inputFile) // 将file属性添加到formData里
+      var that = this
+      $.ajax({
+        url: 'http://localhost:8886/project/project/uploadFJ',
+        method: 'post',
+        data: formData,
+        async: false,
+        processData: false,
+        contentType: false,
+        headers: {
+          'X-Token': getToken(), // 值得注意的是，这个地方一定要把请求头更改一下
+          'agentId': that.$store.getters.userId
+        },
+        success: function(res) {
+          if (res.code === 200) {
+            that.$message({
               type: 'success',
-              message: '已提交成功!'
+              message: '上传成功!'
             })
-          })
-          .catch(err => {
-            console.error(err)
-          })
-      },
-      async addProjectEvent(id) {
-        // 表单固定值填充
-        const res = await getAllFormParam(this.orgId)
-        this.categoryList = res.data.categorys
-        this.peopleList = res.data.peoples
-        this.enterList = res.data.qys
-        this.orgList = res.data.orgs
-        var sOrgIds = []
-        for (const s of this.orgList) {
-          sOrgIds.push(s.id)
-        }
-        this.orgAllId = JSON.stringify(sOrgIds)
-        // 编辑获取
-        if (id != null) {
-          this.dialogType = 'edit'
-          const res2 = await getProject(id)
-          this.addform = res2.data
-          this.addform.id = id
-          console.log(this.addform.invest)
-          this.addform.visibleRange = res2.data.visibleRange != null ? JSON.parse(res2.data.visibleRange) : ''
-          this.visibleInvest = this.addform.invest.trim() !== '' && this.addform.invest !== "0" ? "":"hiden";
-          const res3 = await getJoiners(this.addform.visibleRange)
-          this.joiners = res3.data
-          this.addform.joiners = this.addform.joiners != null ? JSON.parse(this.addform.joiners) : ''
-          this.addform.stage = this.addform.stage != null ? JSON.parse(this.addform.stage) : ''
-        } else {
-          this.visibleInvest = "hiden"
-          this.addform = Object.assign({}, defaultProject)
-        }
-        this.dialogAddFormVisible = true
-      },
-      deleteProject(id, $index) {
-        console.log(id, $index)
-        this.$confirm('确定要删除该项目吗？', '删除', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          })
-          .then(async () => {
-            await deleteProject(id)
-            this.projectList.splice($index, 1)
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-          })
-          .catch(err => {
-            console.error(err)
-          })
-      },
-      async visibleRangeChange(op) {
-        if (op.indexOf("0") !== -1) {
-          var allOrgids = []
-          for (const s of this.orgList) {
-            allOrgids.push(s.id)
-          }
-          this.addform.visibleRange = allOrgids
-        }
-        this.joiners = []
-        if (this.addform.visibleRange !== '' && this.addform.visibleRange !== 0) {
-          const res = await getJoiners(this.addform.visibleRange.join(","))
-          this.joiners = res.data
-        }
-      },
-      joinerChange(op){
-        if (op.indexOf("0") !== -1) {
-          var allpeoids = []
-          for (const s of this.orgList) {
-            allpeoids.push(s.id)
-          }
-          this.addform.joiners = allpeoids
-          console.error(this.addform.joiners)
-        }
-      },
-      async changeLeadenter() {
-        this.leaderList = []
-        if (this.addform.leadenter !== '' && this.addform.leadenter !== 0) {
-          const res = await getLeadersOfOrgId(this.addform.leadenter)
-          this.leaderList = res.data
-        }
-      },
-      investChange() {
-         this.visibleInvest = this.addform.invest.trim() !== '' && this.addform.invest !== "0" ? "" : "hiden"
-      },
-      deleteInvestInfo(index) {
-        if (index !== 0) {
-          this.addform.investInfos.splice(index , 1);
-        }
-      },
-      addInvestInfo() {
-        this.addform.investInfos.push({});
-      },
-      proManagerChange() {
-        var cPRO = this.addform.proManager
-        if (cPRO !== '' && cPRO !== 0) {
-          for (var op of this.peopleList) {
-            if (op.id === cPRO) {
-              this.addform.proManagerMobile = op.mobile
-            }
-          }
-        }
-      },
-      enterManagerChange() {
-        var cPRO = this.addform.enterManager
-        if (cPRO !== '' && cPRO !== 0) {
-          for (var op of this.enterList) {
-            if (op.id === cPRO) {
-              this.addform.enterManagerMobile = op.mobile
-            }
-          }
-        }
-      },
-
-      async addProject(formName) {
-        console.log(this.addform.joiners)
-        console.log(this.addform.visibleRange)
-        console.log(JSON.stringify(this.addform.investInfos))
-        const isEdit = this.dialogType === 'edit'
-        var isGo = false
-
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            isGo = true
+            // 更新路径
+            that.addform.image = res.data
+            return true
           } else {
-            this.$message.error('提交信息错误！')
+            that.$message({
+              type: 'error',
+              message: '上传失败!' + res.msg
+            })
             return false
           }
-        })
+        }
+      })
+    },
+    // fresh() {
+    //   this.reload()
+    // },
+    async getOrgtypes() {
+      console.log(this.orgId)
+      const res = await getOrgtypes(this.orgId)
+      this.typeList = res.data
+    },
+    // 切换项目内容项
+    handleClick(tab, event) {
+      if (tab.index === '1') {
+        this.getTzqkList()
+      } else if (tab.index === '2') {
+        this.getAllTaskList()
+      } else if (tab.index === '3') { // 项目文件
+        this.getFileList(this.fileMap.pn, this.fileMap.ps)
+      }
+      console.log(tab, event)
+    },
+    async getTzqkList() {
+      const res = await getTzqkList(this.orgId, this.thisProject.id)
+      this.tzqkList = res.data
+    },
+    async getAllMsg() {
+      const res = await getAllMsg(this.orgId)
+      this.allMsg = res.data
+    },
+    async getAllOrgs() {
+      const res = await getAllOrgs()
+      this.orgList = res.data
+    },
+    async getProjectList() {
+      console.log(this.searchContent, this.searchStatus)
+      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
+      this.projectList = res.data
+    },
 
-        if (isGo) {
-          if (isEdit) {
-            this.addform.id = this.thisProject.id
-            const dd = await updateProject(this.addform)
-            this.thisProject = dd
-          } else {
-            this.addform.orgId = this.orgId
-            const {
-              data
-            } = await addProject(this.addform)
-            this.addform.id = data
-            this.projectList.push(this.addform)
-          }
+    async searchProject() {
+      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
+      this.projectList = res.data
+      console.log(this.projectList)
+    },
+    handleSetLineChartData(type) {
+      this.lineChartData = lineChartData[type]
+    },
+    async clickProject(id) {
+      this.currProjectIndex = id
+      const res = await getProject(id)
+      this.thisProject = res.data
+      this.isHasThisProject = true
+      this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2
+        ? 'circle-success' : 'circle-error'
+    },
+    async authProject(id) {
+      this.$confirm('请确认项目及任务无误，提交后将无法修改，确定提交吗？', '提交审核', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await authProject(id)
           this.$message({
             type: 'success',
-            message: '操作成功！'
+            message: '已提交成功!'
           })
-          this.dialogAddFormVisible = false
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+    async addProjectEvent(id) {
+      // 表单固定值填充
+      const res = await getAllFormParam(this.orgId)
+      this.categoryList = res.data.categorys
+      this.peopleList = res.data.peoples
+      this.enterList = res.data.qys
+      this.orgList = res.data.orgs
+      var sOrgIds = []
+      for (const s of this.orgList) {
+        sOrgIds.push(s.id)
+      }
+      this.orgAllId = JSON.stringify(sOrgIds)
+      // 编辑获取
+      if (id != null) {
+        this.dialogType = 'edit'
+        const res2 = await getProject(id)
+        this.addform = res2.data
+        this.addform.id = id
+        console.log(this.addform.invest)
+        this.addform.visibleRange = res2.data.visibleRange != null ? JSON.parse(res2.data.visibleRange) : ''
+        this.visibleInvest = this.addform.invest.trim() !== '' && this.addform.invest !== '0' ? '' : 'hiden'
+        const res3 = await getJoiners(this.addform.visibleRange)
+        this.joiners = res3.data
+        this.addform.joiners = this.addform.joiners != null ? JSON.parse(this.addform.joiners) : ''
+        this.addform.stage = this.addform.stage != null ? JSON.parse(this.addform.stage) : ''
+      } else {
+        this.visibleInvest = 'hiden'
+        this.addform = Object.assign({}, defaultProject)
+      }
+      this.dialogAddFormVisible = true
+    },
+    deleteProject(id, $index) {
+      console.log(id, $index)
+      this.$confirm('确定要删除该项目吗？', '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await deleteProject(id)
+          this.projectList.splice($index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+    async visibleRangeChange(op) {
+      if (op.indexOf('0') !== -1) {
+        var allOrgids = []
+        for (const s of this.orgList) {
+          allOrgids.push(s.id)
         }
-      },
-      async clickUpdateStatus() {
-        await clickUpdateStatus(this.thisProject.id , this.updateProStatus)
-        this.dialogFormVisible = false
+        this.addform.visibleRange = allOrgids
+      }
+      this.joiners = []
+      if (this.addform.visibleRange !== '' && this.addform.visibleRange !== 0) {
+        const res = await getJoiners(this.addform.visibleRange.join(','))
+        this.joiners = res.data
+      }
+    },
+    joinerChange(op) {
+      if (op.indexOf('0') !== -1) {
+        var allpeoids = []
+        for (const s of this.orgList) {
+          allpeoids.push(s.id)
+        }
+        this.addform.joiners = allpeoids
+        console.error(this.addform.joiners)
+      }
+    },
+    async changeLeadenter() {
+      this.leaderList = []
+      if (this.addform.leadenter !== '' && this.addform.leadenter !== 0) {
+        const res = await getLeadersOfOrgId(this.addform.leadenter)
+        this.leaderList = res.data
+      }
+    },
+    investChange() {
+      this.visibleInvest = this.addform.invest.trim() !== '' && this.addform.invest !== '0' ? '' : 'hiden'
+    },
+    deleteInvestInfo(index) {
+      if (index !== 0) {
+        this.addform.investInfos.splice(index, 1)
+      }
+    },
+    addInvestInfo() {
+      this.addform.investInfos.push({})
+    },
+    proManagerChange() {
+      var cPRO = this.addform.proManager
+      if (cPRO !== '' && cPRO !== 0) {
+        for (var op of this.peopleList) {
+          if (op.id === cPRO) {
+            this.addform.proManagerMobile = op.mobile
+          }
+        }
+      }
+    },
+    enterManagerChange() {
+      var cPRO = this.addform.enterManager
+      if (cPRO !== '' && cPRO !== 0) {
+        for (var op of this.enterList) {
+          if (op.id === cPRO) {
+            this.addform.enterManagerMobile = op.mobile
+          }
+        }
+      }
+    },
+
+    async addProject(formName) {
+      console.log(this.addform.joiners)
+      console.log(this.addform.visibleRange)
+      console.log(JSON.stringify(this.addform.investInfos))
+      const isEdit = this.dialogType === 'edit'
+      var isGo = false
+
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          isGo = true
+        } else {
+          this.$message.error('提交信息错误！')
+          return false
+        }
+      })
+
+      if (isGo) {
+        if (isEdit) {
+          this.addform.id = this.thisProject.id
+          const dd = await updateProject(this.addform)
+          this.thisProject = dd
+        } else {
+          this.addform.orgId = this.orgId
+          const {
+            data
+          } = await addProject(this.addform)
+          this.addform.id = data
+          this.projectList.push(this.addform)
+        }
         this.$message({
           type: 'success',
-          message: '更新成功！'
+          message: '操作成功！'
         })
-      },
+        this.dialogAddFormVisible = false
+      }
+    },
+    async clickUpdateStatus() {
+      await clickUpdateStatus(this.thisProject.id, this.updateProStatus)
+      this.dialogFormVisible = false
+      this.$message({
+        type: 'success',
+        message: '更新成功！'
+      })
+    },
 
-      // 任务
-      async getTaskList(typeId) {
-        this.taskTypeStatus = typeId
-        const res = await getAllTaskList(this.thisProject.id, this.taskTypeStatus)
-        this.taskList = res.data.list
-        this.activeNamesTask = res.data.activeNamesTask
-        const res2 = await getAllCountMap(this.thisProject.id)
-        this.allCountMap = res2.data
-        console.log(this.activeNamesTask)
-      },
-      async getAllTaskList() {
-        this.getTaskList(10)
-      },
-      async getTaskSearch(typeId) {
-        this.getTaskList(typeId)
-      },
-      async openAddTask(id) {
-        // 表单固定值填充
-        const res = await getAllTaskFormParam(this.thisProject.id)
-        this.preTaskList = res.data.preTasks
-        this.stageList = res.data.stages
-        // 编辑获取
-        if (id != null) {
-          const res = await getTask(id)
-          this.addTaskObj = res.data
-          this.dialogType_Task = 'edit'
-          if (this.addTaskObj.executOrg !== '' && this.addTaskObj.executOrg !== 0) {
-            const res = await getExecutorList(this.addTaskObj.executOrg)
-            this.executorList = res.data
-          }
-        } else {
-          this.dialogType_Task = 'new'
-          this.addTaskObj = defaultTask
-        }
-        this.dialogTaskFormVisible = true
-      },
-      async executOrgChange() {
-        this.executorList = []
+    // 任务
+    async getTaskList(typeId) {
+      this.taskTypeStatus = typeId
+      const res = await getAllTaskList(this.thisProject.id, this.taskTypeStatus)
+      this.taskList = res.data.list
+      this.activeNamesTask = res.data.activeNamesTask
+      const res2 = await getAllCountMap(this.thisProject.id)
+      this.allCountMap = res2.data
+      console.log(this.activeNamesTask)
+    },
+    async getAllTaskList() {
+      this.getTaskList(10)
+    },
+    async getTaskSearch(typeId) {
+      this.getTaskList(typeId)
+    },
+    async openAddTask(id) {
+      // 表单固定值填充
+      const res = await getAllTaskFormParam(this.thisProject.id)
+      this.preTaskList = res.data.preTasks
+      this.stageList = res.data.stages
+      // 编辑获取
+      if (id != null) {
+        const res = await getTask(id)
+        this.addTaskObj = res.data
+        this.dialogType_Task = 'edit'
         if (this.addTaskObj.executOrg !== '' && this.addTaskObj.executOrg !== 0) {
           const res = await getExecutorList(this.addTaskObj.executOrg)
           this.executorList = res.data
         }
-      },
-      executorChange() {
-        var cPRO = this.addTaskObj.executor
-        console.log(cPRO)
-        if (cPRO !== '' && cPRO !== 0) {
-          for (var op of this.peopleList) {
-            if (op.id === cPRO) {
-              console.log(op.id)
-              this.addTaskObj.executorMobile = op.mobile
+      } else {
+        this.dialogType_Task = 'new'
+        this.addTaskObj = defaultTask
+      }
+      this.dialogTaskFormVisible = true
+    },
+    async executOrgChange() {
+      this.executorList = []
+      if (this.addTaskObj.executOrg !== '' && this.addTaskObj.executOrg !== 0) {
+        const res = await getExecutorList(this.addTaskObj.executOrg)
+        this.executorList = res.data
+      }
+    },
+    executorChange() {
+      var cPRO = this.addTaskObj.executor
+      console.log(cPRO)
+      if (cPRO !== '' && cPRO !== 0) {
+        for (var op of this.peopleList) {
+          if (op.id === cPRO) {
+            console.log(op.id)
+            this.addTaskObj.executorMobile = op.mobile
+          }
+        }
+      }
+    },
+    async addTask(formName) {
+      const isEdit = this.dialogType_Task === 'edit'
+      var isGo = false
+      console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          isGo = true
+        } else {
+          this.$message.error('提交信息错误！')
+          return false
+        }
+      })
+      console.log(this.addTaskObj)
+      if (isGo) {
+        if (isEdit) {
+          await updateTask(this.addTaskObj)
+          for (let index = 0; index < this.taskList.length; index++) {
+            console.log(this.taskList)
+            console.log(this.taskList[index].value)
+            for (let index2 = 0; index2 < this.taskList[index].value.length; index++) {
+              console.log(this.taskList[index].value.[index2])
+              if (this.taskList[index].value.[index2].id === this.addTaskObj.id) {
+                this.taskList[index].value.[index2].splice(index2, 1, Object.assign({}, this.addTaskObj))
+                break
+              }
+            }
+          }
+        } else {
+          this.addTaskObj.orgId = this.orgId
+          this.addTaskObj.proId = this.thisProject.id
+          const {
+            data
+          } = await addTask(this.addTaskObj)
+          this.addTaskObj.id = data
+          for (var stageTask of this.taskList) {
+            if (this.addTaskObj.stageId === stageTask.id) {
+              stageTask.value.push(this.addTaskObj)
             }
           }
         }
-      },
-      async addTask(formName) {
-        const isEdit = this.dialogType_Task === 'edit'
-        var isGo = false
-        console.log(formName)
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            isGo = true
-          } else {
-            this.$message.error('提交信息错误！')
-            return false
-          }
-        })
-        console.log(this.addTaskObj)
-        if (isGo) {
-          if (isEdit) {
-            await updateTask(this.addTaskObj)
-            for (let index = 0; index < this.taskList.length; index++) {
-              console.log(this.taskList)
-              console.log(this.taskList[index].value)
-              for (let index2 = 0; index2 < this.taskList[index].value.length; index++) {
-                console.log(this.taskList[index].value. [index2])
-                if (this.taskList[index].value. [index2].id === this.addTaskObj.id) {
-                  this.taskList[index].value. [index2].splice(index2, 1, Object.assign({}, this.addTaskObj))
-                  break
-                }
-              }
-            }
-          } else {
-            this.addTaskObj.orgId = this.orgId
-            this.addTaskObj.proId = this.thisProject.id
-            const {
-              data
-            } = await addTask(this.addTaskObj)
-            this.addTaskObj.id = data
-            for (var stageTask of this.taskList) {
-              if (this.addTaskObj.stageId === stageTask.id) {
-                stageTask.value.push(this.addTaskObj)
-              }
-            }
-          }
-          this.$message({
-            type: 'success',
-            message: '操作成功！'
-          })
-          // this.fresh()
-          this.handleClick({
-            index: '1'
-          })
-          this.dialogTaskFormVisible = false
-        }
-      },
-      async updateTask($index, id) {
-        // 表单固定值填充
-        this.openAddTask(id)
-      },
-      async deleteTask($index, id) {
-        // 表单固定值填充
-        alert('哈哈：' + id)
-        await deleteTask(id)
-        this.taskList.splice($index, 1)
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '操作成功！'
         })
-      },
-
-      // 项目文件
-      async getFileList(pn, ps) {
-        const res = await getFileList(this.thisProject.id, this.fileMap.pn, this.fileMap.ps)
-        this.fileMap = res.data
-        console.log('文件', res.data)
-      },
-      async handlePageSizeChange(val) {
-        this.getFileList(this.fileMap.pn, val)
-      },
-      async handlePageCurrentChange(val) {
-        this.getFileList(val, this.fileMap.ps)
+        // this.fresh()
+        this.handleClick({
+          index: '1'
+        })
+        this.dialogTaskFormVisible = false
       }
+    },
+    async updateTask($index, id) {
+      // 表单固定值填充
+      this.openAddTask(id)
+    },
+    async deleteTask($index, id) {
+      // 表单固定值填充
+      alert('哈哈：' + id)
+      await deleteTask(id)
+      this.taskList.splice($index, 1)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+      })
+    },
+
+    // 项目文件
+    async getFileList(pn, ps) {
+      const res = await getFileList(this.thisProject.id, this.fileMap.pn, this.fileMap.ps)
+      this.fileMap = res.data
+      console.log('文件', res.data)
+    },
+    async handlePageSizeChange(val) {
+      this.getFileList(this.fileMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.getFileList(val, this.fileMap.ps)
     }
   }
+}
 </script>
 <style lang="scss" scoped>
   .hiden {
     display: none;
   }
 
-  .el-dialog {
+  ::v-deep .el-dialog {
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
@@ -1646,11 +1697,13 @@
     height: 80% !important;
   }
 
-  .el-dialog .el-dialog__body {
-    height: 80% !important;
+  ::v-deep .el-dialog .el-dialog__body {
+    height: calc(100% - 102.4px) !important;
     overflow: auto !important;
   }
-
+  ::v-deep .el-dialog__footer{
+    padding: 10px !important;
+  }
 
   i {
     transition: color .15s linear;
@@ -1673,7 +1726,6 @@
     display: flex;
     background-color: aliceblue;
     height: calc(100vh - 84px);
-
 
     .project-body {
       width: 100%;
@@ -1767,7 +1819,7 @@
         height: 28px;
         line-height: 28px;
         margin: 0px 10px;
-        width: 150px;
+        width: calc(100% - 20px);
         padding: 2px 10px;
         font-size: 11px;
       }
@@ -1790,6 +1842,7 @@
         transition: box-shadow .2s;
         transition: box-shadow .2s, -webkit-box-shadow .2s;
         border-right: 4px solid transparent;
+        font-size:14px;
       }
 
     }
@@ -2048,7 +2101,6 @@
   .el-collapse-item__wrap {
     border-bottom: none !important;
   }
-
 
   .el-tabs__content {
     overflow:auto !important;

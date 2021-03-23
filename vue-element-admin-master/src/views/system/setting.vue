@@ -59,7 +59,8 @@ import md5 from 'js-md5'
 import $ from 'jquery'
 import {
   getUserInfo,
-  updateUser
+  updateUser,
+  updateUserPwd
 } from '@/api/user'
 
 const defaultUser = {
@@ -142,6 +143,7 @@ export default {
           trigger: 'blur'
         }],
         account: [{
+          required: true,
           validator: validateAccount,
           trigger: 'blur'
         }]
@@ -259,8 +261,7 @@ export default {
       if (isComfirm) {
         this.userInfo.userName = this.userInfo.name
         this.userInfo.avater = this.userInfo.avaterReal
-        var usernew = await updateUser(this.userInfo)
-        console.log(usernew)
+        await updateUser(this.userInfo)
         this.$message.success('保存成功！')
       }
     },
@@ -268,7 +269,6 @@ export default {
     async confirmUser2(formName) {
       var isComfirm = false
       this.$refs[formName].validate((valid) => {
-        console.log(valid)
         if (valid) {
           isComfirm = true
         } else {
@@ -278,8 +278,7 @@ export default {
       })
       if (isComfirm) {
         this.userInfo.password = md5(this.userInfo.newpassword)
-        var usernew = await updateUser(this.userInfo)
-        console.log(usernew)
+        await updateUserPwd(this.userInfo)
         this.$message.success('保存成功！')
       }
     }

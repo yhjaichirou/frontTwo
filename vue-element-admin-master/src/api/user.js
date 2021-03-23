@@ -39,18 +39,18 @@ export function logout() {
 
 export function getUsers(orgId) {
   return request({
-    url: '/admin/getUsers?orgId='+orgId,
+    url: '/admin/getUsers?orgId=' + orgId,
     method: 'get'
   })
 }
 
-export function getRoleList(orgId,roleId) {
+export function getRoleList(orgId, roleId) {
   return request({
     url: `/admin/getRoleList/${orgId}/${roleId}`,
     method: 'get'
   })
 }
-export function getOrgList(loginOrgId,roleId) {
+export function getOrgList(loginOrgId, roleId) {
   return request({
     url: `/admin/getOrgList/${loginOrgId}/${roleId}`,
     method: 'get'
@@ -84,6 +84,14 @@ export function updateUser(data) {
     data
   })
 }
+export function updateUserPwd(data) {
+  return request({
+    url: '/admin/updateUserPwd',
+    method: 'post',
+    data
+  })
+}
+
 export function deleteUser(userId) {
   return request({
     url: `/admin/deleteUser/${userId}`,

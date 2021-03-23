@@ -8,14 +8,14 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="账户" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.account }}
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="用户姓名" width="220">
         <template slot-scope="scope">
           {{ scope.row.userName }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="账户" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.account }}
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="角色">
@@ -39,10 +39,10 @@
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改用户':'新建用户'">
       <el-form id="thisForm" ref="ruleForm" :model="user" status-icon :rules="rules" label-width="80px" label-position="left">
         <el-form-item label="账户" prop="account">
-          <el-input v-model="user.account" placeholder="请输入" />
+          <el-input v-model="user.account" placeholder="请输入手机号" />
         </el-form-item>
         <el-form-item label="用户姓名" prop="userName">
-          <el-input v-model="user.userName" placeholder="请输入" />
+          <el-input v-model="user.userName" placeholder="请输入姓名" />
         </el-form-item>
         <el-form-item label="角色" prop="roleId">
           <el-select v-model="user.roleId" placeholder="请选择角色" @change="changeRole">
@@ -60,15 +60,17 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="dialogType==='edit'" label="旧密码" prop="oldpassword">
-          <el-input v-model="user.oldpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="密码" prop="newpassword">
-          <el-input v-model="user.newpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="确认密码" prop="rePassword">
-          <el-input v-model="user.rePassword" type="password" placeholder="请输入确认密码" autocomplete="off" />
-        </el-form-item>
+        <!-- <div v-if="visiblePwd">
+          <el-form-item v-if="dialogType==='edit'" label="旧密码" prop="oldpassword">
+            <el-input v-model="user.oldpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="密码" prop="newpassword">
+            <el-input v-model="user.newpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="确认密码" prop="rePassword">
+            <el-input v-model="user.rePassword" type="password" placeholder="请输入确认密码" autocomplete="off" />
+          </el-form-item>
+        </div> -->
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
@@ -84,7 +86,6 @@ import { deepClone } from '@/utils'
 import md5 from 'js-md5'
 import {
   getUsers,
-  getUser,
   addUser,
   deleteUser,
   updateUser,
@@ -117,35 +118,35 @@ export default {
         callback()
       }
     }
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        console.log('xinxi')
-        callback(new Error('请输入旧密码！'))
-      } else if (this.user.oldpassword.length < 6 || this.user.oldpassword.length > 15) {
-        callback(new Error('请输入正确的长度！'))
-      } else {
-        callback()
-      }
-    }
-    var validatePass3 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请设置密码！'))
-      } else if (this.user.newpassword.length < 6 || this.user.newpassword.length > 15) {
-        callback(new Error('请输入正确的长度！'))
-      } else {
-        callback()
-      }
-    }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码！'))
-      } else if (value !== this.user.newpassword) {
-        console.log(value, this.user.newpassword)
-        callback(new Error('两次输入密码不一致！'))
-      } else {
-        callback()
-      }
-    }
+    // var validatePass = (rule, value, callback) => {
+    //   if (value === '') {
+    //     console.log('xinxi')
+    //     callback(new Error('请输入旧密码！'))
+    //   } else if (this.user.oldpassword.length < 6 || this.user.oldpassword.length > 15) {
+    //     callback(new Error('请输入正确的长度！'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    // var validatePass3 = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请设置密码！'))
+    //   } else if (this.user.newpassword.length < 6 || this.user.newpassword.length > 15) {
+    //     callback(new Error('请输入正确的长度！'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    // var validatePass2 = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请再次输入密码！'))
+    //   } else if (value !== this.user.newpassword) {
+    //     console.log(value, this.user.newpassword)
+    //     callback(new Error('两次输入密码不一致！'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     var validateEnter = (rule, value, callback) => {
       if (value !== '' && this.user.roleId === '1') {
         callback()
@@ -159,6 +160,7 @@ export default {
       roleList: [],
       orgList: [],
       groupList: [],
+      visiblePwd: true, // 密码块是否显示
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: false,
@@ -173,6 +175,7 @@ export default {
       },
       rules: {
         account: [{
+          required: true,
           validator: validateAccount,
           trigger: 'blur'
         }],
@@ -189,20 +192,9 @@ export default {
         orgId: [{
           validator: validateEnter,
           trigger: 'change'
-        }],
-        oldpassword: [{
-          validator: validatePass,
-          trigger: 'blur'
-        }],
-        newpassword: [{
-          validator: validatePass3,
-          trigger: 'blur'
-        }],
-        rePassword: [{
-          validator: validatePass2,
-          trigger: 'blur'
         }]
       }
+
     }
   },
   computed: {
@@ -244,20 +236,22 @@ export default {
       this.getRoleList()
       this.user = Object.assign({}, defaultUser)
       this.dialogType = 'new'
+      this.visiblePwd = true
       this.dialogVisible = true
     },
     async handleEdit(scope) {
       this.getRoleList()
+      this.user = deepClone(scope.row)
+      console.log(this.user)
       const res = await getOrgList(this.$store.getters.orgId, this.user.roleId)
       this.orgList = res.data
       const res2 = await getGroupList(this.user.orgId)
       this.groupList = res2.data
 
+      this.visiblePwd = false
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.checkStrictly = true
-      this.user = deepClone(scope.row)
-      console.log(this.user)
     },
     async changeRole() {
       console.log(this.user.roleId)
@@ -318,12 +312,11 @@ export default {
           const {
             data
           } = await addUser(this.user)
-          this.user.id = data
-          this.usersList.push(this.user)
+          // this.user = data
+          this.usersList.push(data)
         }
 
         const {
-          id,
           account,
           password
         } = this.user
