@@ -7,10 +7,10 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
+// import nestedRouter from './modules/nested'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -39,52 +39,52 @@ import nestedRouter from './modules/nested'
  * all roles can be accessed
  */
 export const constantRoutes = [{
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: '/redirect/:path(.*)',
-      component: () => import('@/views/redirect/index')
-    }]
-  },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/error-page/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/error-page/401'),
-    hidden: true
-  },
-  {
-    path: '/system',
-    component: Layout,
-    // component: () => import('@/views/system/setting'),
-    hidden: true,
-    redirect: '/system/setting',
-    children: [{
-      path: 'setting',
-      component: () => import('@/views/system/setting'),
-      name: '个人设置',
-      meta: {
-        title: '个人设置',
-        icon: 'setting',
-        affix: false //固定不可关闭
-      }
-    }]
+  path: '/redirect',
+  component: Layout,
+  hidden: true,
+  children: [{
+    path: '/redirect/:path(.*)',
+    component: () => import('@/views/redirect/index')
+  }]
+},
+{
+  path: '/login',
+  component: () => import('@/views/login/index'),
+  hidden: true
+},
+{
+  path: '/auth-redirect',
+  component: () => import('@/views/login/auth-redirect'),
+  hidden: true
+},
+{
+  path: '/404',
+  component: () => import('@/views/error-page/404'),
+  hidden: true
+},
+{
+  path: '/401',
+  component: () => import('@/views/error-page/401'),
+  hidden: true
+},
+{
+  path: '/system',
+  component: Layout,
+  // component: () => import('@/views/system/setting'),
+  hidden: true,
+  redirect: '/system/setting',
+  children: [{
+    path: 'setting',
+    component: () => import('@/views/system/setting'),
+    name: '个人设置',
+    meta: {
+      title: '个人设置',
+      icon: 'setting',
+      affix: false // 固定不可关闭
+    }
+  }]
 
-  },
+}
   // {
   //   path: '/excel',
   //   component: Layout,
