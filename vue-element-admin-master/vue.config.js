@@ -41,7 +41,7 @@ module.exports = {
     //before: require('./mock/mock-server.js'),
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:8088/`,
+        target: `https://124.67.108.68:8088/`,
         changeOrigin: true,
         pathRewrite: {
           // "/admin":"/project/admin"
@@ -89,7 +89,7 @@ module.exports = {
   //   // if prod, add externals
   //   externals: isProd ? assetsCDN.externals : {}
   // },
-  
+
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     // it can improve the speed of the first screen, it is recommended to turn on preload
