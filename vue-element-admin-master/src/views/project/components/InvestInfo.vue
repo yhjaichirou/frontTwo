@@ -2,8 +2,15 @@
   <div>
 
       <el-form :inline="true" :model="item" >
-        <el-form-item class="form-item" prop="investType" label="" :rules="[{ required: true, message: '请输入投资类型', trigger: 'blur' }]">
-          <el-input v-model="item.investType"  placeholder="请输入投资类型"></el-input>
+        <el-form-item class="form-item" prop="investType" label="" :rules="[{required: true, message: '请选择资金来源', trigger: 'change' }]">
+          <!-- <el-input v-model="item.investType"  placeholder="请输入投资类型"></el-input> -->
+          <el-select v-model="item.investType" placeholder="请选择资金来源" >
+            <el-option label="政府资金" value="政府资金" />
+            <el-option label="企业自有资金" value="企业自有资金" />
+            <el-option label="银行贷款" value="银行贷款" />
+            <el-option label="专项债券" value="专项债券" />
+            <el-option label="其他" value="其他" />
+          </el-select>
         </el-form-item>
         <el-form-item class="form-item" prop="investMoney" label="" :rules="[{ required: true, message: '请输入投资金额', trigger: 'blur' }]">
           <el-input v-model="item.investMoney" style="width:100%;" suffix-icon="iconfont icon-jinbi" placeholder="请输入投资金额"></el-input>

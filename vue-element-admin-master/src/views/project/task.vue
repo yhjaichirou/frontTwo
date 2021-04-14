@@ -427,7 +427,7 @@
 
         <div class="list-li">
           <div class="list-li-msg-k" style="width: 100%;">
-            <div class="list-li-msg" style="width: 100%;">
+            <div class="list-li-msg" style="width: 49%;">
               <div class="list-li-msg-title">任务记录：</div>
               <div class="list-li-msg-con">
                 <div v-if="currtask.isEdit">
@@ -435,6 +435,18 @@
                 </div>
                 <div v-else>
                   {{ currtask.comContent }}
+                </div>
+              </div>
+            </div>
+
+            <div class="list-li-msg" style="width: 49%;">
+              <div class="list-li-msg-title">存在的问题：</div>
+              <div class="list-li-msg-con">
+                <div v-if="currtask.isEdit">
+                  <el-input v-model="currtask.question" type="textarea" :rows="3" placeholder="请输入存在的困难" />
+                </div>
+                <div v-else>
+                  {{ currtask.question }}
                 </div>
               </div>
             </div>
@@ -1121,6 +1133,10 @@ export default {
       flex-direction: row;
       justify-content: space-between;
 
+      ::v-deep .el-tabs__content {
+        overflow:auto !important;
+        height:calc(100% - 38px) !important;
+      }
       .list-li-title {
         font-size: 24px;
         word-wrap: break-word;

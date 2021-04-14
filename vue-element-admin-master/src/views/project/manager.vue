@@ -496,7 +496,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="项目成熟度" prop="maturity" :label-width="formLabelWidth">
+              <el-form-item label="项目性质" prop="maturity" :label-width="formLabelWidth">
                 <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
                   <el-option v-for="item in maturity" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
@@ -620,6 +620,28 @@
               </el-form-item>
             </div>
           </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="投资类型" prop="investType" :label-width="formLabelWidth">
+                <el-select v-model="addform.investType"  placeholder="请选择投资类型">
+                  <el-option label="政府投资" value="政府投资" />
+                  <el-option label="企业投资" value="企业投资" />
+                  <el-option label="政企合投" value="政企合投" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="立项类型" prop="lxType" :label-width="formLabelWidth">
+                <el-select v-model="addform.lxType"  placeholder="请选择立项类型">
+                  <el-option label="审批" value="审批" />
+                  <el-option label="核准" value="核准" />
+                  <el-option label="备案" value="备案" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
           <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="投资情况" prop="invest" :label-width="formLabelWidth">
@@ -642,12 +664,65 @@
                   </el-col>
                 </el-row>
                 <InvestInfo v-for="(item,index) in addform.investInfos" :key="index" :index="index" :item="item" @delete="deleteInvestInfo" />
-
               </div>
               <el-button size="mini" type="primary" @click="addInvestInfo">添 加</el-button>
             </el-form-item>
-
           </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item :label="planInvertMoney" prop="invest" :label-width="formLabelWidth">
+                <el-input v-model="addform.investThisyear" autocomplete="off" placeholder="**请输入当年计划完成投资(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item :label="overInvertMoney" prop="invest" :label-width="formLabelWidth">
+                <el-input v-model="addform.investCom" autocomplete="off" placeholder="**请输入当年已完成投资(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item :label="planOpenTime" prop="thisyearOpentime" :label-width="formLabelWidth">
+                <el-date-picker
+                  v-model="addform.thisyearOpentime"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item :label="isOpen" prop="isOpen" :label-width="formLabelWidth">
+                <el-switch
+                  v-model="addform.isOpen"
+                  active-text="是"
+                  inactive-text="否">
+                </el-switch>
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="建设地点(旗县区)" prop="buildAddress" :label-width="formLabelWidth">
+                <el-input v-model="addform.buildAddress" autocomplete="off" placeholder="请输入建设地点(旗县区)" />
+              </el-form-item>
+            </div>
+          </el-col>
+         <!-- <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="进展明细" prop="buildAddress" :label-width="formLabelWidth">
+                <el-input v-model="addform.processCondition" autocomplete="off" placeholder="请输入进展明细" />
+              </el-form-item>
+            </div>
+          </el-col> -->
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="预计完成时间" prop="expectedDate" :label-width="formLabelWidth">
@@ -831,10 +906,9 @@
           </el-col>
         </el-row>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTaskFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addTask('ruleTaskForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogTaskFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="addTask('ruleTaskForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -884,6 +958,7 @@ import { getOrgtypes } from '@/api/depart'
 import yhjTaskTable from './components/tableTasks.vue'
 import PanelGroup from './components/PanelGroup'
 import InvestInfo from './components/InvestInfo'
+const baseURL = process.env.VUE_APP_BASE_API
 const defaultProject = {
   id: '',
   name: '',
@@ -1017,6 +1092,10 @@ export default {
       enterList: [],
       orgAllId: '',
       peopleAllId: '',
+      planInvertMoney: new Date().getFullYear()+"年计划完成投资",
+      planOpenTime: new Date().getFullYear()+"年计划开复时间",
+      overInvertMoney: new Date().getFullYear()+"年已完成投资",
+      isOpen: new Date().getFullYear()+"年是否开复工",
       orgList: [],
       joiners: [],
       maturity: [{
@@ -1289,7 +1368,7 @@ export default {
       formData.append('file', this.addform.fileInfos[0].inputFile) // 将file属性添加到formData里
       var that = this
       $.ajax({
-        url: 'http://localhost:8886/project/project/uploadFJ',
+        url: baseURL+'project/uploadFJ',
         method: 'post',
         data: formData,
         async: false,
@@ -1518,6 +1597,7 @@ export default {
       })
 
       if (isGo) {
+        this.addform.isOpen = this.addform.isOpen?1:0
         if (isEdit) {
           this.addform.id = this.thisProject.id
           const dd = await updateProject(this.addform)
