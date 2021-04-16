@@ -3,7 +3,7 @@
     <div class="container-header">
 
       <el-tabs v-model="tabChangeValue" @tab-click="handleTabChange">
-        <el-tab-pane label="全市重点对接企业项目推进台账">
+        <!-- <el-tab-pane label="全市重点对接企业项目推进台账">
           <div>
             <FilenameOption v-model="search" />
             <AutoWidthOption v-model="searchStatus" />
@@ -14,10 +14,7 @@
             <el-button :loading="downloadLoading" style="margin:0 0 20px 20px;" type="primary" icon="el-icon-document" @click="handleDownload">
               导出excel
             </el-button>
-            <!-- <a href="https://panjiachen.github.io/vue-element-admin-site/feature/component/excel.html" target="_blank" style="margin-left:15px;">
-                  <el-tag type="info">Documentation</el-tag>
-                </a> -->
-          </div>
+</div>
 
           <el-table v-loading="listLoading" :data="dataMap.list" element-loading-text="Loading..." border fit highlight-current-row>
             <el-table-column align="center" label="序号" width="95">
@@ -119,7 +116,7 @@
             @current-change="handlePageCurrentChange"
           />
 
-        </el-tab-pane>
+        </el-tab-pane> -->
         <el-tab-pane label="政府投资5000万元以上、企业投资亿元以上项目">
 
           <div>
