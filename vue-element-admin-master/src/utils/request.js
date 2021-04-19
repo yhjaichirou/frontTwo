@@ -67,7 +67,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject({ 'code': res.code, 'errorMsg': new Error(res.msg || 'Error'), 'data': res.data })
     } else {
       return res
     }

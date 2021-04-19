@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getTzqkList(orgId,projectId){
+export function getTzqkList(orgId, projectId) {
   return request({
     url: `/project/getTzqkList/${projectId}`,
     method: 'get'
@@ -14,25 +14,25 @@ export function getAllMsg(orgId) {
 }
 export function getAllProject(orgId, search, status) {
   return request({
-    url: '/project/getAllProject?orgId=' + orgId + "&search=" + search + "&status=" + status,
+    url: '/project/getAllProject?orgId=' + orgId + '&search=' + search + '&status=' + status,
     method: 'get'
   })
 }
 export function getProject(projectId) {
   return request({
     url: `/project/getProject/${projectId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function getProjectAboutSHB(projectId) {
   return request({
     url: `/project/getProjectAboutSHB/${projectId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
-export function clickUpdateStatus(projectId,status) {
-  var data = {projectId:projectId,status:status}
+export function clickUpdateStatus(projectId, status) {
+  var data = { projectId: projectId, status: status }
   return request({
     url: '/project/clickUpdateStatus',
     method: 'post',
@@ -43,33 +43,45 @@ export function clickUpdateStatus(projectId,status) {
 export function getAllOrgs() {
   return request({
     url: `/project/getAllOrgs`,
-    method: 'get',
+    method: 'get'
   })
 }
+export function getAllDeparts() {
+  return request({
+    url: `/project/getAllDeparts`,
+    method: 'get'
+  })
+}
+
 export function getAllFormParam(orgId) {
   return request({
     url: `/project/getAllFormParam/${orgId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function getJoiners(orgIds) {
   return request({
     url: `/project/getJoiners/${orgIds}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function getLeadersOfOrgId(orgId) {
   return request({
     url: `/project/getLeadersOfOrgId/${orgId}`,
-    method: 'get',
+    method: 'get'
   })
 }
-
+export function getProManagersOfProEnterId(proEnter) {
+  return request({
+    url: `/project/getProManagersOfProEnterId/${proEnter}`,
+    method: 'get'
+  })
+}
 
 export function authProject(projectId) {
   return request({
     url: `/project/authProject/${projectId}`,
-    method: 'post',
+    method: 'post'
   })
 }
 export function addProject(data) {
@@ -95,38 +107,37 @@ export function deleteProject(projectId) {
   })
 }
 
-
-//任务
-export function getAllTaskList(projectId,typeId) {
+// 任务
+export function getAllTaskList(projectId, typeId) {
   return request({
     url: `/project/getAllTaskList/${projectId}/${typeId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function getAllCountMap(projectId) {
   return request({
     url: `/project/getAllCountMap/${projectId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function getTask(id) {
   return request({
     url: `/project/getTask/${id}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function getExecutorList(orgId) {
   return request({
     url: `/project/getExecutorList/${orgId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function getAllTaskFormParam(projectId) {
   return request({
     url: `/project/getAllTaskFormParam/${projectId}`,
-    method: 'get',
+    method: 'get'
   })
 }
 export function addTask(data) {
@@ -149,17 +160,15 @@ export function deleteTask(projectId) {
     method: 'delete'
   })
 }
-export function getFileList(projectId,pn,ps) {
+export function getFileList(projectId, pn, ps) {
   return request({
     url: `/project/getFileList/${projectId}/${pn}/${ps}`,
     method: 'get'
   })
 }
 
-
-
 /* gantt */
-export function getProjectGanttData(projectId,querystatus,pn,ps) {
+export function getProjectGanttData(projectId, querystatus, pn, ps) {
   return request({
     url: `/project/getProjectGanttData/${projectId}/${querystatus}/${pn}/${ps}`,
     method: 'get'

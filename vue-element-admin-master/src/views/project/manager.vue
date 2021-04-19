@@ -473,6 +473,29 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
+              <el-form-item label="报送地区" prop="submitted" :label-width="formLabelWidth">
+                <el-input v-model="addform.submitted" autocomplete="off" placeholder="请输入项目报送地区" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="行业主管厅局" prop="proManagerTing" :label-width="formLabelWidth">
+                <el-input v-model="addform.proManagerTing" autocomplete="off" placeholder="请输入行业主管厅局" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="行业主管单位" prop="proEnter" :label-width="formLabelWidth">
+                <el-select v-model="addform.proEnter" placeholder="请选择牵头单位" @change="changeProEnter">
+                  <el-option v-for="item in departList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
               <el-form-item label="项目编号" prop="number" :label-width="formLabelWidth">
                 <el-input v-model="addform.number" autocomplete="off" placeholder="请输入项目编号" />
               </el-form-item>
@@ -499,6 +522,17 @@
               <el-form-item label="项目性质" prop="maturity" :label-width="formLabelWidth">
                 <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
                   <el-option v-for="item in maturity" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="立项类型" prop="lxType" :label-width="formLabelWidth">
+                <el-select v-model="addform.lxType" placeholder="请选择立项类型">
+                  <el-option label="审批" value="审批" />
+                  <el-option label="核准" value="核准" />
+                  <el-option label="备案" value="备案" />
                 </el-select>
               </el-form-item>
             </div>
@@ -533,7 +567,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="主管部门负责人" prop="proManager" :label-width="formLabelWidth">
                 <el-select v-model="addform.proManager" placeholder="请选择" @change="proManagerChange">
-                  <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in proManagerList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -586,14 +620,7 @@
               </el-form-item>
             </div>
           </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="项目代号" prop="taskPrefix" :label-width="formLabelWidth">
-                <el-input v-model="addform.taskPrefix" autocomplete="off" placeholder="例如:LY-2020(林业2020项目)" />
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="可见范围" prop="visibleRange" :label-width="formLabelWidth">
                 <el-select v-model="addform.visibleRange" multiple placeholder="请选择可见组织范围" @change="visibleRangeChange">
@@ -603,7 +630,7 @@
               </el-form-item>
             </div>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="参与人员" prop="joiners" :label-width="formLabelWidth">
                 <el-select v-model="addform.joiners" multiple placeholder="请选择参与人员" @change="joinerChange">
@@ -613,17 +640,11 @@
               </el-form-item>
             </div>
           </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="备注" :label-width="formLabelWidth">
-                <el-input v-model="addform.remarks" autocomplete="off" placeholder="请输入备注信息" />
-              </el-form-item>
-            </div>
-          </el-col>
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="投资类型" prop="investType" :label-width="formLabelWidth">
-                <el-select v-model="addform.investType"  placeholder="请选择投资类型">
+                <el-select v-model="addform.investType" placeholder="请选择投资类型">
                   <el-option label="政府投资" value="政府投资" />
                   <el-option label="企业投资" value="企业投资" />
                   <el-option label="政企合投" value="政企合投" />
@@ -631,18 +652,8 @@
               </el-form-item>
             </div>
           </el-col>
+
           <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="立项类型" prop="lxType" :label-width="formLabelWidth">
-                <el-select v-model="addform.lxType"  placeholder="请选择立项类型">
-                  <el-option label="审批" value="审批" />
-                  <el-option label="核准" value="核准" />
-                  <el-option label="备案" value="备案" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="投资情况" prop="invest" :label-width="formLabelWidth">
                 <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
@@ -702,8 +713,8 @@
                 <el-switch
                   v-model="addform.isOpen"
                   active-text="是"
-                  inactive-text="否">
-                </el-switch>
+                  inactive-text="否"
+                />
               </el-form-item>
             </div>
           </el-col>
@@ -715,7 +726,7 @@
               </el-form-item>
             </div>
           </el-col>
-         <!-- <el-col :span="12">
+          <!-- <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="进展明细" prop="buildAddress" :label-width="formLabelWidth">
                 <el-input v-model="addform.processCondition" autocomplete="off" placeholder="请输入进展明细" />
@@ -736,6 +747,7 @@
               </el-form-item>
             </div>
           </el-col>
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="项目审批监管平台代码" :label-width="formLabelWidth">
@@ -757,6 +769,20 @@
             <div class="grid-content bg-purple">
               <el-form-item label="存在的困难和问题" :label-width="formLabelWidth">
                 <el-input v-model="addform.diffAndProblem" type="textarea" placeholder="请输入存在的困难和问题" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目代号" prop="taskPrefix" :label-width="formLabelWidth">
+                <el-input v-model="addform.taskPrefix" autocomplete="off" placeholder="例如:LY-2020(林业2020项目)" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="备注" :label-width="formLabelWidth">
+                <el-input v-model="addform.remarks" autocomplete="off" placeholder="请输入备注信息" />
               </el-form-item>
             </div>
           </el-col>
@@ -936,8 +962,10 @@ import {
   getProject,
   getAllFormParam,
   getAllOrgs,
+  getAllDeparts,
   getJoiners,
   getLeadersOfOrgId,
+  getProManagersOfProEnterId,
   clickUpdateStatus,
   addProject,
   updateProject,
@@ -1088,14 +1116,16 @@ export default {
 
       categoryList: [],
       leaderList: [],
+      proManagerList: [],
       peopleList: [],
       enterList: [],
       orgAllId: '',
       peopleAllId: '',
-      planInvertMoney: new Date().getFullYear()+"年计划完成投资",
-      planOpenTime: new Date().getFullYear()+"年计划开复时间",
-      overInvertMoney: new Date().getFullYear()+"年已完成投资",
-      isOpen: new Date().getFullYear()+"年是否开复工",
+      planInvertMoney: new Date().getFullYear() + '年计划完成投资',
+      planOpenTime: new Date().getFullYear() + '年计划开复时间',
+      overInvertMoney: new Date().getFullYear() + '年已完成投资',
+      isOpen: new Date().getFullYear() + '年是否开复工',
+      departList: [],
       orgList: [],
       joiners: [],
       maturity: [{
@@ -1137,6 +1167,16 @@ export default {
           trigger: 'blur'
         }
         ],
+        proManagerTing: [{
+          required: true,
+          message: '请输入主管厅局',
+          trigger: 'blur'
+        }],
+        proEnter: [{
+          required: true,
+          message: '请选择主管单位',
+          trigger: 'change'
+        }],
         proManager: [{
           required: true,
           message: '请选择主管部门负责人',
@@ -1159,6 +1199,16 @@ export default {
           required: true,
           message: '请输入项目描述',
           trigger: 'blur'
+        }],
+        lxType: [{
+          required: true,
+          message: '请选择立项类型',
+          trigger: 'change'
+        }],
+        investType: [{
+          required: true,
+          message: '请选择投资类型',
+          trigger: 'change'
         }],
         typeArr: [{
           required: true,
@@ -1336,6 +1386,7 @@ export default {
     this.orgName = this.$store.getters.orgName
     this.getProjectList()
     this.getAllOrgs()
+    this.getAllDeparts()
     this.getAllMsg()
     this.getOrgtypes()
   },
@@ -1368,7 +1419,7 @@ export default {
       formData.append('file', this.addform.fileInfos[0].inputFile) // 将file属性添加到formData里
       var that = this
       $.ajax({
-        url: baseURL+'project/uploadFJ',
+        url: baseURL + 'project/uploadFJ',
         method: 'post',
         data: formData,
         async: false,
@@ -1427,6 +1478,10 @@ export default {
     async getAllOrgs() {
       const res = await getAllOrgs()
       this.orgList = res.data
+    },
+    async getAllDeparts() {
+      const res = await getAllDeparts()
+      this.departList = res.data
     },
     async getProjectList() {
       console.log(this.searchContent, this.searchStatus)
@@ -1541,11 +1596,20 @@ export default {
         console.error(this.addform.joiners)
       }
     },
+    // 牵头单位 改变
     async changeLeadenter() {
       this.leaderList = []
       if (this.addform.leadenter !== '' && this.addform.leadenter !== 0) {
         const res = await getLeadersOfOrgId(this.addform.leadenter)
         this.leaderList = res.data
+      }
+    },
+    // 主管单位 改变
+    async changeProEnter() {
+      this.proManagerList = []
+      if (this.addform.proEnter !== '' && this.addform.proEnter !== 0) {
+        const res = await getProManagersOfProEnterId(this.addform.proEnter)
+        this.proManagerList = res.data
       }
     },
     investChange() {
@@ -1597,7 +1661,7 @@ export default {
       })
 
       if (isGo) {
-        this.addform.isOpen = this.addform.isOpen?1:0
+        this.addform.isOpen = this.addform.isOpen ? 1 : 0
         if (isEdit) {
           this.addform.id = this.thisProject.id
           const dd = await updateProject(this.addform)

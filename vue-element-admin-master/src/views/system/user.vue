@@ -155,6 +155,7 @@ export default {
       }
     }
     return {
+      loginRoleId: '',
       user: Object.assign({}, defaultUser),
       usersList: [],
       roleList: [],
@@ -205,6 +206,7 @@ export default {
   created() {
     // Mock: get all routes and roles list from server
     // this.getRoutes()
+    this.loginRoleId = this.$store.getters.roleId
     this.getUsers()
   },
   methods: {
@@ -228,8 +230,7 @@ export default {
       this.usersList = res.data
     },
     async getRoleList() {
-      var orgId = this.$store.getters.orgId
-      const res = await getRoleList(this.$store.getters.roles[0], orgId)
+      const res = await getRoleList(this.$store.getters.orgId, this.$store.getters.roleId)
       this.roleList = res.data
     },
     handleAddUser() {
@@ -298,6 +299,7 @@ export default {
         }
       })
       if (isComfirm) {
+        this.user.loginRole = this.loginRoleId
         const isEdit = this.dialogType === 'edit'
         this.user.password = md5(this.user.newpassword)
         if (isEdit) {

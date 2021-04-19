@@ -2,13 +2,13 @@
   <div class="dashboard-editor-container">
     <div class=" clearfix">
       <pan-thumb :image="avatar" style="float: left">
-        Your roles:
-        <span v-for="item in roles" :key="item" class="pan-info-roles">{{ item }}</span>
+        当前登录角色:
+        <div style="margin-top:20px; color:#30B08F">{{ roleName }}</div>
       </pan-thumb>
       <!-- <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" /> -->
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;"><span style="color:blueviolet">{{ orgName }}</span>({{ roleName }})</span>
       </div>
     </div>
     <div>
@@ -21,7 +21,7 @@
 import { mapGetters } from 'vuex'
 import PanThumb from '@/components/PanThumb'
 // import GithubCorner from '@/components/GithubCorner'
-
+const defulatAvater = 'avater.png'
 export default {
   name: 'DashboardEditor',
   components: {
@@ -30,14 +30,18 @@ export default {
   },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3',
+      avatar: this.avatar !== null && this.avatar !== '' ? this.avatar : defulatAvater
     }
   },
   computed: {
     ...mapGetters([
       'name',
       'avatar',
-      'roles'
+      'roles',
+      'roleId',
+      'roleName',
+      'orgName'
     ])
   }
 }

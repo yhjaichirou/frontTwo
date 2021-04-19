@@ -150,9 +150,60 @@
                 {{ scope.row.name }}
               </template>
             </el-table-column>
+            <el-table-column label="报送地区">
+              <template slot-scope="scope">
+                {{ scope.row.submitted }}
+              </template>
+            </el-table-column>
+            <el-table-column label="主管厅局">
+              <template slot-scope="scope">
+                {{ scope.row.proManagerTing }}
+              </template>
+            </el-table-column>
+            <el-table-column label="主管单位">
+              <template slot-scope="scope">
+                {{ scope.row.proEnterName }}
+              </template>
+            </el-table-column>
+            <el-table-column label="审批平台代码">
+              <template slot-scope="scope">
+                {{ scope.row.approveCode }}
+              </template>
+            </el-table-column>
+            <!-- 牵头单位-->
+            <el-table-column label="业主单位" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.leadenterName }}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="行业类别" width="110" align="center">
               <template slot-scope="scope">
                 <el-tag>{{ scope.row.categoryName }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="建设内容及规模" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.content }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="投资类型" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.investType }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="项目立项类型" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.lxType }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="建设地点" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.buildAddress }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="建设性质" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.maturityStr }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="投资规模(亿元)" width="110" align="center">
@@ -160,21 +211,304 @@
                 <el-tag>{{ scope.row.invest }}￥</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="项目内容" width="110" align="center">
+            <el-table-column label="政府资金(亿元)" width="110" align="center">
               <template slot-scope="scope">
-                <el-tag>{{ scope.row.content }}</el-tag>
+                <div v-for="item in scope.row.investInfos" :key="item.id">
+                  <el-tag v-if="item.investType === '政府资金'">{{ item.investMoney }}￥</el-tag>
+                </div>
               </template>
             </el-table-column>
+            <el-table-column label="企业自有资金(亿元)" width="110" align="center">
+              <template slot-scope="scope">
+                <div v-for="item in scope.row.investInfos" :key="item.id">
+                  <div v-if="item.investType === '企业自有资金'">{{ item.investMoney }}￥</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="银行贷款(亿元)" width="110" align="center">
+              <template slot-scope="scope">
+                <div v-for="item in scope.row.investInfos" :key="item.id">
+                  <div v-if="item.investType === '银行贷款'">{{ item.investMoney }}￥</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="专项债券(亿元)" width="110" align="center">
+              <template slot-scope="scope">
+                <div v-for="item in scope.row.investInfos" :key="item.id">
+                  <div v-if="item.investType === '专项债券'">{{ item.investMoney }}￥</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="其他(亿元)" width="110" align="center">
+              <template slot-scope="scope">
+                <div v-for="item in scope.row.investInfos" :key="item.id">
+                  <div v-if="item.investType === '其他'">{{ item.investMoney }}￥</div>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column :label="planInvertMoney" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.maturityStr }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column :label="planOpenTime" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.maturityStr }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column :label="isOpen" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.maturityStr }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column :label="overInvertMoney" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.maturityStr }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="计划完成时间" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.completeDateStr }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="项目整体用地规模(亩)" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.ydArea }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="涉及林地规模" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.ydAreaLd }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="涉及草地规模" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.ydAreaCd }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="项目建成后整体用能规模（等价值）" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.energyArea }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="项目建成后整体用水规模（立方米）" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.energyWaterArea }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="立项阶段">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lxIsComapprove }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lxHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lxIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lxBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lxBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="用地预审和规划选址意见书">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.ydcardIsHascard }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.ydcardHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.ydcardIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.ydBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.ydBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="新增建设用地审批">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.tdIsBl }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.tdHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.tdIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.tdBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.tdBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="供地阶段进展情况" width="110" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.tdProvide }}
+              </template>
+            </el-table-column>
+
+            <el-table-column label="节能审查">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.energyIsCensor }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.energyHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.energyIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.energyBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.energyBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="林草地征占手续">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lcIsBl }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lcHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lcIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lcBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.lcBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="环境影响评价手续">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.envirIsBl }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.envirHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.envirIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.envirBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.envirBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="施工许可证">
+              <el-table-column prop="name" label="是否办理完成" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.sgIsBl }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="办理层级" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.sgHandleLevel }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="组件是否报送到最终审批部分" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.sgIsSendappdepart }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="审批、转报部门意见" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.sgBao }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="不同意办理或不同意转报原因" width="110">
+                <template slot-scope="scope">
+                  {{ scope.row.sgBaoNoMsg }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="前期手续办理情况" width="110" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.other_bl }}
+              </template>
+            </el-table-column>
+            <el-table-column label="存在的困难和问题" width="110" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.diffAndProblem }}
+              </template>
+            </el-table-column>
+
             <el-table-column label="对接时间" width="110" align="center">
               <template slot-scope="scope">
                 <el-tag>{{ scope.row.dockingDateStr }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="牵头单位" width="110" align="center">
-              <template slot-scope="scope">
-                <el-tag>{{ scope.row.leadenterName }}</el-tag>
-              </template>
-            </el-table-column>
+
             <el-table-column label="牵头领导" width="110" align="center">
               <template slot-scope="scope">
                 <el-tag>{{ scope.row.leaderName }}</el-tag>
@@ -205,8 +539,17 @@
                 {{ scope.row.diffAndProblem }}
               </template>
             </el-table-column>
-
-            <el-table-column label="企业联系人及电话" width="115" align="center">
+            <el-table-column label="项目联系人">
+              <template slot-scope="scope">
+                {{ scope.row.proManagerName }}
+              </template>
+            </el-table-column>
+            <el-table-column label="项目联系人方式">
+              <template slot-scope="scope">
+                {{ scope.row.proManagerMobile }}
+              </template>
+            </el-table-column>
+            <!-- <el-table-column label="企业联系人及电话" width="115" align="center">
               <template slot-scope="scope">
                 {{ scope.row.enterManagerName }} - {{ scope.row.enterManagerMobile }}
               </template>
@@ -221,7 +564,7 @@
                 <i class="el-icon-time" />
                 <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
 
           <el-pagination
@@ -268,6 +611,10 @@ export default {
         'list': [],
         'total': 0
       },
+      planInvertMoney: new Date().getFullYear() + '年计划完成投资',
+      planOpenTime: new Date().getFullYear() + '年计划开复时间',
+      overInvertMoney: new Date().getFullYear() + '年已完成投资',
+      isOpen: new Date().getFullYear() + '年是否开复工',
 
       list2: null,
       listLoading2: true,

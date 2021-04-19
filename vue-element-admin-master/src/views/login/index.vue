@@ -45,9 +45,17 @@
         </el-form-item>
       </el-tooltip>
 
+      <el-form-item :style="!visibleOrg?'display:none':''">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-select v-model="loginForm.orgId" placeholder="选择部门">
+          <el-option v-for="item in loginForm.us" :key="item.orgId" :label="item.orgName" :value="item.orgId" />
+        </el-select>
+      </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
-     <!-- <div style="position:relative">
+      <!-- <div style="position:relative">
         <div class="tips">
           <span>Username : admin</span>
           <span>Password : any</span>
@@ -63,7 +71,7 @@
       </div> -->
     </el-form>
 
-   <!-- <el-dialog title="Or connect with" :visible.sync="showDialog">
+    <!-- <el-dialog title="Or connect with" :visible.sync="showDialog">
       Can not be simulated on local, so please combine you own business simulation! ! !
       <br>
       <br>
@@ -75,30 +83,30 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
+// import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
-  components: { SocialSign },
+  // components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if(value.trim() === ''){
+      if (value.trim() === '') {
         callback(new Error('账号不能为空！'))
       } else if (!validUsername(value)) {
         var myreg = /^1[3456789]\d{9}$/
         if (!myreg.test(value)) {
-            callback(new Error('账号格式不正确！'))
+          callback(new Error('账号格式不正确！'))
         } else {
-            callback()
+          callback()
         }
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if(value.trim() === ''){
+      if (value.trim() === '') {
         callback(new Error('密码不能为空！'))
-      } else if (value.length < 6 || value.length> 18) {
+      } else if (value.length < 6 || value.length > 18) {
         callback(new Error('密码不能少于5位'))
       } else {
         callback()
@@ -113,6 +121,7 @@ export default {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
+      visibleOrg: false,
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
@@ -136,7 +145,7 @@ export default {
   created() {
     // window.addEventListener('storage', this.afterQRScan)
   },
-  mounted() {//打开就自定验证 
+  mounted() { // 打开就自定验证
     // if (this.loginForm.username === '') {
     //   this.$refs.username.focus()
     // } else if (this.loginForm.password === '') {
@@ -170,7 +179,11 @@ export default {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
-            .catch(() => {
+            .catch((res) => {
+              if (res.code === 509) {
+                this.loginForm.us = res.data
+                this.visibleOrg = true
+              }
               this.loading = false
             })
         } else {

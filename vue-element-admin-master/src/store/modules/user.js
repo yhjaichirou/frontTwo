@@ -14,7 +14,7 @@ import {
 import router, {
   resetRouter
 } from '@/router'
-import md5 from "js-md5"
+import md5 from 'js-md5'
 
 const state = {
   token: getToken(),
@@ -24,8 +24,8 @@ const state = {
   roles: [],
   userInfo: getUserInfo(),
   userId: '',
-  property:'',
-  type:''
+  property: '',
+  type: ''
 }
 
 const mutations = {
@@ -50,6 +50,12 @@ const mutations = {
   SET_USERID: (state, userId) => {
     state.userId = userId
   },
+  SET_ROLEID: (state, roleId) => {
+    state.roleId = roleId
+  },
+  SET_ROLENAME: (state, roleName) => {
+    state.roleName = roleName
+  },
   SET_ORGID: (state, orgId) => {
     state.orgId = orgId
   },
@@ -72,17 +78,19 @@ const actions = {
   }, userInfo) {
     const {
       username,
-      password
+      password,
+      orgId
     } = userInfo
     return new Promise((resolve, reject) => {
       login({
         username: username.trim(),
-        password: md5(password)
+        password: md5(password),
+        orgId: orgId
       }).then(response => {
         const {
           data
         } = response
-        console.log("登录返回信息：", data)
+        console.log('登录返回信息：', data)
         commit('SET_TOKEN', data.token)
         // commit('SET_USERINFO', data.userInfo)
         setToken(data.token)
@@ -105,7 +113,7 @@ const actions = {
         } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('请再次登录验证！')
         }
 
         const {
@@ -113,6 +121,8 @@ const actions = {
           userName,
           avater,
           id,
+          roleId,
+          roleName,
           orgId,
           orgName,
           property,
@@ -121,19 +131,21 @@ const actions = {
 
         // roles must be a non-empty array
         if (!roleIds || roleIds.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+          reject('用户信息不能为空!')
         }
-        console.log("已存用户信息:",data)
-        commit('SET_ROLES',roleIds)
+        console.log('已存用户信息:', data)
+        commit('SET_ROLES', roleIds)
         commit('SET_USERINFO', data)
         commit('SET_NAME', userName)
         commit('SET_USERID', id)
+        commit('SET_ROLEID', roleId)
+        commit('SET_ROLENAME', roleName)
         commit('SET_AVATAR', avater)
         commit('SET_ORGID', orgId)
         commit('SET_ORGNAME', orgName)
         commit('SET_TYPE', type)
         commit('SET_PROPERTY', property)
-        setUserInfo(data);
+        setUserInfo(data)
         resolve(data)
       }).catch(error => {
         reject(error)
