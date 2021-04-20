@@ -1,6 +1,6 @@
 import Layout from '@/layout'
 
-import first from '@/views/dashboard/index'
+// import first from '@/views/dashboard/index'
 import role from '@/views/system/role'
 import user from '@/views/system/user'
 import config from '@/views/system/config'
@@ -10,65 +10,50 @@ import task from '@/views/project/task'
 import yj from '@/views/project/yj'
 import gantt from '@/views/project/gantt'
 import reportform from '@/views/reportform/reportform'
+import statistics from '@/src/views/reportform/mystatistics.vue'
 
 import people from '@/views/org/people'
 import depart from '@/views/org/depart'
-// import reportformindex from '@/views/reportform/index'
-
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
-// import currrole from '@/views/system/role'
 
 export function menu(value) {
-  var rout = [];
-  let b = value;
-  for (let v in b) {
-    if (b[v].url.length != 0) {
-      var childs = [];
-      var cmcm = {};
-      var str = b[v].url;
-      if (b[v].children != null && b[v].children.length > 0) {
-
-        childs = getChild(b[v].children);
-//测试
-        // if(b[v].id==3){
-        //     childs.push({
-        //       path: "/taskDetail",
-        //       component: () => import('@/views/project/taskDetail'),
-        //       hidden: true
-        //     })
-        // }
-        cmcm = () => import('@/views/' + str);
-      } else {
-        cmcm = Layout;
-      }
+  var rout = []
+  // let b = value;
+  for (const v in value) {
+    if (value[v].url.length !== 0) {
+      var childs = []
+      // var cmcm = {};
+      // var str = b[v].url;
+      // if (b[v].children !== null && b[v].children.length > 0) {
+      //   childs = getChild(b[v].children);
+      //   // if(b[v].id==3){
+      //   //     childs.push({
+      //   //       path: "/taskDetail",
+      //   //       component: () => import('@/views/project/taskDetail'),
+      //   //       hidden: true
+      //   //     })
+      //   // }
+      //   cmcm = () => import('@/views/' + str);
+      // } else {
+      //   cmcm = Layout;
+      // }
       var ob = {
-        path: b[v].url,
-        component: Layout, //cmcm
+        path: value[v].url,
+        component: Layout,
         meta: {
-          title: b[v].name,
-          icon: b[v].icon,
-          roles: [b[v].roleId]
+          title: value[v].name,
+          icon: value[v].icon,
+          roles: [value[v].roleId]
         },
         children: childs
       }
-      if(b[v].id === 1){
-       ob = {
-          path: b[v].url,
+      if (value[v].id === 1) {
+        ob = {
+          path: value[v].url,
           component: Layout,
           meta: {
-            title: "",
-            icon: b[v].icon,
-            roles: [b[v].roleId]
+            title: '',
+            icon: value[v].icon,
+            roles: [value[v].roleId]
           },
           children: [{
             path: '/',
@@ -82,19 +67,19 @@ export function menu(value) {
           }]
         }
       }
-      rout.push(ob);
+      rout.push(ob)
     }
   }
-  return rout;
+  return rout
 }
 export function getChild(childrens) {
-  var childs = [];
+  var childs = []
   for (var child of childrens) {
-    var currChild = [];
-    if (child.children != null && child.children.length > 0) {
-      currChild = getChild(child.children);
+    var currChild = []
+    if (child.children !== null && child.children.length > 0) {
+      currChild = getChild(child.children)
     }
-    var str = '@/views/system/role'; //'@/views/'+child.url;
+    // var str = '@/views/system/role'; //'@/views/'+child.url;
     // var comp = "";
     // switch (child.id) {
     //   case 7:
@@ -111,10 +96,11 @@ export function getChild(childrens) {
     //     break;
     // }
 
+    // child.url,//'/permission/role',//child.url,
     var ob = {
-      path: '/' + child.url, // child.url,//'/permission/role',//child.url,
+      path: '/' + child.url,
       name: 'SystemConfig',
-      component: child.id==7?user:child.id==15?role:child.id==14?people:child.id==16?depart:child.id==4?config:child.id==8?group:child.id==17?manager:child.id==18?task:child.id==19?yj:child.id==21?reportform:gantt,// child.id==7?user:child.id==15?role:child.id==4?config:child.id==8?group:child.id==17?manager:child.id==18?task:child.id==19?yj:"", //() => import('@/views/system/role'),  由于import 是编译时加载 所以无法动态异步载入
+      component: child.id === 7 ? user : child.id === 15 ? role : child.id === 14 ? people : child.id === 16 ? depart : child.id === 4 ? config : child.id === 8 ? group : child.id === 17 ? manager : child.id === 18 ? task : child.id === 19 ? yj : child.id === 21 ? reportform : child.id === 23 ? statistics : gantt, // child.id==7?user:child.id==15?role:child.id==4?config:child.id==8?group:child.id==17?manager:child.id==18?task:child.id==19?yj:"", //() => import('@/views/system/role'),  由于import 是编译时加载 所以无法动态异步载入
       // hidden:true,
       meta: {
         title: child.name,
@@ -123,7 +109,7 @@ export function getChild(childrens) {
       },
       children: currChild
     }
-    childs.push(ob);
+    childs.push(ob)
   }
-  return childs;
+  return childs
 }

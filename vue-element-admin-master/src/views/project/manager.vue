@@ -1869,13 +1869,14 @@ export default {
     padding: 10px;
     display: flex;
     background-color: aliceblue;
-    height: calc(100vh - 84px);
 
     .project-body {
       width: 100%;
       background-color: white;
       display: flex;
       border: 1px solid #eee;
+      padding: 0;
+      height: 100%;
     }
 
     svg {

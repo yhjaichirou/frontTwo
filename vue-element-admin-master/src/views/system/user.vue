@@ -1,43 +1,74 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAddUser">新建用户</el-button>
+    <div class="container-header">
+      <el-button type="primary" @click="handleAddUser">新建用户</el-button>
+      <div class="search">
+        <el-input v-model="searchContent" placeholder="请输入姓名" @input="search">
+          <i slot="prefix" class="el-input__icon el-icon-search" />
+        </el-input>
+      </div>
+    </div>
+    <div class="project-body">
+      <el-table :data="usersList" border>
+        <el-table-column align="center" label="ID" width="60">
+          <template slot-scope="scope">
+            {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="用户姓名" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.userName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="账户" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.account }}
+          </template>
+        </el-table-column>
 
-    <el-table :data="usersList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="ID" width="60">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="用户姓名" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.userName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="账户" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.account }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="角色">
-        <template slot-scope="scope">
-          {{ scope.row.roleName == undefined || scope.row.roleName == ''?"无":scope.row.roleName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="所属分组">
-        <template slot-scope="scope">
-          {{ scope.row.groupName == undefined || scope.row.groupName == ''?"无":scope.row.groupName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column align="center" label="角色">
+          <template slot-scope="scope">
+            {{ scope.row.roleName == undefined || scope.row.roleName == ''?"无":scope.row.roleName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="所属分组">
+          <template slot-scope="scope">
+            {{ scope.row.groupName == undefined || scope.row.groupName == ''?"无":scope.row.groupName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="所属组织" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.orgName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        :current-page="dataMap.pn"
+        :page-sizes="[20, 50, 100]"
+        :page-size="dataMap.ps"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="dataMap.total"
+        @size-change="handlePageSizeChange"
+        @current-change="handlePageCurrentChange"
+      />
+    </div>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改用户':'新建用户'">
-      <el-form id="thisForm" ref="ruleForm" :model="user" status-icon :rules="rules" label-width="80px" label-position="left">
+      <el-form
+        id="thisForm"
+        ref="ruleForm"
+        :model="user"
+        status-icon
+        :rules="rules"
+        label-width="80px"
+        label-position="left"
+      >
         <el-form-item label="账户" prop="account">
           <el-input v-model="user.account" placeholder="请输入手机号" />
         </el-form-item>
@@ -61,16 +92,16 @@
         </el-form-item>
 
         <!-- <div v-if="visiblePwd">
-          <el-form-item v-if="dialogType==='edit'" label="旧密码" prop="oldpassword">
-            <el-input v-model="user.oldpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="密码" prop="newpassword">
-            <el-input v-model="user.newpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="确认密码" prop="rePassword">
-            <el-input v-model="user.rePassword" type="password" placeholder="请输入确认密码" autocomplete="off" />
-          </el-form-item>
-        </div> -->
+            <el-form-item v-if="dialogType==='edit'" label="旧密码" prop="oldpassword">
+              <el-input v-model="user.oldpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="密码" prop="newpassword">
+              <el-input v-model="user.newpassword" type="password" placeholder="请输入6~15个字符或数字" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="确认密码" prop="rePassword">
+              <el-input v-model="user.rePassword" type="password" placeholder="请输入确认密码" autocomplete="off" />
+            </el-form-item>
+          </div> -->
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
@@ -82,7 +113,9 @@
 
 <script>
 import path from 'path'
-import { deepClone } from '@/utils'
+import {
+  deepClone
+} from '@/utils'
 import md5 from 'js-md5'
 import {
   getUsers,
@@ -155,6 +188,13 @@ export default {
       }
     }
     return {
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      },
+      searchContent: '',
       loginRoleId: '',
       user: Object.assign({}, defaultUser),
       usersList: [],
@@ -207,7 +247,7 @@ export default {
     // Mock: get all routes and roles list from server
     // this.getRoutes()
     this.loginRoleId = this.$store.getters.roleId
-    this.getUsers()
+    this.getUsers(1, 20)
   },
   methods: {
     generateArr(routes) {
@@ -223,15 +263,22 @@ export default {
       })
       return data
     },
-
-    async getUsers() {
-      var orgId = this.$store.getters.orgId
-      const res = await getUsers(orgId)
-      this.usersList = res.data
+    async getUsers(pn, ps) {
+      const res = await getUsers({ 'pn': pn, 'ps': ps, 'orgId': this.$store.getters.orgId, 'search': this.searchContent })
+      this.usersList = res.data.list
     },
     async getRoleList() {
       const res = await getRoleList(this.$store.getters.orgId, this.$store.getters.roleId)
       this.roleList = res.data
+    },
+    search() {
+      this.getUsers(1, 20)
+    },
+    async handlePageSizeChange(val) {
+      this.getUsers(this.dataMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.getUsers(val, this.dataMap.ps)
     },
     handleAddUser() {
       this.getRoleList()
@@ -370,10 +417,49 @@ export default {
       margin-bottom: 30px;
     }
 
-    #thisForm{
-      .el-select--medium{
+    #thisForm {
+      .el-select--medium {
         width: 100%;
       }
     }
+  }
+</style>
+<style>
+  .app-container{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background-color: aliceblue;
+    height: calc(100vh - 84px);
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .app-container .container-header{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+  }
+  .app-container .project-body{
+    height: calc(100% - 40px);
+    padding: 20px;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #eee;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .app-container .project-body .el-table{
+    margin-bottom: 20px;
+  }
+  .app-container .project-body .el-pagination {
+    margin-top: 0px;
+    margin-bottom: 20px;
   }
 </style>

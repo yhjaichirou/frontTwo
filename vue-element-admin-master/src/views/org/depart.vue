@@ -3,21 +3,20 @@
     <div class="container-header">
       <el-button type="primary" @click="addDepartEvent">新建部门</el-button>
       <div class="search">
-        <el-input v-model="searchContent" style="width: 50%;" placeholder="请输入内容" @input="searchProject">
+        <el-input v-model="searchContent" placeholder="请输入内容" @input="searchProject">
           <i slot="prefix" class="el-input__icon el-icon-search" />
         </el-input>
-        <el-radio-group
+        <!-- <el-radio-group
           v-model="searchStatus"
           class="yhj-el-radio-group2"
           style=""
           placeholder="搜索项目"
           @change="searchProject"
-        >
-         <!-- <el-radio-button label="0" value="0">全部任务</el-radio-button>
+        > -->
+        <!-- <el-radio-button label="0" value="0">全部任务</el-radio-button>
           <el-radio-button label="1" value="1">我负责的任务</el-radio-button> -->
-        </el-radio-group>
+        <!-- </el-radio-group> -->
       </div>
-
     </div>
     <div class="project-body">
       <el-table :data="departList" style="width: 100%;margin-top:30px;" border>
@@ -59,83 +58,76 @@
         </el-table-column>
       </el-table>
       <el-pagination
-        :current-page="pn"
+        :current-page="dataMap.pn"
         :page-sizes="[20, 50, 100]"
-        :page-size="ps"
+        :page-size="dataMap.ps"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+        :total="dataMap.total"
         @size-change="handlePageSizeChange"
         @current-change="handlePageCurrentChange"
       />
-
-      <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改单位':'新建单位'">
-        <el-form ref="ruleForm" :model="depart" :rules="rules">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="单位名称" prop="name" :label-width="formLabelWidth">
-                  <el-input v-model="depart.name" autocomplete="off" placeholder="请输入单位名称" />
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="所在地点" :label-width="formLabelWidth">
-                  <el-input v-model="depart.position" autocomplete="off" placeholder="请输入所在地点" />
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="单位负责人" prop="manager" :label-width="formLabelWidth">
-                  <el-input v-model="depart.manager" autocomplete="off" placeholder="请输入单位负责人" />
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="负责人电话" prop="managerMobile" :label-width="formLabelWidth">
-                  <el-input v-model="depart.managerMobile" autocomplete="off" placeholder="请输入负责人电话" />
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col v-if="currProperty" :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
-                  <el-select v-model="depart.property" placeholder="请选择单位性质">
-                    <el-option label="政府机构" value="3" />
-                    <el-option label="企业" value="4" />
-                  </el-select>
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="grid-content bg-purple">
-                <el-form-item label="所属行业" prop="typeArr" :label-width="formLabelWidth">
-                  <el-cascader
-                    v-model="depart.typeArr"
-                    :options="typeList"
-                    :props="{ expandTrigger: 'hover' }"
-                  />
-                </el-form-item>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-        <div style="text-align:right;">
-          <el-button type="danger" @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary" @click="confirmDepart('ruleForm')">提交</el-button>
-        </div>
-      </el-dialog>
     </div>
 
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改单位':'新建单位'">
+      <el-form ref="ruleForm" :model="depart" :rules="rules">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="单位名称" prop="name" :label-width="formLabelWidth">
+                <el-input v-model="depart.name" autocomplete="off" placeholder="请输入单位名称" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="所在地点" :label-width="formLabelWidth">
+                <el-input v-model="depart.position" autocomplete="off" placeholder="请输入所在地点" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="单位负责人" prop="manager" :label-width="formLabelWidth">
+                <el-input v-model="depart.manager" autocomplete="off" placeholder="请输入单位负责人" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="负责人电话" prop="managerMobile" :label-width="formLabelWidth">
+                <el-input v-model="depart.managerMobile" autocomplete="off" placeholder="请输入负责人电话" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col v-if="currProperty" :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
+                <el-select v-model="depart.property" placeholder="请选择单位性质">
+                  <el-option label="政府机构" value="3" />
+                  <el-option label="企业" value="4" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="所属行业" prop="typeArr" :label-width="formLabelWidth">
+                <el-cascader v-model="depart.typeArr" :options="typeList" :props="{ expandTrigger: 'hover' }" />
+              </el-form-item>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div style="text-align:right;">
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmDepart('ruleForm')">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
-  </div>
-
 </template>
 
 <script>
-import path from 'path'
+// import path from 'path'
 import {
   deepClone
 } from '@/utils'
@@ -175,6 +167,12 @@ export default {
       }
     }
     return {
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      },
       orgId: '',
       typeList: [],
       searchContent: '',
@@ -190,9 +188,6 @@ export default {
         label: 'title'
       },
       formLabelWidth: '90px',
-      pn: 1,
-      ps: 20,
-      total: 0,
       rules: {
         name: [{
           required: true,
@@ -204,7 +199,8 @@ export default {
           max: 50,
           message: '长度在 2 到 50 个字符',
           trigger: 'blur'
-        }],
+        }
+        ],
         manager: [{
           required: true,
           message: '请输入负责人',
@@ -238,7 +234,7 @@ export default {
     // this.getRoutes()
     this.orgId = this.$store.getters.orgId
     this.currProperty = this.$store.getters.property === 2
-    this.getDepartList()
+    this.getDepartList(1, 20)
     this.getOrgtypes()
   },
   methods: {
@@ -247,15 +243,26 @@ export default {
       const res = await getOrgtypes(this.orgId)
       this.typeList = res.data
     },
-    async searchProject() {
-      // const res = await getDepartList(this.orgId, this.pn, this.ps,this.searchContent, this.searchStatus,)
-      // this.departList = res.data
+    async handlePageSizeChange(val) {
+      this.getDepartList(this.dataMap.pn, val)
     },
-    async getDepartList() {
-      const res = await getDepartList(this.orgId, this.pn, this.ps, this.searchContent, this.searchStatus)
-      // const res = await getDepartList({ orgId: this.orgId, pn: this.pn, ps: this.ps, searchContent: this.searchContent, searchStatus: this.searchStatus })
-      this.departList = res.data
+    async handlePageCurrentChange(val) {
+      this.getDepartList(val, this.dataMap.ps)
     },
+    async getDepartList(pn, ps) {
+      const res = await getDepartList({
+        'pn': pn,
+        'ps': ps,
+        'orgId': this.orgId,
+        'searchContent': this.searchContent,
+        '': this.searchStatus
+      })
+      this.departList = res.data.list
+    },
+    searchProject() {
+      this.getDepartList(1, 20)
+    },
+
     async addDepartEvent() {
       this.depart = Object.assign({}, defaultDepart)
       this.dialogType = 'new'
@@ -340,39 +347,21 @@ export default {
           type: 'success'
         })
       }
-
-    },
-    async handlePageSizeChange(val) {
-      this.getFileList(this.fileMap.pn, val)
-    },
-    async handlePageCurrentChange(val) {
-      this.getFileList(val, this.fileMap.ps)
     }
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
   .app-container {
-    display: flex;
-    background-color: aliceblue;
-    height: calc(100vh - 84px);
-    flex-direction: column;
 
     .container-header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      background-color: white;
-      .yhj-el-radio-group2{
+
+      .yhj-el-radio-group2 {
         margin-left: 20px;
       }
-      .search{
-        display: flex;
-        flex: 1;
-        justify-content: right;
-      }
+
       .lc-search-container {
         position: relative;
         width: 300px;
@@ -402,9 +391,11 @@ export default {
       border: 1px solid #eee;
       overflow-x: hidden;
       overflow-y: auto;
-      .el-table{
+
+      .el-table {
         margin-top: 0px !important;
       }
+
       .el-row {
         position: relative;
         -webkit-box-sizing: border-box;
@@ -421,6 +412,6 @@ export default {
 </style>
 <style>
   .el-pagination {
-      margin-top: 20px;
+    margin-top: 20px;
   }
 </style>

@@ -37,10 +37,11 @@ export function logout() {
   })
 }
 
-export function getUsers(orgId) {
+export function getUsers(data) {
   return request({
-    url: '/admin/getUsers?orgId=' + orgId,
-    method: 'get'
+    url: '/admin/getUsers',
+    method: 'post',
+    data
   })
 }
 

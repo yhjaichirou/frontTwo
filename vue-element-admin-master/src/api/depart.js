@@ -14,10 +14,11 @@ export function getDepart(orgId) {
   })
 }
 
-export function getDepartList(orgId,pn,ps,searchContent,searchStatus) {
+export function getDepartList(data) {
   return request({
-    url: "/depart/getDepartList?orgId="+orgId+"&pn="+pn+"&ps="+ps+"&searchContent="+searchContent+"&searchStatus="+searchStatus,
-    method: 'get',
+    url: '/depart/getDepartList',
+    method: 'post',
+    data
   })
 }
 
@@ -44,14 +45,13 @@ export function deleteDepart(departId) {
   })
 }
 
-
-
 // 成员管理
 
-export function getPeopleList(orgId) {
+export function getPeopleList(data) {
   return request({
-    url: `/depart/getPeopleList/${orgId}`,
-    method: 'get'
+    url: `/depart/getPeopleList`,
+    method: 'post',
+    data
   })
 }
 

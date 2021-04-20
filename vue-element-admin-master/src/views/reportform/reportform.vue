@@ -120,13 +120,13 @@
         <el-tab-pane label="政府投资5000万元以上、企业投资亿元以上项目">
 
           <div>
-            <FilenameOption v-model="search" />
-            <AutoWidthOption v-model="searchStatus" />
-            <el-button style="margin:0 0 20px 20px;" type="primary" icon="el-icon-search" @click="handleSearch">
+            <FilenameOption v-model="search2" />
+            <AutoWidthOption v-model="searchStatus2" />
+            <el-button style="margin:0 0 20px 20px;" type="primary" icon="el-icon-search" @click="handleSearch2">
               搜索
             </el-button>
-            <BookTypeOption v-model="bookType" />
-            <el-button :loading="downloadLoading" style="margin:0 0 20px 20px;" type="primary" icon="el-icon-document" @click="handleDownload">
+            <BookTypeOption v-model="bookType2" />
+            <el-button :loading="downloadLoading2" style="margin:0 0 20px 20px;" type="primary" icon="el-icon-document" @click="handleDownload2">
               导出excel
             </el-button>
             <!-- <a href="https://panjiachen.github.io/vue-element-admin-site/feature/component/excel.html" target="_blank" style="margin-left:15px;">
@@ -633,7 +633,7 @@ export default {
   },
   created() {
     this.orgId = this.$store.getters.orgId
-    this.fetchData(1, 20)
+    this.fetchData2(1, 20)
   },
   methods: {
     async handleTabChange(v) {
@@ -660,12 +660,6 @@ export default {
       this.listLoading = true
       const res = await getProjectForm(pn, ps, this.orgId, this.search, this.searchStatus)
       console.log('数据：', res.data)
-      this.dataMap = res.data
-      this.listLoading = false
-    },
-    async handleSearch2() {
-      this.listLoading = true
-      const res = await getProjectForm(this.dataMap.pn, this.dataMap.ps, this.orgId, this.search, this.searchStatus)
       this.dataMap = res.data
       this.listLoading = false
     },
@@ -697,12 +691,45 @@ export default {
         }
       }))
     },
+
+    /* 5000万以上的 政企投资  */
     async fetchData2(pn, ps) {
-      this.listLoading = true
-      const res = await getProjectForm(pn, ps, this.orgId, this.search, this.searchStatus)
+      this.listLoading2 = true
+      const res = await getProjectForm(pn, ps, this.orgId, this.search2, this.searchStatus2)
       console.log('数据：', res.data)
-      this.dataMap = res.data
-      this.listLoading = false
+      this.dataMap2 = res.data
+      this.listLoading2 = false
+    },
+    async handleSearch2() {
+      this.listLoading2 = true
+      const res = await getProjectForm(this.dataMap2.pn, this.dataMap2.ps, this.orgId, this.search2, this.searchStatus2)
+      this.dataMap2 = res.data
+      this.listLoading2 = false
+    },
+    async handlePageSizeChange2(val) {
+      this.fetchData2(this.dataMap2.pn, val)
+    },
+    async handlePageCurrentChange2(val) {
+      this.fetchData2(val, this.dataMap2.ps)
+    },
+    handleDownload2() {
+      this.downloadLoading2 = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['项目编号', '项目名称', '行业类别', '投资规模(亿元)', '项目内容', '对接时间', '牵头单位', '牵头领导', '配合部门',
+          '项目推进阶段', '手续办理情况', '存在的需要解决的问题', '预计完成时间', '企业联系人', '企业联系人电话', '备注']
+        const filterVal = ['number', 'name', 'categoryName', 'invest', 'content', 'dockingDateStr', 'leadenterName', 'leaderName',
+          'orgName', 'processCondition', 'earlyStage', 'diffAndProblem', 'expectedDateStr', 'enterManagerName', 'enterManagerMobile', 'remarks']
+        const list = this.dataMap2.list
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: this.filename,
+          autoWidth: this.autoWidth,
+          bookType: this.bookType
+        })
+        this.downloadLoading2 = false
+      })
     }
   }
 }

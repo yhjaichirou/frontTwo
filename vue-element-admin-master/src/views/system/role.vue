@@ -1,31 +1,33 @@
 <template>
   <div class="app-container">
-    <!-- <el-button type="primary" @click="handleAddRole">新增角色</el-button> -->
-
-    <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="ID" width="60">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="角色名称" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.roleName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="角色描述">
-        <template slot-scope="scope">
-          {{ scope.row.roleDescribe }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <!-- <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button> -->
-        </template>
-      </el-table-column>
-    </el-table>
-
+    <div class="container-header">
+      <el-button type="primary" @click="handleAddRole">新增角色</el-button>
+    </div>
+    <div class="project-body">
+      <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
+        <el-table-column align="center" label="ID" width="60">
+          <template slot-scope="scope">
+            {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="角色名称" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.roleName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="header-center" label="角色描述">
+          <template slot-scope="scope">
+            {{ scope.row.roleDescribe }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
+            <!-- <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新增角色'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="角色名称">
@@ -65,7 +67,7 @@
 <script>
 import path from 'path'
 import { deepClone } from '@/utils'
-import { menu } from '@/utils/menu'
+// import { menu } from '@/utils/menu'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {

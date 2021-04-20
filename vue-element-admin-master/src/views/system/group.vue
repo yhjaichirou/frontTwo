@@ -1,30 +1,33 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="addGroupEvent">新建分组</el-button>
-
-    <el-table :data="groupList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="ID" width="60">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="分组名称" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.groupName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="分组描述">
-        <template slot-scope="scope">
-          {{ scope.row.groupDecript }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="container-header">
+      <el-button type="primary" @click="addGroupEvent">新建分组</el-button>
+    </div>
+    <div class="project-body">
+      <el-table :data="groupList" border>
+        <el-table-column align="center" label="ID" width="60">
+          <template slot-scope="scope">
+            {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="分组名称" width="220">
+          <template slot-scope="scope">
+            {{ scope.row.groupName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="header-center" label="分组描述">
+          <template slot-scope="scope">
+            {{ scope.row.groupDecript }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作" width="180">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改分组':'新建分组'">
       <el-form :model="group" label-width="80px" label-position="left">
@@ -39,7 +42,7 @@
             placeholder="请输入分组描述"
           />
         </el-form-item>
-    <!--    <el-form-item label="Menus">
+        <!--    <el-form-item label="Menus">
           <el-tree
             ref="tree"
             :check-strictly="checkStrictly"
@@ -67,7 +70,7 @@ import { getGroup, addGroup, updateGroup, deleteGroup } from '@/api/group'
 const defaultRole = {
   key: '',
   name: '',
-  description: '',
+  description: ''
 }
 
 export default {
@@ -158,7 +161,6 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.group = deepClone(scope.row)
-
     },
     handleDelete({ $index, row }) {
       this.$confirm('确定要删除该分组吗？', 'Warning', {
@@ -205,8 +207,8 @@ export default {
           }
         }
       } else {
-         var orgId = this.$store.getters.orgId;
-         this.group.orgId = orgId;
+        var orgId = this.$store.getters.orgId
+        this.group.orgId = orgId
         const { data } = await addGroup(this.group)
         this.group.id = data
         this.groupList.push(this.group)
