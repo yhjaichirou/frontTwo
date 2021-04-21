@@ -460,11 +460,10 @@
     </div>
 
     <!-- add projectform -->
-
     <el-dialog :visible.sync="dialogAddFormVisible" :title="dialogType==='edit'?'修改项目':'新建项目'">
       <el-form ref="ruleForm" :model="addform" :rules="rules">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="项目名称" prop="name" :label-width="formLabelWidth">
                 <el-input v-model="addform.name" autocomplete="off" placeholder="请输入项目名称" />
@@ -478,6 +477,14 @@
               </el-form-item>
             </div>
           </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="审批监管平台代码" prop="approveCode" :label-width="formLabelWidth">
+                <el-input v-model="addform.approveCode" autocomplete="off" placeholder="请输入项目审批监管平台代码" />
+              </el-form-item>
+            </div>
+          </el-col>
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="行业主管厅局" prop="proManagerTing" :label-width="formLabelWidth">
@@ -517,11 +524,20 @@
               </el-form-item>
             </div>
           </el-col>
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="建设内容及规模" prop="content" :label-width="formLabelWidth">
+                <el-input v-model="addform.content" type="textarea" placeholder="请输入项目建设内容及规模" />
+              </el-form-item>
+            </div>
+          </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="项目性质" prop="maturity" :label-width="formLabelWidth">
-                <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
-                  <el-option v-for="item in maturity" :key="item.id" :label="item.name" :value="item.id" />
+              <el-form-item label="投资类型" prop="investType" :label-width="formLabelWidth">
+                <el-select v-model="addform.investType" placeholder="请选择投资类型">
+                  <el-option label="政府投资" value="政府投资" />
+                  <el-option label="企业投资" value="企业投资" />
+                  <el-option label="政企合投" value="政企合投" />
                 </el-select>
               </el-form-item>
             </div>
@@ -537,160 +553,63 @@
               </el-form-item>
             </div>
           </el-col>
-          <el-col :span="24">
-            <div class="grid-content bg-purple">
-              <el-form-item label="项目描述" prop="content" :label-width="formLabelWidth">
-                <el-input v-model="addform.content" type="textarea" placeholder="请输入项目描述信息" />
-              </el-form-item>
-            </div>
-          </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="牵头单位" prop="leadenter" :label-width="formLabelWidth">
-                <el-select v-model="addform.leadenter" placeholder="请选择牵头单位" @change="changeLeadenter">
-                  <!--  @change="executorChange" -->
-                  <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-form-item label="项目性质" prop="maturity" :label-width="formLabelWidth">
+                <el-select v-model="addform.maturity" placeholder="请选择项目成熟度">
+                  <el-option v-for="item in maturity" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="牵头领导" prop="leader" :label-width="formLabelWidth">
-                <el-select v-model="addform.leader" placeholder="请选择牵头领导">
-                  <el-option v-for="item in leaderList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="主管部门负责人" prop="proManager" :label-width="formLabelWidth">
-                <el-select v-model="addform.proManager" placeholder="请选择" @change="proManagerChange">
-                  <el-option v-for="item in proManagerList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="企业联系人" prop="enterManager" :label-width="formLabelWidth">
-                <el-select v-model="addform.enterManager" placeholder="请选择" @change="enterManagerChange">
-                  <el-option v-for="item in enterList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="主管部门负责人电话" prop="proManagerMobile" :label-width="formLabelWidth">
-                <el-input v-model="addform.proManagerMobile" autocomplete="off" placeholder="请输入" />
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="企业联系电话" prop="enterManagerMobile" :label-width="formLabelWidth">
-                <el-input v-model="addform.enterManagerMobile" autocomplete="off" placeholder="请输入" />
-              </el-form-item>
-            </div>
-          </el-col>
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="对接日期" prop="dockingDate" :label-width="formLabelWidth">
-                <el-date-picker
-                  v-model="addform.dockingDate"
-                  type="date"
-                  placeholder="选择日期"
-                  value-format="yyyy-MM-dd"
-                  style="width: 100%;"
-                  :picker-options="endTime"
-                />
-              </el-form-item>
-            </div>
-          </el-col>
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="协调负责人" prop="coordinate" :label-width="formLabelWidth">
-                <el-select v-model="addform.coordinate" placeholder="请选择协调负责人">
-                  <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
+              <el-form-item label="建设地点(旗县区)" prop="buildAddress" :label-width="formLabelWidth">
+                <el-input v-model="addform.buildAddress" autocomplete="off" placeholder="请输入建设地点(旗县区)" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="24">
             <div class="grid-content bg-purple">
-              <el-form-item label="可见范围" prop="visibleRange" :label-width="formLabelWidth">
-                <el-select v-model="addform.visibleRange" multiple placeholder="请选择可见组织范围" @change="visibleRangeChange">
-                  <el-option label="选择所有" value="0" />
-                  <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="24">
-            <div class="grid-content bg-purple">
-              <el-form-item label="参与人员" prop="joiners" :label-width="formLabelWidth">
-                <el-select v-model="addform.joiners" multiple placeholder="请选择参与人员" @change="joinerChange">
-                  <el-option label="选择所有" value="0" />
-                  <el-option v-for="item in joiners" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="投资类型" prop="investType" :label-width="formLabelWidth">
-                <el-select v-model="addform.investType" placeholder="请选择投资类型">
-                  <el-option label="政府投资" value="政府投资" />
-                  <el-option label="企业投资" value="企业投资" />
-                  <el-option label="政企合投" value="政企合投" />
-                </el-select>
-              </el-form-item>
-            </div>
-          </el-col>
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="投资情况" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+              <el-form-item label="总投资" prop="invest" :label-width="formLabelWidth">
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="24" :class="visibleInvest">
             <el-form-item label="投资明细" prop="investInfos" :label-width="formLabelWidth">
-              <div>
-                <el-row>
-                  <el-col :span="8" style="min-height: 40px;height: 40px;">
-                    <div class="grid-content bg-purple" style="line-height: 22px;">投资类型</div>
+              <div style="position: relative;top: -7px;">
+                <div class="grid-content bg-purple" style="margin-right:10px;display: inline-block;width: 180px;min-height: 40px;height: 40px;line-height: 22px;">投资类型</div>
+                <div class="grid-content bg-purple" style="margin-right:10px;display: inline-block;width: 180px;min-height: 40px;height: 40px;line-height: 22px;">投资金额</div>
+                <div class="grid-content bg-purple" style="display: inline-block;width: 180px;min-height: 40px;height: 40px;line-height: 22px;">投资时间</div>
+                <!-- <el-row :gutter="10">
+                  <el-col :span="7" style="min-height: 40px;height: 40px;">
+
                   </el-col>
-                  <el-col :span="8" style="min-height: 40px;height: 40px;">
+                  <el-col :span="7" style="min-height: 40px;height: 40px;">
                     <div class="grid-content bg-purple" style="line-height: 22px;">投资金额</div>
                   </el-col>
-                  <el-col :span="8" style="min-height: 40px;height: 40px;">
+                  <el-col :span="7" style="min-height: 40px;height: 40px;">
                     <div class="grid-content bg-purple" style="line-height: 22px;">投资时间</div>
                   </el-col>
-                </el-row>
+                </el-row> -->
                 <InvestInfo v-for="(item,index) in addform.investInfos" :key="index" :index="index" :item="item" @delete="deleteInvestInfo" />
               </div>
               <el-button size="mini" type="primary" @click="addInvestInfo">添 加</el-button>
+              <span style="line-height: 36px;color: burlywood;font-size: 12px;margin-left: 20px;">注：投资明细的类型选择不能重复</span>
             </el-form-item>
           </el-col>
-
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item :label="planInvertMoney" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.investThisyear" autocomplete="off" placeholder="**请输入当年计划完成投资(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+                <el-input v-model="addform.investThisyear" autocomplete="off" placeholder="**请输入当年计划完成投资(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item :label="overInvertMoney" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.investCom" autocomplete="off" placeholder="**请输入当年已完成投资(单位:亿元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+                <el-input v-model="addform.investCom" autocomplete="off" placeholder="**请输入当年已完成投资(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
@@ -718,25 +637,9 @@
               </el-form-item>
             </div>
           </el-col>
-
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="建设地点(旗县区)" prop="buildAddress" :label-width="formLabelWidth">
-                <el-input v-model="addform.buildAddress" autocomplete="off" placeholder="请输入建设地点(旗县区)" />
-              </el-form-item>
-            </div>
-          </el-col>
-          <!-- <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="进展明细" prop="buildAddress" :label-width="formLabelWidth">
-                <el-input v-model="addform.processCondition" autocomplete="off" placeholder="请输入进展明细" />
-              </el-form-item>
-            </div>
-          </el-col> -->
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="预计完成时间" prop="expectedDate" :label-width="formLabelWidth">
+              <el-form-item label="预计完工时间" prop="expectedDate" :label-width="formLabelWidth">
                 <el-date-picker
                   v-model="addform.expectedDate"
                   type="date"
@@ -747,21 +650,57 @@
               </el-form-item>
             </div>
           </el-col>
-
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="项目审批监管平台代码" :label-width="formLabelWidth">
-                <el-input v-model="addform.approveCode" autocomplete="off" placeholder="请输入项目审批监管平台代码" />
-
+              <el-form-item label="整体用地规模" prop="ydArea" :label-width="formLabelWidth">
+                <el-input v-model="addform.ydArea" placeholder="请输入整体用地规模（亩）" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="项目包含阶段" :label-width="formLabelWidth">
-                <el-select v-model="addform.stage" multiple placeholder="请选择项目包含的阶段">
-                  <el-option v-for="item in stageList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
+              <el-form-item label="涉及林地规模" :label-width="formLabelWidth">
+                <el-input v-model="addform.ydAreaLd" placeholder="请输入涉及林地规模（亩）" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="涉及草地规模" :label-width="formLabelWidth">
+                <el-input v-model="addform.ydAreaCd" placeholder="请输入涉及草地规模（亩）" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="涉及占用草原面积" :label-width="formLabelWidth">
+                <el-input v-model="addform.ydAreaCy" placeholder="请输入涉及占用地中占用基本草原面积（亩）" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple" style="line-height: 36px;color:burlywood;font-size: 12px;">
+              注：涉及占用地中占用基本草原面积（不占用无需填写）
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="整体用能规模" prop="energyArea" :label-width="formLabelWidth">
+                <el-input v-model="addform.energyArea" placeholder="请输入项目建成后整体用能规模（等价值）" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="整体用水规模" prop="energyWaterArea" :label-width="formLabelWidth">
+                <el-input v-model="addform.energyWaterArea" placeholder="请输入项目建成后整体用水规模（立方米）" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="其他手续办理情况" :label-width="formLabelWidth">
+                <el-input v-model="addform.otherBl" type="textarea" placeholder="请输入其他前期手续办理情况（可使用文字详细表述）" />
               </el-form-item>
             </div>
           </el-col>
@@ -772,10 +711,127 @@
               </el-form-item>
             </div>
           </el-col>
+          <!-- 主管部门负责人 -->
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目联系人" prop="proManager" :label-width="formLabelWidth">
+                <el-select v-model="addform.proManager" placeholder="请选择项目联系人" @change="proManagerChange">
+                  <el-option v-for="item in proManagerList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目联系人电话" prop="proManagerMobile" :label-width="formLabelWidth">
+                <el-input v-model="addform.proManagerMobile" autocomplete="off" placeholder="请输入项目联系人电话" />
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <!-- <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="进展明细" prop="buildAddress" :label-width="formLabelWidth">
+                <el-input v-model="addform.processCondition" autocomplete="off" placeholder="请输入进展明细" />
+              </el-form-item>
+            </div>
+          </el-col> -->
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="牵头单位" prop="leadenter" :label-width="formLabelWidth">
+                <el-select v-model="addform.leadenter" placeholder="请选择牵头单位" @change="changeLeadenter">
+                  <!--  @change="executorChange" -->
+                  <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="牵头领导" prop="leader" :label-width="formLabelWidth">
+                <el-select v-model="addform.leader" placeholder="请选择牵头领导">
+                  <el-option v-for="item in leaderList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="对接时间" prop="dockingDate" :label-width="formLabelWidth">
+                <el-date-picker
+                  v-model="addform.dockingDate"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;"
+                  :picker-options="endTime"
+                />
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="协调负责人" prop="coordinate" :label-width="formLabelWidth">
+                <el-select v-model="addform.coordinate" placeholder="请选择协调负责人">
+                  <el-option v-for="item in peopleList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="企业联系人" prop="enterManager" :label-width="formLabelWidth">
+                <el-select v-model="addform.enterManager" placeholder="请选择" @change="enterManagerChange">
+                  <el-option v-for="item in enterList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="企业联系电话" prop="enterManagerMobile" :label-width="formLabelWidth">
+                <el-input v-model="addform.enterManagerMobile" autocomplete="off" placeholder="请输入" />
+              </el-form-item>
+            </div>
+          </el-col>
+
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="可见范围" prop="visibleRange" :label-width="formLabelWidth">
+                <el-select v-model="addform.visibleRange" multiple placeholder="请选择可见组织范围" @change="visibleRangeChange">
+                  <el-option label="选择所有" value="0" />
+                  <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="grid-content bg-purple">
+              <el-form-item label="参与人员" prop="joiners" :label-width="formLabelWidth">
+                <el-select v-model="addform.joiners" multiple placeholder="请选择参与人员" @change="joinerChange">
+                  <el-option label="选择所有" value="0" />
+                  <el-option v-for="item in joiners" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="项目代号" prop="taskPrefix" :label-width="formLabelWidth">
                 <el-input v-model="addform.taskPrefix" autocomplete="off" placeholder="例如:LY-2020(林业2020项目)" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目包含阶段" :label-width="formLabelWidth">
+                <el-select v-model="addform.stage" multiple placeholder="请选择项目包含的阶段">
+                  <el-option v-for="item in stageList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
               </el-form-item>
             </div>
           </el-col>
@@ -1067,7 +1123,7 @@ export default {
   data() {
     var val_mobil = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入主管部门联系人电话！'))
+        callback(new Error('请输入项目联系人电话！'))
       } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
         callback(new Error('手机号格式不正确！'))
       } else {
@@ -1167,37 +1223,47 @@ export default {
           trigger: 'blur'
         }
         ],
-        proManagerTing: [{
+        submitted: [{
           required: true,
-          message: '请输入主管厅局',
+          message: '请输入报送地区',
           trigger: 'blur'
         }],
-        proEnter: [{
+        // proManagerTing: [{
+        //   required: true,
+        //   message: '请输入主管厅局',
+        //   trigger: 'blur'
+        // }],
+        // proEnter: [{
+        //   required: true,
+        //   message: '请选择主管单位',
+        //   trigger: 'change'
+        // }],
+        approveCode: [{
           required: true,
-          message: '请选择主管单位',
-          trigger: 'change'
+          message: '请输入项目平台代码',
+          trigger: 'blur'
         }],
         proManager: [{
           required: true,
-          message: '请选择主管部门负责人',
+          message: '请选择项目联系人',
           trigger: 'change'
         }],
         proManagerMobile: [{
           validator: val_mobil,
           trigger: 'blur'
         }],
-        enterManager: [{
-          required: true,
-          message: '请选择企业负责人',
-          trigger: 'change'
-        }],
-        enterManagerMobile: [{
-          validator: val_mobil,
-          trigger: 'blur'
-        }],
+        // enterManager: [{
+        //   required: true,
+        //   message: '请选择企业负责人',
+        //   trigger: 'change'
+        // }],
+        // enterManagerMobile: [{
+        //   validator: val_mobil,
+        //   trigger: 'blur'
+        // }],
         content: [{
           required: true,
-          message: '请输入项目描述',
+          message: '请输入项目建设内容',
           trigger: 'blur'
         }],
         lxType: [{
@@ -1215,11 +1281,11 @@ export default {
           message: '请选择行业类型',
           trigger: 'change'
         }],
-        number: [{
-          required: true,
-          message: '请输入项目编号',
-          trigger: 'change'
-        }],
+        // number: [{
+        //   required: true,
+        //   message: '请输入项目编号',
+        //   trigger: 'change'
+        // }],
         maturity: [{
           required: true,
           message: '请选择项目成熟度',
@@ -1231,27 +1297,58 @@ export default {
           message: '请选择对接日期',
           trigger: 'change'
         }],
+        planInvertMoney: [{
+          required: true,
+          message: '请输入当年计划完成投资',
+          trigger: 'blur'
+        }],
+        // thisyearOpentime: [{
+        //   required: true,
+        //   message: '请选择当年计划开复工时间',
+        //   trigger: 'change'
+        // }],
+        overInvertMoney: [{
+          required: true,
+          message: '请输入当年已完成投资',
+          trigger: 'blur'
+        }],
         expectedDate: [{
           // type: 'date',
           required: true,
           message: '请选择预计完成事件时间',
           trigger: 'change'
         }],
-        leader: [{
+        ydArea: [{
           required: true,
-          message: '请选择牵头领导',
-          trigger: 'change'
+          message: '请输入项目整体规模',
+          trigger: 'blur'
         }],
-        leadenter: [{
+        energyArea: [{
           required: true,
-          message: '请选择牵头单位',
-          trigger: 'change'
+          message: '请输入项目整体用能规模',
+          trigger: 'blur'
         }],
-        coordinate: [{
+        energyWaterArea: [{
           required: true,
-          message: '请选择协调负责人',
-          trigger: 'change'
+          message: '请输入项目整体用水规模',
+          trigger: 'blur'
         }],
+
+        // leader: [{
+        //   required: true,
+        //   message: '请选择牵头领导',
+        //   trigger: 'change'
+        // }],
+        // leadenter: [{
+        //   required: true,
+        //   message: '请选择牵头单位',
+        //   trigger: 'change'
+        // }],
+        // coordinate: [{
+        //   required: true,
+        //   message: '请选择协调负责人',
+        //   trigger: 'change'
+        // }],
         visibleRange: [{
           required: true,
           message: '请选择可见范围',
@@ -1877,6 +1974,7 @@ export default {
       border: 1px solid #eee;
       padding: 0;
       height: 100%;
+      overflow: hidden;
     }
 
     svg {

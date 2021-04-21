@@ -4,7 +4,7 @@
       <el-button type="primary" @click="handleAddRole">新增角色</el-button>
     </div>
     <div class="project-body">
-      <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
+      <el-table :data="rolesList" border>
         <el-table-column align="center" label="ID" width="60">
           <template slot-scope="scope">
             {{ scope.row.id }}
@@ -20,7 +20,7 @@
             {{ scope.row.roleDescribe }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" label="操作" width="180">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
             <!-- <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button> -->
@@ -143,12 +143,20 @@ export default {
       this.role = deepClone(scope.row)
       var menus = this.role.menus
       menus = menus === null || menus === '' ? [] : menus.split(',')
-      this.currMenus = menus.map(Number)
+      var _currMenus = menus.map(Number)
+      this.currMenus = _currMenus
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(_currMenus)
+      })
       // this.$nextTick(() => {
       //   this.$refs.tree.setCheckedNodes(this.role.menus)
       //   // set checked state of a node not affects its father and child nodes
       //   this.checkStrictly = false
       // })
+    },
+    setCheckedKeys(keys, leafOnly) {
+      console.log('设置：', keys, leafOnly)
+      this.currMenus = []
     },
     checkClick(e) {
       this.checkStrictly = false
@@ -195,7 +203,7 @@ export default {
       this.currMenus = finishChecked
       if (finishChecked.length > 0) {
         this.role.menus = finishChecked.join(',')
-        console.log('hjhjhjhjh', this.role.menus)
+        console.log('选择tree', this.role.menus)
       }
 
       if (isEdit) {

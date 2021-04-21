@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
     <div class=" clearfix">
-      <pan-thumb :image="avatar" style="float: left">
+      <pan-thumb :image="emptyGif" style="float: left">
         当前登录角色:
         <div style="margin-top:20px; color:#30B08F">{{ roleName }}</div>
       </pan-thumb>
@@ -21,7 +21,7 @@
 import { mapGetters } from 'vuex'
 import PanThumb from '@/components/PanThumb'
 // import GithubCorner from '@/components/GithubCorner'
-const defulatAvater = 'avater.png'
+// const defulatAvater = 'avater.png'
 export default {
   name: 'DashboardEditor',
   components: {
@@ -30,8 +30,8 @@ export default {
   },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3',
-      avatar: this.avatar !== null && this.avatar !== '' ? this.avatar : defulatAvater
+      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+      // avatar: this.avatar !== null && this.avatar !== '' ? this.avatar : defulatAvater
     }
   },
   computed: {
