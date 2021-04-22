@@ -12,12 +12,26 @@ export function getAllMsg(orgId) {
     method: 'get'
   })
 }
-export function getAllProject(orgId, search, status) {
+export function getAllProject(roleId, orgId, search, status) {
   return request({
-    url: '/project/getAllProject?orgId=' + orgId + '&search=' + search + '&status=' + status,
+    url: '/project/getAllProject?orgId=' + orgId + '&search=' + search + '&status=' + status + '&roleId=' + roleId,
     method: 'get'
   })
 }
+export function getAllProjectTask(pn, ps, roleId, orgId, search, status) {
+  return request({
+    url: '/project/getAllProjectTask?orgId=' + orgId + '&search=' + search + '&status=' + status + '&roleId=' + roleId + '&pn=' + pn + '&ps=' + ps,
+    method: 'get'
+  })
+}
+
+export function getSHBOption() {
+  return request({
+    url: `/project/getSHBOption`,
+    method: 'get'
+  })
+}
+
 export function getProject(projectId) {
   return request({
     url: `/project/getProject/${projectId}`,
@@ -95,6 +109,13 @@ export function addProject(data) {
 export function updateProject(data) {
   return request({
     url: `/project/updateProject`,
+    method: 'post',
+    data
+  })
+}
+export function updateProjectSHB(data) {
+  return request({
+    url: `/project/updateProjectSHB`,
     method: 'post',
     data
   })

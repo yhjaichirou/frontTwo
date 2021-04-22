@@ -40,12 +40,12 @@
 
       </div>
       <div class="right-project">
-        <!-- <div class="right-btns">
-          <div style="display: flex;align-items: center;justify-content: center;">
-            <svg-icon icon-class="setting" style="width: 1.5em;height: 1.5em;" />设置
+        <div v-if="addShbObj !== ''" class="right-btns" @click="handleSHB">
+          <div style="display: flex;align-items: center;justify-content: center;font-size: 14px;">
+            <i class="el-icon-circle-plus" style="font-size: 16px;margin-right: 5px;" />前期手续办理情况
           </div>
 
-        </div> -->
+        </div>
         <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
 
@@ -896,6 +896,320 @@
       </div>
     </el-dialog>
 
+    <!-- add SHB form -->
+    <el-dialog id="yhj-shb-form" :visible.sync="dialogAddSHBFormVisible" title="更新前期办理手续">
+      <el-form ref="ruleSHBForm" :model="addShbObj" :rules="ruleSHB">
+
+        <el-container>
+          <el-header>立项阶段</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.lxIsComapprove" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.lxHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.lxIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.lxBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.lxBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>用地预审和规划选址意见书</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.ydcardIsHascard" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.ydcardHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.ydcardIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.ydBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.ydBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>新增建设用地审批</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.tdIsBl" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.tdHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.tdIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.tdBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.tdBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="供地阶段进展情况" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.tdProvide" type="textarea" placeholder="请输入供地阶段进展情况" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>节能审查</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.energyIsCensor" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.energyHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.energyIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.energyBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.energyBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>林草地征占手续</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.lcIsBl" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.lcHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.lcIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.lcBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.lcBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>环境影响评价手续</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.envirIsBl" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.envirHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.envirIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.envirBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.envirBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+        <el-container>
+          <el-header>施工许可证</el-header>
+          <el-main>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="是否办理完成" prop="title" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption1" :key="item.option" v-model="addShbObj.sgIsBl" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.sgHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="组件是否报送到最终审批部分" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption3" :key="item.option" v-model="addShbObj.sgIsSendappdepart" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="审批、转报部门意见" prop="stageId" :label-width="formLabelWidth">
+                    <el-radio v-for="item in shbOption4" :key="item.option" v-model="addShbObj.sgBao" :label="item.option" :value="item.option" /></el-radio>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content bg-purple">
+                  <el-form-item label="不同意办理或不同意转报原因" prop="stageId" :label-width="formLabelWidth">
+                    <el-input v-model="addShbObj.sgBaoNoMsg" type="textarea" placeholder="请输入不同意办理或不同意转报原因" />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-main>
+        </el-container>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogAddSHBFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="addSHBSubmit('ruleSHBForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- add task form -->
     <el-dialog :visible.sync="dialogTaskFormVisible" :title="dialogType_Task==='edit'?'修改任务':'新建任务'">
       <el-form ref="ruleTaskForm" :model="addTaskObj" :rules="ruleTasks">
@@ -907,7 +1221,6 @@
               </el-form-item>
             </div>
           </el-col>
-
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="所属阶段" prop="stageId" :label-width="formLabelWidth">
@@ -952,7 +1265,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="归属上级" :label-width="formLabelWidth">
+              <el-form-item label="归属上级" prop="pid" :label-width="formLabelWidth">
                 <el-select v-model="addTaskObj.pid" placeholder="请选择所属上级任务">
                   <el-option v-for="item in preTaskList" :key="item.id" :label="item.title" :value="item.id" />
                 </el-select>
@@ -986,6 +1299,25 @@
               </el-form-item>
             </div>
           </el-col>
+
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="是否审核备任务" prop="isShb" :label-width="formLabelWidth">
+                <el-radio v-model="addTaskObj.isShb" label="是" /></el-radio>
+                <el-radio v-model="addTaskObj.isShb" label="否" /></el-radio>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col v-if="addTaskObj.isShb === '是'" :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="审核备类型" prop="shb" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.shb" placeholder="请选择审核备类型">
+                  <el-option v-for="item in shbList" :key="item.number" :label="item.name" :value="item.number" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -995,7 +1327,7 @@
     </el-dialog>
 
     <!-- 更新状态 -->
-    <el-dialog title="更新状态" :visible.sync="dialogFormVisible">
+    <el-dialog id="yhj-updatestatus-form" title="更新状态" :visible.sync="dialogFormVisible">
       <el-radio v-model="updateProStatus" label="1">未完成</el-radio>
       <el-radio v-model="updateProStatus" label="2">已完成</el-radio>
       <el-radio v-model="updateProStatus" label="3">已延期</el-radio>
@@ -1012,6 +1344,7 @@
 import { getToken } from '@/utils/auth'
 import CountTo from 'vue-count-to'
 import {
+  getSHBOption,
   getTzqkList,
   getAllMsg,
   getAllProject,
@@ -1025,6 +1358,7 @@ import {
   clickUpdateStatus,
   addProject,
   updateProject,
+  updateProjectSHB,
   deleteProject,
   authProject,
   // 任务请求
@@ -1164,6 +1498,7 @@ export default {
       },
       dialogType: '',
       dialogAddFormVisible: false,
+      dialogAddSHBFormVisible: false,
       visibleInvest: 'hiden',
       dialogType_Task: '',
       dialogTaskFormVisible: false,
@@ -1210,6 +1545,12 @@ export default {
         id: 4,
         name: '验收阶段'
       }],
+      addShbObj: '',
+      shbOption: [],
+      shbOption1: [],
+      shbOption2: [],
+      shbOption3: [],
+      shbOption4: [],
       rules: {
         name: [{
           required: true,
@@ -1368,6 +1709,7 @@ export default {
       formLabelWidth: '90px',
 
       // 任务添加  获取前置任务
+      shbList: [],
       taskTypeStatus: 10,
       preTaskList: [],
       executorList: [],
@@ -1381,7 +1723,7 @@ export default {
         id: 3,
         name: '三级'
       }],
-      ruleTasks: {
+      ruleSHB: {
         name: [{
           required: true,
           message: '请输入任务名称',
@@ -1393,15 +1735,44 @@ export default {
           message: '长度在 3 到 50 个字符',
           trigger: 'blur'
         }
+        ]
+      },
+      ruleTasks: {
+        title: [{
+          required: true,
+          message: '请输入任务名称',
+          trigger: 'blur'
+        },
+        {
+          min: 2,
+          max: 50,
+          message: '长度在 2 到 50 个字符',
+          trigger: 'blur'
+        }
         ],
+        pid: [{
+          required: true,
+          message: '请选择所属上级',
+          trigger: 'change'
+        }],
         stageId: [{
           required: true,
           message: '请选择所属阶段',
           trigger: 'change'
         }],
+        shb: [{
+          required: true,
+          message: '请选择审核备类型',
+          trigger: 'change'
+        }],
         remark: [{
           required: true,
           message: '请输入项目描述',
+          trigger: 'blur'
+        }, {
+          min: 1,
+          max: 300,
+          message: '长度在 1 到 300 个字符',
           trigger: 'blur'
         }],
         startDate: [{
@@ -1486,6 +1857,7 @@ export default {
     this.getAllDeparts()
     this.getAllMsg()
     this.getOrgtypes()
+    this.getSHBOption()
   },
   // inject: ['reload'],
   methods: {
@@ -1553,6 +1925,23 @@ export default {
       const res = await getOrgtypes(this.orgId)
       this.typeList = res.data
     },
+    async getSHBOption() {
+      const res = await getSHBOption()
+      this.shbOption = res.data
+      this.shbOption1 = res.data.filter((item, index, arr) => {
+        return item.step === 1
+      })
+      this.shbOption2 = res.data.filter((item, index, arr) => {
+        return item.step === 2
+      })
+      this.shbOption3 = res.data.filter((item, index, arr) => {
+        return item.step === 3
+      })
+      this.shbOption4 = res.data.filter((item, index, arr) => {
+        return item.step === 4
+      })
+    },
+
     // 切换项目内容项
     handleClick(tab, event) {
       if (tab.index === '1') {
@@ -1582,7 +1971,7 @@ export default {
     },
     async getProjectList() {
       console.log(this.searchContent, this.searchStatus)
-      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
+      const res = await getAllProject(this.$store.getters.roleId, this.orgId, this.searchContent, this.searchStatus)
       this.projectList = res.data
     },
 
@@ -1598,6 +1987,8 @@ export default {
       this.currProjectIndex = id
       const res = await getProject(id)
       this.thisProject = res.data
+      this.thisProject.invest = Number(this.thisProject.invest)
+      this.addShbObj = res.data
       this.isHasThisProject = true
       this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2
         ? 'circle-success' : 'circle-error'
@@ -1650,6 +2041,11 @@ export default {
       }
       this.dialogAddFormVisible = true
     },
+    // 添加审核备
+    handleSHB() {
+      this.dialogAddSHBFormVisible = true
+    },
+
     deleteProject(id, $index) {
       console.log(id, $index)
       this.$confirm('确定要删除该项目吗？', '删除', {
@@ -1778,6 +2174,26 @@ export default {
         this.dialogAddFormVisible = false
       }
     },
+    async addSHBSubmit(formName) {
+      var isGo = false
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          isGo = true
+        } else {
+          this.$message.error('提交信息错误！')
+          return false
+        }
+      })
+      if (isGo) {
+        const res = await updateProjectSHB(this.addShbObj)
+        this.clickProject(res.data)
+        this.$message({
+          type: 'success',
+          message: '操作成功！'
+        })
+        this.dialogAddSHBFormVisible = false
+      }
+    },
     async clickUpdateStatus() {
       await clickUpdateStatus(this.thisProject.id, this.updateProStatus)
       this.dialogFormVisible = false
@@ -1808,6 +2224,7 @@ export default {
       const res = await getAllTaskFormParam(this.thisProject.id)
       this.preTaskList = res.data.preTasks
       this.stageList = res.data.stages
+      this.shbList = res.data.shbList
       // 编辑获取
       if (id != null) {
         const res = await getTask(id)
@@ -1882,6 +2299,9 @@ export default {
             }
           }
         }
+        // 重载table
+        this.getTaskList(10)
+
         this.$message({
           type: 'success',
           message: '操作成功！'
@@ -2109,7 +2529,7 @@ export default {
       .right-btns {
         position: absolute;
         right: 8px;
-        top: 7px;
+        top: 12px;
         z-index: 2;
         cursor: pointer;
       }
@@ -2315,6 +2735,29 @@ export default {
         width: 100%;
     }
 
+  }
+
+  /* 添加审核备表单样式 */
+  #yhj-shb-form {
+    ::v-deep .el-dialog {
+      width: 80% !important;
+    }
+    .el-header{
+      background-color: #b3c0d1;
+      color: #333;
+      line-height: 60px;
+      text-align: center;
+    }
+    .el-main{
+      background-color: #e9eef3;
+      color: #333;
+      text-align: left;
+    }
+  }
+  #yhj-updatestatus-form{
+    ::v-deep .el-dialog {
+      height: auto !important;
+    }
   }
 </style>
 <style>

@@ -13,6 +13,7 @@
         @change="searchProject"
       >
         <el-radio-button label="0" value="0">全部任务</el-radio-button>
+        <el-radio-button v-if="roleId==2" label="4" value="4">待审核项目</el-radio-button>
         <el-radio-button label="1" value="1">我负责的任务</el-radio-button>
         <el-radio-button label="2" value="2">进行中的任务</el-radio-button>
         <el-radio-button label="3" value="3">已完成的任务</el-radio-button>
@@ -20,11 +21,11 @@
     </div>
     <div class="project-body">
       <el-row :gutter="20">
-        <el-col v-for="item in projectList" :span="4">
+        <el-col v-for="item in projectList" :key="item.id" :span="6">
           <el-card :body-style="{ padding: '0px' }">
             <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
             <div class="yhj-task-card-text">
-              <span>{{ item.name }}</span>
+              <span class="yhj-task-proname">{{ item.name }}</span>
               <div class="yhj-card-row">
                 <span class="yhj-card-span">项目负责人</span><span class="yhj-card-span-v">{{ item.proManagerName }}</span>
               </div>
@@ -42,23 +43,22 @@
                 <el-button type="text" class="button">
                   <svg-icon icon-class="browse" @click="openThisTask(item.id)" />
                 </el-button>
-
               </div>
+              <div v-if="item.status==8" class="shenhe">审核</div>
             </div>
           </el-card>
         </el-col>
-        <el-col :span="6">
-          <div class="grid-content bg-purple" />
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content bg-purple" />
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content bg-purple" />
-        </el-col>
       </el-row>
-
     </div>
+    <el-pagination
+      :current-page="dataMap.pn"
+      :page-sizes="[20, 50, 100]"
+      :page-size="dataMap.ps"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="dataMap.total"
+      @size-change="handlePageSizeChange"
+      @current-change="handlePageCurrentChange"
+    />
   </div>
   <div v-else-if="showContainer===1" class="app-container">
     <div class="container-header">
@@ -173,7 +173,7 @@
             </el-tab-pane>
             <el-tab-pane label="审核备" name="2">
               <div class="tabs-second-container">
-                <div v-for="item in shbList" class="el-steps-list">
+                <div v-for="item in shbList" :key="item.id" class="el-steps-list">
                   <div class="el-steps-list-title">{{ item.name }}</div>
                   <div class="el-steps-list-con">
                     <el-steps :active="item.index" finish-status="success" simple>
@@ -231,13 +231,14 @@
               </template>
             </el-table-column>
             <el-table-column
-                  fixed="right"
-                  label="操作"
-                  width="100">
-                  <template slot-scope="scope">
-                    <el-button @click="handleTaskDetail(scope)" type="text" size="small">查看</el-button>
-                  </template>
-                </el-table-column>
+              fixed="right"
+              label="操作"
+              width="100"
+            >
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="handleTaskDetail(scope)">查看</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </el-tab-pane>
 
@@ -290,7 +291,7 @@
 
     </div>
 
-    <el-dialog :visible.sync="zxdialogVisible" :title="this.currtask.isEdit?'执行任务':'任务详情'">
+    <el-dialog :visible.sync="zxdialogVisible" :title="currtask.isEdit?'执行任务':'任务详情'">
       <el-form :model="currtask" label-width="80px" label-position="left">
         <div class="list-li">
           <div class="list-li-title">
@@ -338,7 +339,7 @@
         <div class="list-li">
           <el-tabs v-model="zxActiveName" @tab-click="tabZXClick">
             <el-tab-pane name="1">
-              <span slot="label"><i class="el-icon-date" style="margin-right: 6px;"/> 任务信息</span>
+              <span slot="label"><i class="el-icon-date" style="margin-right: 6px;" /> 任务信息</span>
               <div class="list-li-msg-k">
                 <div class="list-li-msg">
                   <div class="list-li-msg-title">项目名称：</div>
@@ -361,7 +362,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane name="2">
-              <span slot="label"><i class="el-icon-c-scale-to-original" style="margin-right: 6px;"/>依赖关系</span>
+              <span slot="label"><i class="el-icon-c-scale-to-original" style="margin-right: 6px;" />依赖关系</span>
               <dl class="list-li-fj-li">
                 <div v-if="currtask.childTask === null || currtask.childTask.length === 0">
                   <div class="fj-nofile">
@@ -369,23 +370,23 @@
                   </div>
                 </div>
                 <div v-else style="padding: 10px;border-bottom: 1px #eee solid;">
-                  <dd v-for="(child,index) in currtask.childTask" :key="child.id" class="item d-flex ng-star-inserted">
+                  <dd v-for="child in currtask.childTask" :key="child.id" class="item d-flex ng-star-inserted">
                     <div style="display: flex;justify-content: space-between;align-items: center;">
-                      <div class="thumb"><svg-icon icon-class="childTask" style="width:2.5em;height:2.5em;"/></div>
-                      <div >{{ child.title }}</div>
+                      <div class="thumb"><svg-icon icon-class="childTask" style="width:2.5em;height:2.5em;" /></div>
+                      <div>{{ child.title }}</div>
                       <div :style="{color: child.status===2?'#27d8bc':'brown'}">{{ child.statusStr }}</div>
-                      <div >{{ child.startDateStr }}</div>
-                      <div ><span>负责人: <span>{{ child.executorName }}</span></span></div>
+                      <div>{{ child.startDateStr }}</div>
+                      <div><span>负责人: <span>{{ child.executorName }}</span></span></div>
                     </div>
                   </dd>
                 </div>
               </dl>
             </el-tab-pane>
             <el-tab-pane name="3">
-              <span slot="label"><i class="el-icon-wallet" style="margin-right: 6px;"/> 附件</span>
+              <span slot="label"><i class="el-icon-wallet" style="margin-right: 6px;" /> 附件</span>
               <div class="list-li-body">
                 <div class="head d-flex">
-                  <div class="text-desc">共 <span class="text-body">{{currtask.fileInfos.length}}</span> 个附件</div>
+                  <div class="text-desc">共 <span class="text-body">{{ currtask.fileInfos.length }}</span> 个附件</div>
                   <div v-if="currtask.isEdit" class="ml-auto">
                     <a href="javascript:;" @click="addFj(currtask.id)"><i class="el-icon-plus" />添加附件 </a>
                     <input id="openfj" ref="openfj" type="file" style="display:none;" @change="getFile($event,currtask.id)">
@@ -399,21 +400,21 @@
                     </div>
                   </div>
                   <div v-else>
-                    <dd v-for="(fileInfo,index) in currtask.fileInfos" :key="fileInfo.id" class="item d-flex ng-star-inserted">
+                    <dd v-for="(tfileInfo,index) in currtask.fileInfos" :key="tfileInfo.id" class="item d-flex ng-star-inserted">
                       <div style="display: flex;">
-                        <div class="thumb"><svg-icon class="fj-svg" :icon-class="fileInfo.thumb" /></div>
+                        <div class="thumb"><svg-icon class="fj-svg" :icon-class="tfileInfo.thumb" /></div>
                         <div class="content">
-                          <div class="title">{{ fileInfo.fileName }}</div>
+                          <div class="title">{{ tfileInfo.fileName }}</div>
                           <div class="meta">
-                            <span>{{ fileInfo.fileSize }}</span><span>来自 <span>{{ fileInfo.userName }}</span></span><span>|</span><span>{{ fileInfo.date }}</span>
+                            <span>{{ tfileInfo.fileSize }}</span><span>来自 <span>{{ tfileInfo.userName }}</span></span><span>|</span><span>{{ tfileInfo.date }}</span>
                           </div>
                         </div>
                       </div>
                       <div class="operation">
-                        <a class="mr-3 btn btn-icon" title="预览" href="javascript:;" @click="preView(fileInfo.url ==''?'javascript:;':fileInfo.url)"><i class="el-icon-view" /></a>
-                        <a class="mr-3 btn btn-icon" title="下载" :href="fileInfo.url ==''?'javascript:;':fileInfo.url"><i class="el-icon-download" /></a>
+                        <a class="mr-3 btn btn-icon" title="预览" href="javascript:;" @click="preView(tfileInfo.url ==''?'javascript:;':tfileInfo.url)"><i class="el-icon-view" /></a>
+                        <a class="mr-3 btn btn-icon" title="下载" :href="tfileInfo.url ==''?'javascript:;':tfileInfo.url"><i class="el-icon-download" /></a>
                         <a v-if="currtask.isEdit" class="mr-3 btn btn-icon" title="上传" href="javascript:;" @click="submitUpload(index,currtask.id)"><i class="el-icon-upload2" /></a>
-                        <a v-if="currtask.isEdit" class="mr-3 btn btn-icon" title="删除" href="javascript:;" @click="fileDelete(index,currtask.id,fileInfo.id)"><i class="el-icon-delete" /></a>
+                        <a v-if="currtask.isEdit" class="mr-3 btn btn-icon" title="删除" href="javascript:;" @click="fileDelete(index,currtask.id,tfileInfo.id)"><i class="el-icon-delete" /></a>
                       </div>
                     </dd>
                   </div>
@@ -491,8 +492,14 @@
           <el-radio-button label="4" value="4">已超期</el-radio-button>
         </el-radio-group>
       </div>
-       <component :is="ganttComponent" :data="data"  :startDate="project.startDateStr"
-        :endDate="project.completeDateStr" :row-style="aa" :cell-style="bb" />
+      <component
+        :is="ganttComponent"
+        :data="data"
+        :start-date="project.startDateStr"
+        :end-date="project.completeDateStr"
+        :row-style="aa"
+        :cell-style="bb"
+      />
     </div>
 
   </div>
@@ -505,9 +512,9 @@ import {
   dateFormatZHymdhm, renderFileSize, renderFileThumb
 } from '@/utils/dateutil'
 import $ from 'jquery'
-import request from '@/utils/request'
+// import request from '@/utils/request'
 import {
-  getAllProject,
+  getAllProjectTask,
   getProject,
   getProjectAboutSHB,
   getProjectGanttData
@@ -523,14 +530,14 @@ import {
 const baseURL = process.env.VUE_APP_BASE_API
 const defaultTask = {
   id: '',
-  pid:'',
+  pid: '',
   title: '',
   annex: '',
   code: '',
   comDate: '',
   comDateStr: '',
   createDate: '',
-  endDate: '',childTask:[],
+  endDate: '', childTask: [],
   endDateStr: '', executOrg: '', comContent: '',
   executOrgName: '', executor: '', executorMobile: '', executorName: '',
   fileInfos: [], remark: '', shb: '', shbName: '', stageId: '', stageStr: '', status: '',
@@ -538,12 +545,13 @@ const defaultTask = {
   isEdit: false
 }
 export default {
-  name: "WlGantt",
+  name: 'WlGantt',
   components: {
     gantt
   },
   data() {
     return {
+      roleId: '',
       orgId: '',
       orgName: '',
       showContainer: 0,
@@ -575,12 +583,18 @@ export default {
       ganttComponent: 'gantt',
       proStartDate: '',
       proEndDate: '',
-      querystatus: 10, //10 表示全部
+      querystatus: 10, // 10 表示全部
       dataPage: 1,
       dataSize: 20,
       ganttProperData: {
         startDate: '2021-01-01',
         endDate: '2021-12-09'
+      },
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
       },
       data: [{
         id: '1',
@@ -669,8 +683,9 @@ export default {
   },
   created() {
     this.orgId = this.$store.getters.orgId
+    this.roleId = this.$store.getters.roleId
     this.orgName = this.$store.getters.orgName
-    this.getAllProject()
+    this.getAllProjectTask(1, 20)
   },
   methods: {
     async openThisTask(projectId) {
@@ -692,13 +707,18 @@ export default {
       this.data = res.data.list
       this.showContainer = 3
     },
-    async getAllProject() {
-      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-      this.projectList = res.data
+    async getAllProjectTask(pn, ps) {
+      const res = await getAllProjectTask(pn, ps, this.$store.getters.roleId, this.orgId, this.searchContent, this.searchStatus)
+      this.projectList = res.data.list
+    },
+    async handlePageSizeChange(val) {
+      this.getAllProjectTask(this.dataMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.getAllProjectTask(val, this.dataMap.ps)
     },
     async searchProject() {
-      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-      this.projectList = res.data
+      this.getAllProjectTask(this.dataMap.pn, this.dataMap.ps)
     },
     async searchTask() {
       const res = await getProjectGanttData(this.project.id, this.querystatus, this.dataPage, this.dataSize)
@@ -732,7 +752,7 @@ export default {
       }
     },
 
-    async handleTaskDetail(scope){
+    async handleTaskDetail(scope) {
       const res = await getTask(scope.row.id)
       this.currtask = res.data
       this.currtask.isEdit = false
@@ -752,7 +772,7 @@ export default {
       this.zxdialogVisible = true
 
       this.currtaskIndex = scope.$index
-      console.log("查看",this.currtask)
+      console.log('查看', this.currtask)
       // const res = await operation(this.project.id, scope.row.id)
     },
     // 上传附件
@@ -806,13 +826,13 @@ export default {
       var that = this
       var isUpload = false
       $.ajax({
-        url: baseURL+'project/uploadFJ',
+        url: baseURL + 'project/uploadFJ',
         method: 'post',
         data: formData,
         async: false,
         processData: false,
         contentType: false,
-        async: false,
+        // async: false,
         headers: {
           'X-Token': getToken(), // 值得注意的是，这个地方一定要把请求头更改一下
           'agentId': that.$store.getters.userId
@@ -857,10 +877,10 @@ export default {
 
     // 执行任务
     async confirmTask(taskId) {
-      //首先判断子任务是否完成
-      if(this.currtask.childTask!==null && this.currtask.childTask.length !==0 ){
-        for(var ta of this.currtask.childTask){
-          if(ta.status === 1){
+      // 首先判断子任务是否完成
+      if (this.currtask.childTask !== null && this.currtask.childTask.length !== 0) {
+        for (var ta of this.currtask.childTask) {
+          if (ta.status === 1) {
             this.$message.error('请先完成子项任务！')
             return
           }
@@ -913,8 +933,7 @@ export default {
     },
     bb(row) {
       // console.log('bb:', row)
-    },
-
+    }
 
   }
 }
@@ -929,7 +948,7 @@ export default {
     .container-header {
       display: flex;
       justify-content: space-between;
-      padding: 20px;
+      padding: 10px;
       background-color: white;
 
       .lc-search-container {
@@ -952,13 +971,17 @@ export default {
         }
       }
     }
-
+    .el-pagination {
+      margin: 0px !important;
+      width: 100%;
+      padding: 10px;
+      background-color: white;
+    }
     .project-body {
       height: 100%;
       padding: 20px;
       width: 100%;
       background-color: white;
-      display: flex;
       border: 1px solid #eee;
       overflow-x: hidden;
       overflow-y: auto;
@@ -967,17 +990,53 @@ export default {
         position: relative;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        width: 100%;
         overflow: auto;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 10px;
 
         .el-col {
+          min-width: 250px;
+          height: 320px;
+          max-height: 320px;
           padding-top: 10px;
+          .el-card{
+            position: relative;
+            height: 100%;
+            .bottom{
+              position: absolute;
+              bottom: 0;
+              margin-bottom: 10px;
+            }
+            .shenhe{
+              cursor: pointer;
+              position: absolute;
+              bottom: -20px;
+              margin-bottom: 10px;
+              background-color: red;
+              padding: 5px 30px 20px 30px;
+              right: -30px;
+              color: white;
+              font-weight: bold;
+              transform:rotate(-45deg);
+              -ms-transform:rotate(-45deg); 	/* IE 9 */
+              -moz-transform:rotate(-45deg); 	/* Firefox */
+              -webkit-transform:rotate(-45deg); /* Safari 和 Chrome */
+              -o-transform:rotate(-45deg);
+            }
+          }
         }
       }
 
       .yhj-task-card-text {
         padding: 14px;
-
+        .yhj-task-proname{
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
         .yhj-card-row {
           margin-top: 10px;
           display: flex;

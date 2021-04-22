@@ -22,6 +22,10 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [],
+  roleId: '',
+  roleName: '',
+  orgId: '',
+  orgName: '',
   userInfo: getUserInfo(),
   userId: '',
   property: '',
@@ -163,6 +167,9 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        commit('SET_ROLEID', '')
+        commit('SET_ORGID', '')
+        commit('SET_USERID', '')
         removeToken()
         removeUserInfo()
         resetRouter()
