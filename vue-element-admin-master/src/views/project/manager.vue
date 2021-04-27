@@ -1,8 +1,8 @@
 <template>
+
   <div class="app-container">
     <div class="project-body">
       <div class="left-project">
-
         <div class="header header--hidden">
           <div class="card-header-title"><span class="ng-star-inserted"> 项目 </span></div>
           <div>
@@ -48,298 +48,601 @@
         </div>
         <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
-
             <div class="manager-card">
               <div class="manager-header">
                 <div class="manager-bluer" />
                 <div>基本信息</div>
               </div>
-
               <div class="manager-card-content">
-
                 <div class="d-flex">
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目名称:</span>
+                          <span class="project-property-item-cono">{{ thisProject.name }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">报送地区:</span>
+                          <span class="project-property-item-cono">{{ thisProject.submitted }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">审批监管平台代码:</span>
+                          <span class="project-property-item-cono">{{ thisProject.approveCode }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目业主单位:</span>
+                          <span class="project-property-item-cono">{{ thisProject.proEnterName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="24">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">建设内容及规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.content }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">投资类型:</span>
+                          <span class="project-property-item-cono">{{ thisProject.investType }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">立项类型:</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxType }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">建设地点:</span>
+                          <span class="project-property-item-cono">{{ thisProject.buildAddress }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">总投资:</span>
+                          <span class="project-property-item-cono">{{ thisProject.invest }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">{{ planInvertMoney }}:</span>
+                          <span class="project-property-item-cono">{{ thisProject.investThisyear }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">{{ overInvertMoney }}:</span>
+                          <span class="project-property-item-cono">{{ thisProject.investCom }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">{{ planOpenTime }}:</span>
+                          <span class="project-property-item-cono">{{ thisProject.thisyearOpentimeStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">{{ isOpen }}:</span>
+                          <span class="project-property-item-cono">{{ thisProject.isOpen }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">整体用地规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydArea }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">涉及林地规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydAreaLd }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">涉及草地规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydAreaCd }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">涉及草地规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydAreaCy }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">整体能耗规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyArea }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">整体用水规模:</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyWaterArea }}</span>
+                        </div>
+                      </div>
+                    </el-col>
 
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">项目名称:</span>
-                    {{ thisProject.name }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">产业类型:</span>
-                    {{ thisProject.categoryName }}
-                  </div>
-
-                  <div class="project-basic-property property-text align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name">项目编码:</span><span class="text-muted">XG-nmg123123</span>
-                  </div>
-                </div>
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
-                    {{ thisProject.startDateStr }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">项目结束时间:</span>
-                    {{ thisProject.completeDateStr }}
-                  </div>
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">主管部门:</span>
-                    {{ thisProject.orgName }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">主管负责人:</span>
-                    {{ thisProject.proManagerName }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">主管人联系电话:</span>
-                    {{ thisProject.proManagerMobile }}
-                  </div>
-
-                  <div class="project-basic-property property-text align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name project-basic-property-item-name">项目成熟度:</span>
-                    {{ thisProject.maturityStr }}
-                  </div>
-
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
-                    {{ thisProject.leadenterName }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
-                    {{ thisProject.leaderName }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
-                    {{ thisProject.dockingDateStr }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
-                    {{ thisProject.coordinateName }}
-                  </div>
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
-                    {{ thisProject.enterManagerName }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
-                    {{ thisProject.enterManagerMobile }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">项目建设阶段:</span>
-                    {{ thisProject.stage=="1"?"无所属":thisProject.stage=="2"?"立项阶段":thisProject.stage=="3"?"执行阶段":"完成阶段" }}
-                  </div>
-
-                  <div class="project-basic-property property-text"><span class="project-property-item-name project-basic-property-item-name">预计完成时间:</span>
-                    {{ thisProject.expectedDateStr }}
-                  </div>
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text align-items-start">
-                    <span class="project-property-item-name project-basic-property-item-name">项目描述:</span>
-                    {{ thisProject.content }}
-                  </div>
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text align-items-start" style="display:flex;align-items: center;">
-                    <span class="project-property-item-name project-basic-property-item-name">当前状态:</span>
-                    <div class="flex-se1">
-                      <span class="circle" :class="projectStatusClass" />
-                      <span class="ml-1">{{ thisProject.status==1?"进行中":thisProject.status==2?"已完成":thisProject.status==3?"逾期":thisProject.status==7?"新建":thisProject.status==8?"提交审批中":thisProject.status==9?"审批失败":"审批通过" }}</span>
-                      <el-button type="primary" size="mini" round style="margin-left: 10px;" @click="dialogFormVisible = true">更新</el-button>
-                    </div>
-                  </div>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">行业类型:</span>
+                          <span class="project-property-item-cono">{{ thisProject.categoryName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目开始时间:</span>
+                          <span class="project-property-item-cono">{{ thisProject.startDateStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目预计完成时间:</span>
+                          <span class="project-property-item-cono">{{ thisProject.completeDateStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目编码:</span>
+                          <span class="project-property-item-cono">{{ thisProject.number }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">部门名称:</span>
+                          <span class="project-property-item-cono">{{ thisProject.orgName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目负责人:</span>
+                          <span class="project-property-item-cono">{{ thisProject.proManagerName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">负责人电话:</span>
+                          <span class="project-property-item-cono">{{ thisProject.proManagerMobile }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目性质:</span>
+                          <span class="project-property-item-cono">{{ thisProject.maturityStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头单位:</span>
+                          <span class="project-property-item-cono">{{ thisProject.leadenterName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">牵头领导:</span>
+                          <span class="project-property-item-cono">{{ thisProject.leaderName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">对接时间:</span>
+                          <span class="project-property-item-cono">{{ thisProject.dockingDateStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">协调负责人:</span>
+                          <span class="project-property-item-cono">{{ thisProject.coordinateName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人:</span>
+                          <span class="project-property-item-cono">{{ thisProject.enterManagerName }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">企业联系人电话:</span>
+                          <span class="project-property-item-cono">{{ thisProject.enterManagerMobile }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">项目阶段:</span>
+                          <span class="project-property-item-cono">{{ thisProject.stage=="1"?"无所属":thisProject.stage=="2"?"立项阶段":thisProject.stage=="3"?"执行阶段":"完成阶段" }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">预计完成时间:</span>
+                          <span class="project-property-item-cono">{{ thisProject.completeDateStr }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">困难和问题:</span>
+                          <span class="project-property-item-cono">{{ thisProject.diffAndProblem }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property"><span class="project-property-item-name project-basic-property-item-name">其他需办理手续:</span>
+                          <span class="project-property-item-cono">{{ thisProject.otherBl }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
 
                 </div>
 
               </div>
-
             </div>
             <span class="project-basic-property-line" />
-
             <div class="manager-card">
               <div class="manager-header">
                 <div class="manager-bluer" />
                 <div>其他信息</div>
               </div>
-
-              <div class="manager-card-content">
+              <div class="manager-card-content detailShb">
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">项目参与人员:</span>
-                    {{ thisProject.joinersStr }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">投资情况:</span>
-                    {{ thisProject.invest }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">项目审批监管平台代码:</span>
-                    {{ thisProject.approveCode }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">备注:</span>
-                    {{ thisProject.remarks }}
-                  </div>
-                </div>
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">其他需要解决的手续问题:</span>
-                    {{ thisProject.otherBl }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">存在的困难和问题:</span>
-                    {{ thisProject.diffAndProblem }}
-                  </div>
-                </div>
-
-                <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否完成审核备:</span>
-                    {{ thisProject.lxIsComapprove }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级:</span>
-                    {{ thisProject.lxHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门:</span>
-                    {{ thisProject.lxIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">立项阶段</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxIsComapprove }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lxBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成建设用地规划许可证:</span>
-                    {{ thisProject.ydcardIsHascard }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级:</span>
-                    {{ thisProject.ydcardHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门:</span>
-                    {{ thisProject.ydcardIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">用地预审和规划选址意见书</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydcardIsHascard }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydcardHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydcardIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.ydBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成节能审查：</span>
-                    {{ thisProject.energyIsCensor }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
-                    {{ thisProject.energyHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
-                    {{ thisProject.energyIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">节能审查</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyIsCensor }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.energyBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成林地草地征占手续：</span>
-                    {{ thisProject.lcIsBl }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
-                    {{ thisProject.lcHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
-                    {{ thisProject.lcIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">林草地征占手续</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lcIsBl }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lcHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lcIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lcBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.lcBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">建设用地批准书或国有土地证、登记证：</span>
-                    {{ thisProject.tdIsBl }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
-                    {{ thisProject.tdHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
-                    {{ thisProject.tdIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">新增建设用地审批</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.tdIsBl }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.tdHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.tdIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.tdBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.tdBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成环境影响评价审批文件、登记证：</span>
-                    {{ thisProject.envirIsBl }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
-                    {{ thisProject.envirHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
-                    {{ thisProject.envirIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">环境影响评价手续</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.envirIsBl }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.envirHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.envirIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.envirBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.envirBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
                 <div class="d-flex">
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成建设工程施工许可证：</span>
-                    {{ thisProject.sgIsBl }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
-                    {{ thisProject.sgHandleLevel }}
-                  </div>
-
-                  <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
-                    {{ thisProject.sgIsSendappdepart }}
-                  </div>
+                  <div class="shbTile">施工许可证</div>
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成：</span>
+                          <span class="project-property-item-cono">{{ thisProject.sgIsBl }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
+                          <span class="project-property-item-cono">{{ thisProject.sgHandleLevel }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
+                          <span class="project-property-item-cono">{{ thisProject.sgIsSendappdepart }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">审批、转报部门意见：</span>
+                          <span class="project-property-item-cono">{{ thisProject.sgBao }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">不同意办理或不同意转报原因：</span>
+                          <span class="project-property-item-cono">{{ thisProject.sgBaoNoMsg }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                  </el-row>
                 </div>
 
-                <div class="d-flex">
-
+                <!-- <div class="d-flex">
+                  <div class="shbTile">用地预审和规划选址意见书</div>
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成消防许可证：</span>
                     {{ thisProject.xfIsBl }}
                   </div>
-
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
                     {{ thisProject.xfHandleLevel }}
                   </div>
-
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
                     {{ thisProject.xfIsSendappdepart }}
                   </div>
                 </div>
 
                 <div class="d-flex">
-
+                  <div class="shbTile">用地预审和规划选址意见书</div>
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">是否办理完成人防许可证：</span>
                     {{ thisProject.rfIsBl }}
                   </div>
-
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">办理层级：</span>
                     {{ thisProject.rfHandleLevel }}
                   </div>
-
                   <div class="project-basic-property property-text property-oo"><span class="project-property-item-name project-basic-property-item-name">组件是否报送到最终审批部门：</span>
                     {{ thisProject.rfIsSendappdepart }}
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
-
           </el-tab-pane>
           <el-tab-pane label="投资情况" name="2">
             <div class="manager-card">
@@ -2568,21 +2871,26 @@ export default {
           padding: 10px 20px 20px;
 
           .d-flex {
-            display: flex !important;
             margin: 10px auto;
             background: #eef1f6;
-            justify-content: space-between;
             border-bottom: 1px solid #eee;
             line-height:40px;
-            .property-text {
-              width: 25%;
+            .shbTile{
+              background-color: cadetblue;
+              text-align: center;
+              color: white;
+              font-weight: bold;
             }
-
             .project-basic-property {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-               margin-right:10px;
+              margin-right:10px;
+              font-size: 13px;
+              line-height: 20px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              width: 100%;
+              border-bottom: 1px solid #88bcf4;
+              margin-bottom: 5px;
 
               .project-property-item-name {
                 color: #667ab7;
@@ -2590,9 +2898,22 @@ export default {
                 text-overflow: ellipsis;
                 margin-right: 10px;
                 border-left: solid 3px #88bcf4;
-                padding:0px 5px;
+                padding: 12px;
                 border-top-right-radius:10px;
                 background-color:#c5dcf0;
+                font-size: 14px;
+                height: 100%;
+                line-height: 40px;
+              }
+              .project-property-item-cono{
+                line-height: 40px;
+                float: right;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                width: calc(100% - 170px);
+                text-align: right;
+                padding-right: 10px;
               }
 
               .circle {
@@ -2616,16 +2937,22 @@ export default {
                 background-color: brown;
               }
             }
-
-            .property-oo {
-              width: 33%;
-            }
           }
 
           .project-basic-property-line {
             display: block;
             margin: 30px 0;
             border-bottom: solid 1px #f3f3f3;
+          }
+        }
+        .detailShb {
+          .d-flex {
+            .el-row{
+              margin-top: 5px !important;
+            }
+            .project-property-item-cono{
+              width: calc(100% - 240px) !important;
+            }
           }
         }
 

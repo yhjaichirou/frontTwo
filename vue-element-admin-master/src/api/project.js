@@ -128,6 +128,15 @@ export function deleteProject(projectId) {
   })
 }
 
+// 审核工程
+export function clickShenhe(data) {
+  return request({
+    url: `/project/clickShenhe`,
+    method: 'post',
+    data
+  })
+}
+
 // 任务
 export function getAllTaskList(projectId, typeId) {
   return request({
