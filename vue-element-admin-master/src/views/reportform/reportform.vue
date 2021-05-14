@@ -746,6 +746,10 @@ export default {
       padding: 0px 20px 20px 20px;
       background-color: white;
       height: 100%;
+
+      .el-tabs.el-tabs--top{
+        width: 100%;
+      }
     }
     ::v-deep .el-tabs__content{
       margin: 20px 0px;

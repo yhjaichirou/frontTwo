@@ -43,8 +43,10 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+            <div v-if="scope.row.roleId!==1">
+              <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
+              <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
