@@ -135,7 +135,7 @@
           </div>
 
           <el-table v-loading="listLoading2" :data="dataMap2.list" element-loading-text="Loading..." border fit highlight-current-row>
-            <el-table-column align="center" label="序号" width="95">
+            <el-table-column align="center" label="序号" width="50">
               <template slot-scope="scope">
                 {{ scope.$index +1 }}
               </template>
@@ -145,7 +145,7 @@
                 {{ scope.row.number }}
               </template>
             </el-table-column>
-            <el-table-column label="项目名称">
+            <el-table-column label="项目名称" width="180">
               <template slot-scope="scope">
                 {{ scope.row.name }}
               </template>
@@ -754,6 +754,10 @@ export default {
     ::v-deep .el-tabs__content{
       margin: 20px 0px;
       padding: 0px !important;
+    }
+
+    ::v-deep .el-table--scrollable-x .el-table__body-wrapper{
+      overflow: auto;
     }
   }
 </style>
