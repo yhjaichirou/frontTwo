@@ -1,0 +1,17 @@
+
+.list-card{
+	background-color: #E96900;
+}
+.iconfont::before{
+
+	color: #007AFF;
+	font-size: 40px;
+}
+
+
+.y-list{
+	display: flex;
+	flex-direction: row;
+	padding: 10px 20px;
+	width: 100%;
+}

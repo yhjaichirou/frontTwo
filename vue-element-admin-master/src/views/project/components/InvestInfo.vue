@@ -13,7 +13,7 @@
         </el-select>
       </el-form-item>
       <el-form-item class="form-item" prop="investMoney" label="" :rules="[{ required: true, message: '请输入投资金额', trigger: 'blur' }]">
-        <el-input v-model="item.investMoney" style="width: 180px;" suffix-icon="iconfont icon-jinbi" placeholder="请输入投资金额" />
+        <el-input v-model="item.investMoney" style="width: 180px;" suffix-icon="iconfont icon-jinbi" placeholder="请输入投资金额(万元)" />
       </el-form-item>
       <el-form-item class="form-item" prop="investMoney" label="">
         <el-date-picker
@@ -43,7 +43,24 @@
 // }
 export default {
   name: 'InvestInfo',
-  props: ['index', 'item'],
+  props: {
+    index22: {
+      type: [Array, Object, String, Boolean, Number],
+      default: () => {
+        return {}
+      }
+    },
+    index: {
+      type: Number,
+      default: 0
+    },
+    item: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data() {
     return {
 

@@ -776,7 +776,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="报送地区" prop="submitted" :label-width="formLabelWidth">
-                <el-input v-model="addform.submitted" autocomplete="off" placeholder="请输入项目报送地区" />
+                <el-input v-model="addform.submitted" autocomplete="off" placeholder="请输入项目报送地区(乌兰察布市+部门)" value="乌兰察布市-" />
               </el-form-item>
             </div>
           </el-col>
@@ -806,8 +806,8 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="项目编号" prop="number" :label-width="formLabelWidth">
-                <el-input v-model="addform.number" autocomplete="off" placeholder="请输入项目编号" />
+              <el-form-item label="重大项目编号" prop="number" :label-width="formLabelWidth">
+                <el-input v-model="addform.number" autocomplete="off" placeholder="请输入重大项目编号" />
               </el-form-item>
             </div>
           </el-col>
@@ -875,7 +875,7 @@
           <el-col :span="24">
             <div class="grid-content bg-purple">
               <el-form-item label="总投资" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+                <el-input v-model="addform.invest" autocomplete="off" placeholder="**请输入投资总金额(单位:万元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
@@ -905,14 +905,14 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item :label="planInvertMoney" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.investThisyear" autocomplete="off" placeholder="**请输入当年计划完成投资(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+                <el-input v-model="addform.investThisyear" autocomplete="off" placeholder="**请输入当年计划完成投资(单位:万元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item :label="overInvertMoney" prop="invest" :label-width="formLabelWidth">
-                <el-input v-model="addform.investCom" autocomplete="off" placeholder="**请输入当年已完成投资(单位:元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
+                <el-input v-model="addform.investCom" autocomplete="off" placeholder="**请输入当年已完成投资(单位:万元)" suffix-icon="iconfont icon-jinbi" @input="investChange" />
               </el-form-item>
             </div>
           </el-col>
@@ -1018,9 +1018,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="项目联系人" prop="proManager" :label-width="formLabelWidth">
-                <el-select v-model="addform.proManager" placeholder="请选择项目联系人" @change="proManagerChange">
-                  <el-option v-for="item in proManagerList" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
+                <el-input v-model="addform.proManager" placeholder="请输入项目联系人" />
               </el-form-item>
             </div>
           </el-col>
@@ -1028,6 +1026,20 @@
             <div class="grid-content bg-purple">
               <el-form-item label="项目联系人电话" prop="proManagerMobile" :label-width="formLabelWidth">
                 <el-input v-model="addform.proManagerMobile" autocomplete="off" placeholder="请输入项目联系人电话" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目备用联系人" prop="proManager2" :label-width="formLabelWidth">
+                <el-input v-model="addform.proManager2" placeholder="请输入项目备用联系人" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="项目备用联系人电话" prop="proManagerMobile2" :label-width="formLabelWidth">
+                <el-input v-model="addform.proManagerMobile2" autocomplete="off" placeholder="请输入项目备用联系人电话" />
               </el-form-item>
             </div>
           </el-col>
@@ -1060,7 +1072,7 @@
             </div>
           </el-col>
 
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="对接时间" prop="dockingDate" :label-width="formLabelWidth">
                 <el-date-picker
@@ -1074,8 +1086,8 @@
               </el-form-item>
             </div>
           </el-col>
-
-          <el-col :span="12">
+ -->
+          <!-- <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="协调负责人" prop="coordinate" :label-width="formLabelWidth">
                 <el-select v-model="addform.coordinate" placeholder="请选择协调负责人">
@@ -1099,7 +1111,7 @@
                 <el-input v-model="addform.enterManagerMobile" autocomplete="off" placeholder="请输入" />
               </el-form-item>
             </div>
-          </el-col>
+          </el-col> -->
 
           <el-col :span="24">
             <div class="grid-content bg-purple">
@@ -1122,13 +1134,13 @@
             </div>
           </el-col>
 
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="项目代号" prop="taskPrefix" :label-width="formLabelWidth">
                 <el-input v-model="addform.taskPrefix" autocomplete="off" placeholder="例如:LY-2020(林业2020项目)" />
               </el-form-item>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="项目包含阶段" :label-width="formLabelWidth">
@@ -1302,7 +1314,8 @@
               <el-col :span="24">
                 <div class="grid-content bg-purple">
                   <el-form-item label="办理层级" prop="stageId" :label-width="formLabelWidth">
-                    <el-radio v-for="item in shbOption2" :key="item.option" v-model="addShbObj.tdHandleLevel" :label="item.option" :value="item.option" /></el-radio>
+                    <el-radio v-model="addShbObj.tdHandleLevel" :label="shbOption2[0]['option']" :value="shbOption2[0]['option']" /></el-radio>
+                    <el-radio v-model="addShbObj.tdHandleLevel" :label="shbOption2[1]['option']" :value="shbOption2[1]['option']" /></el-radio>
                   </el-form-item>
                 </div>
               </el-col>
@@ -1705,6 +1718,8 @@ const defaultProject = {
   diffAndProblem: '',
   proManager: '',
   proManagerMobile: '',
+  proManager2: '',
+  proManagerMobile2: '',
   enterManager: '',
   enterManagerMobile: '',
   stage: '',
@@ -1758,15 +1773,6 @@ export default {
     InvestInfo
   },
   data() {
-    var val_mobil = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入项目联系人电话！'))
-      } else if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(value))) {
-        callback(new Error('手机号格式不正确！'))
-      } else {
-        callback()
-      }
-    }
     var val_task_mobil = (rule, value, callback) => {
       if (value === '') {
         callback()
@@ -1824,29 +1830,23 @@ export default {
       joiners: [],
       maturity: [{
         id: 1,
-        name: '加快前期'
+        name: '新建'
       }, {
         id: 2,
-        name: '新开工'
-      }, {
-        id: 3,
         name: '续建'
-      }, {
-        id: 4,
-        name: '竣工'
       }],
       stageList: [{
         id: 1,
         name: '无所属'
       }, {
         id: 2,
-        name: '立项阶段'
+        name: '前期手续办理'
       }, {
         id: 3,
-        name: '执行阶段'
+        name: '建设阶段'
       }, {
         id: 4,
-        name: '验收阶段'
+        name: '竣工验收阶段'
       }],
       addShbObj: '',
       shbOption: [],
@@ -1893,7 +1893,9 @@ export default {
           trigger: 'change'
         }],
         proManagerMobile: [{
-          validator: val_mobil,
+          // validator: val_mobil,
+          required: true,
+          message: '请输入联系电话',
           trigger: 'blur'
         }],
         // enterManager: [{
@@ -1946,11 +1948,15 @@ export default {
           message: '请输入当年计划完成投资',
           trigger: 'blur'
         }],
-        // thisyearOpentime: [{
-        //   required: true,
-        //   message: '请选择当年计划开复工时间',
-        //   trigger: 'change'
-        // }],
+        thisyearOpentime: [{
+          required: true,
+          message: '请选择当年计划开复工时间',
+          trigger: 'change'
+        }],
+        isOpen: [{
+          required: true,
+          trigger: 'change'
+        }],
         overInvertMoney: [{
           required: true,
           message: '请输入当年已完成投资',
