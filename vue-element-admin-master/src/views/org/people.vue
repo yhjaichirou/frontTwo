@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="container-header">
-      <el-button type="primary" @click="handleAddPeople">新建单位成员</el-button>
+      <BtnList :btn-data="btnList" />
       <div class="search">
         <el-input v-model="searchContent" placeholder="请输入成员" @input="search">
           <i slot="prefix" class="el-input__icon el-icon-search" />
@@ -101,6 +101,7 @@
 <script>
 // import path from 'path'
 import { deepClone } from '@/utils'
+import BtnList from '@/components/YhjComponent/btnList.vue'
 import {
   getPeopleList,
   // getPeople,
@@ -125,6 +126,9 @@ const defaultPeople = {
 }
 
 export default {
+  components: {
+    BtnList
+  },
   data() {
     var validateMoblie = (rule, value, callback) => {
       if (value === '') {
@@ -144,7 +148,21 @@ export default {
         callback()
       }
     }
+    var that = this
     return {
+      btnList: [
+        {
+          loading: '',
+          btnSize: '',
+          primary: 'primary',
+          btnClass: '',
+          name: '新建单位成员',
+          clickName: 'click1',
+          click: function() {
+            that.handleAddPeople()
+          }
+        }
+      ],
       people: Object.assign({}, defaultPeople),
       peopleList: [],
       searchContent: '',
@@ -197,6 +215,7 @@ export default {
     }
   },
   created() {
+    console.log(this.aabtnList)
     // Mock: get all routes and roles list from server
     // this.getRoutes()
     this.getPeopleList(1, 20)
@@ -308,6 +327,12 @@ export default {
         .catch(err => {
           console.error(err)
         })
+    },
+    click1() {
+      console.log('click1')
+    },
+    click2() {
+      console.log('click2')
     }
 
   }

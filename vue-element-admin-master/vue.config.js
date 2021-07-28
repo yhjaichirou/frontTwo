@@ -41,7 +41,7 @@ module.exports = {
     //before: require('./mock/mock-server.js'),
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `https://124.67.108.68:8088/`,
+        target: `localhost:8088/`,//`https://brinch.wlcbhc.com:8088/`,`localhost:8088/`
         changeOrigin: true,
         pathRewrite: {
           // "/admin":"/project/admin"

@@ -23,6 +23,10 @@ import * as filters from './filters' // global filters
 import Cookies from 'js-cookie'
 import wlGantt from 'wl-gantt'
 import 'wl-gantt/lib/wl-gantt.css'
+import '/public/css/index.css'
+import '/public/css/theme.css'
+import XLSX from 'xlsx'
+
 import $ from 'jquery'
 // 每次路由跳转前
 // router.beforeEach((to, from, next) => {
@@ -71,7 +75,7 @@ import $ from 'jquery'
 // 	} = require('../mock')
 // 	mockXHR()
 // }
-
+Vue.prototype.XLSX = XLSX
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   locale: enLang // 如果使用中文，无需设置，请删除

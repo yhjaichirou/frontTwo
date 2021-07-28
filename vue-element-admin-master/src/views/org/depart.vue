@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <div class="container-header">
-      <el-button type="primary" @click="addDepartEvent">新建部门</el-button>
+      <div style="display: flex;">
+        <el-button type="primary" @click="addDepartEvent">新建部门</el-button>
+        <xlsx :before-upload="xlsBeforeUpload" :on-success="xlsSuccess" tem-src="/xlsx/单位导入模板.xlsx" :must-field="xlsMustField" btn-size="" />
+      </div>
       <div class="search">
         <el-input v-model="searchContent" placeholder="请输入内容" @input="searchProject">
           <i slot="prefix" class="el-input__icon el-icon-search" />
@@ -138,6 +141,7 @@ import {
   updateDepart,
   deleteDepart
 } from '@/api/depart'
+import xlsx from '@/components/YhjComponent/xlsx.vue'
 
 const defaultDepart = {
   id: '',
@@ -156,6 +160,9 @@ const defaultDepart = {
 }
 
 export default {
+  components: {
+    xlsx
+  },
   data() {
     var val_mobil = (rule, value, callback) => {
       if (value === '') {
@@ -167,6 +174,7 @@ export default {
       }
     }
     return {
+      xlsMustField: [],
       dataMap: {
         'pn': 1,
         'ps': 20,
@@ -238,6 +246,18 @@ export default {
     this.getOrgtypes()
   },
   methods: {
+    xlsSuccess(rt) {
+      console.log('导表返回', rt)
+
+      rt.header.forEach((k, v) => {
+        console.log(k, v)
+      })
+    },
+    xlsBeforeUpload(rt) {
+      console.log('导表qian返回', rt)
+      return true
+    },
+
     async getOrgtypes() {
       console.log(this.orgId)
       const res = await getOrgtypes(this.orgId)

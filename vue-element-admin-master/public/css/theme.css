@@ -1,0 +1,34 @@
+/* 按钮 */
+.btn-blue{
+  background-color: #409EFF;
+}
+.btn-blue2{
+  background-color: rgb(121, 187, 255);
+}
+.btn-blue3{
+  background-color: rgb(160, 207, 255);
+}
+.btn-gray{
+  background-color: #303133;
+}
+.btn-gray1{
+  background-color: #606266;
+}
+.btn-gray2{
+  background-color: #909399;
+}
+.btn-gray3{
+  background-color: #C0C4CC;
+}
+.btn-grayB{
+  color: #303133;
+  background-color: #DCDFE6;
+}
+.btn-grayB2{
+  color: #303133;
+  background-color: #E4E7ED;
+}
+.btn-grayB3{
+  color: #303133;
+  background-color: #F2F6FC;
+}
