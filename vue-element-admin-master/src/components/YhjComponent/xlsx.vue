@@ -34,7 +34,7 @@ export default {
       }
     },
     tranferFiled: {
-      type: Array,
+      type: Object,
       default: function() {
         return {}
       }
@@ -152,7 +152,7 @@ export default {
         var xlsForm = {} // 封装字段去后台
         for (var key2 in keyName) {
           var keyChinaName2 = keyName[key2]['chinaName']
-          if (!(Object.prototype.hasOwnProperty.call(xresults[key], keyChinaName2))) { // 不存在的字段
+          if (!(Object.prototype.hasOwnProperty.call(xresults[key_], keyChinaName2))) { // 不存在的字段
             // 判断是否是必填字段
             if (mustfiled.indexOf(keyChinaName2) !== -1) {
               this.$message.error('必填字段不能为空！‘' + keyChinaName2 + '’')
@@ -161,7 +161,11 @@ export default {
               xlsForm[keyName[key2]['enName']] = ''
             }
           } else {
-            var tranferFiledValue = this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] })
+            var tranferFiledValue = ''
+            this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] }, function(r) {
+              tranferFiledValue = r
+            })
+            console.log('asdasdasda', keyName[key2]['enName'], tranferFiledValue)
             xlsForm[keyName[key2]['enName']] = tranferFiledValue
           }
         }
@@ -170,25 +174,28 @@ export default {
       this.onSuccess && this.onSuccess(xlsForms)
     },
     // 转换字段
-    tranferFiledFun(tranObj) {
+    tranferFiledFun(tranObj, callback) {
       if (tranObj && tranObj.k !== '') {
-        console.log('ssss', this.tranferFiled)
         var ss = this.tranferFiled
         Object.getOwnPropertyNames(ss).forEach(function(key) {
           if (tranObj.k === key) {
             for (var i in ss[key]) {
-              console.log(ss[i])
-              if (ss[i]['id'] === tranObj.v) {
-                return ss[key][i]['value']
+              if (ss[key][i]['value'] === tranObj.v) {
+                console.log('yhjythjyhj', ss[key][i]['value'], ss[key][i]['id'], tranObj.v)
+                callback(ss[key][i]['id'])
+                return false
               }
             }
-            return tranObj.v
+            callback(tranObj.v)
+            return false
           } else {
-            return tranObj.v
+            callback(tranObj.v)
+            return false
           }
         })
       } else {
-        return ''
+        callback('')
+        return false
       }
     },
     getHeaderRow(sheet) {
