@@ -3,7 +3,15 @@
     <div class="container-header">
       <div style="display: flex;">
         <el-button type="primary" @click="addDepartEvent">新建部门</el-button>
-        <xlsx :before-upload="xlsBeforeUpload" :on-success="xlsSuccess" tem-src="/xlsx/单位导入模板.xlsx" :must-field="xlsMustField" btn-size="" />
+        <xlsx
+          :before-upload="xlsBeforeUpload"
+          :on-success="xlsSuccess"
+          tem-src="/xlsx/单位导入模板.xlsx"
+          :must-field="xlsMustField"
+          :tranfer-filed="tranferFiled"
+          :key-name="keyName"
+          btn-size=""
+        />
       </div>
       <div class="search">
         <el-input v-model="searchContent" placeholder="请输入内容" @input="searchProject">
@@ -81,17 +89,11 @@
               </el-form-item>
             </div>
           </el-col>
+
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="所在地点" :label-width="formLabelWidth">
-                <el-input v-model="depart.position" autocomplete="off" placeholder="请输入所在地点" />
-              </el-form-item>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item label="单位负责人" prop="manager" :label-width="formLabelWidth">
-                <el-input v-model="depart.manager" autocomplete="off" placeholder="请输入单位负责人" />
+              <el-form-item label="负责人" prop="manager" :label-width="formLabelWidth">
+                <el-input v-model="depart.manager" autocomplete="off" placeholder="请输入负责人" />
               </el-form-item>
             </div>
           </el-col>
@@ -102,11 +104,38 @@
               </el-form-item>
             </div>
           </el-col>
-          <el-col v-if="currProperty" :span="12">
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="所在地点" :label-width="formLabelWidth">
+                <el-input v-model="depart.position" autocomplete="off" placeholder="请输入所在地点" />
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col v-if="currProperty===1" :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
                 <el-select v-model="depart.property" placeholder="请选择单位性质">
-                  <el-option label="政府机构" value="3" />
+                  <el-option label="各级发改委" value="2" />
+                  <el-option label="职能部门" value="3" />
+                  <el-option label="企业" value="4" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col v-if="currProperty===2" :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
+                <el-select v-model="depart.property" placeholder="请选择单位性质" @change="handleProperChange()">
+                  <el-option label="职能部门" value="3" />
+                  <el-option label="企业" value="4" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col v-if="currProperty===3" :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
+                <el-select v-model="depart.property" placeholder="请选择单位性质">
                   <el-option label="企业" value="4" />
                 </el-select>
               </el-form-item>
@@ -114,7 +143,17 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="所属行业" prop="typeArr" :label-width="formLabelWidth">
+              <el-form-item label="隶属关系" :label-width="formLabelWidth">
+                <el-select v-model="depart.pid" placeholder="请选择隶属关系">
+                  <el-option label="请选择" value="" />
+                  <el-option v-for="(upitem,index) in upDapartList" :key="index" :label="upitem.name" :value="upitem.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-form-item label="所属行业" :label-width="formLabelWidth">
                 <el-cascader v-model="depart.typeArr" :options="typeList" :props="{ expandTrigger: 'hover' }" />
               </el-form-item>
             </div>
@@ -135,6 +174,8 @@ import {
   deepClone
 } from '@/utils'
 import {
+  importXls,
+  getUpOrgs,
   getOrgtypes,
   getDepartList,
   addDepart,
@@ -174,7 +215,41 @@ export default {
       }
     }
     return {
-      xlsMustField: [],
+      keyName: [{
+        'chinaName': '单位名称',
+        'enName': 'name'
+      }, {
+        'chinaName': '单位负责人',
+        'enName': 'manager'
+      }, {
+        'chinaName': '单位负责人电话',
+        'enName': 'managerMobile'
+      }, {
+        'chinaName': '类型',
+        'enName': 'property'
+      }, {
+        'chinaName': '所在位置',
+        'enName': 'position'
+      }, {
+        'chinaName': '隶属单位ID',
+        'enName': 'pid'
+      }],
+      xlsMustField: ['单位名称', '单位负责人', '单位负责人电话', '类型'],
+      tranferFiled: {
+        'property': [{
+          'id': 1,
+          'value': '市发改委'
+        }, {
+          'id': 2,
+          'value': '各级发改委'
+        }, {
+          'id': 3,
+          'value': '职能部门'
+        }, {
+          'id': 4,
+          'value': '企业'
+        }]
+      },
       dataMap: {
         'pn': 1,
         'ps': 20,
@@ -182,6 +257,7 @@ export default {
         'total': 0
       },
       orgId: '',
+      upDapartList: [],
       typeList: [],
       searchContent: '',
       searchStatus: '',
@@ -223,11 +299,6 @@ export default {
           required: true,
           message: '请选择单位性质',
           trigger: 'change'
-        }],
-        typeArr: [{
-          required: true,
-          message: '请选择行业',
-          trigger: 'change'
         }]
       }
     }
@@ -241,28 +312,34 @@ export default {
     // Mock: get all routes and roles list from server
     // this.getRoutes()
     this.orgId = this.$store.getters.orgId
-    this.currProperty = this.$store.getters.property === 2
+    this.currProperty = this.$store.getters.property
     this.getDepartList(1, 20)
     this.getOrgtypes()
   },
   methods: {
-    xlsSuccess(rt) {
-      console.log('导表返回', rt)
-
-      rt.header.forEach((k, v) => {
-        console.log(k, v)
+    async xlsSuccess(xlsValues) {
+      console.log('导表返回', xlsValues)
+      await importXls({
+        'orgId': this.orgId,
+        'data': xlsValues
       })
     },
     xlsBeforeUpload(rt) {
       console.log('导表qian返回', rt)
       return true
     },
-
     async getOrgtypes() {
-      console.log(this.orgId)
       const res = await getOrgtypes(this.orgId)
       this.typeList = res.data
     },
+    handleProperChange() {
+      this.getUpOrgs()
+    },
+    async getUpOrgs() {
+      const res = await getUpOrgs(this.depart.property)
+      this.upDapartList = res.data
+    },
+
     async handlePageSizeChange(val) {
       this.getDepartList(this.dataMap.pn, val)
     },
@@ -295,6 +372,7 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.depart = deepClone(scope.row)
+      this.getUpOrgs()
       this.depart.property = this.depart.property + ''
       console.log(this.depart)
     },
@@ -341,14 +419,13 @@ export default {
             }
           }
         } else {
-          var orgId = this.$store.getters.orgId
-          this.depart.orgId = orgId
-          console.log(this.depart.type)
+          this.depart.orgId = this.orgId
           const {
             data
           } = await addDepart(this.depart)
           this.depart.id = data
-          this.departList.push(this.depart)
+          this.getDepartList(this.dataMap.pn, this.dataMap.ps)
+          // this.departList.push(this.depart)
         }
         const {
           id,

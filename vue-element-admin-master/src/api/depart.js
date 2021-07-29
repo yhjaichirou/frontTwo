@@ -1,8 +1,23 @@
 import request from '@/utils/request'
 
+export function importXls(data) {
+  return request({
+    url: '/depart/importXls',
+    method: 'post',
+    data
+  })
+}
+
 export function getOrgtypes(ordId) {
   return request({
     url: `/depart/getOrgtypes/${ordId}`,
+    method: 'get'
+  })
+}
+
+export function getUpOrgs(cpropery) {
+  return request({
+    url: `/depart/getUpOrgs/${cpropery}`,
     method: 'get'
   })
 }

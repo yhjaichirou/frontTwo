@@ -21,10 +21,22 @@ export default {
       type: String,
       default: ''
     },
+    keyName: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
     mustField: {
       type: Array,
       default: function() {
         return []
+      }
+    },
+    tranferFiled: {
+      type: Array,
+      default: function() {
+        return {}
       }
     },
     btnSize: {
@@ -42,6 +54,9 @@ export default {
         results: null
       }
     }
+  },
+  created() {
+    console.log(this.mustField)
   },
   methods: {
     handleDrop(e) {
@@ -94,7 +109,6 @@ export default {
       }
     },
     readerData(rawFile) {
-      console.log('ahahahaa')
       this.loading = true
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -115,7 +129,67 @@ export default {
     generateData({ header, results }) {
       this.excelData.header = header
       this.excelData.results = results
-      this.onSuccess && this.onSuccess(this.excelData)
+      console.log('导入结果：', this.excelData)
+      var xheaders = header
+      var xresults = results
+      if (xheaders == null || xheaders.length === 0 || xresults == null || xresults.length === 0) {
+        this.$message.error('Excel表信息错误！')
+        return false
+      }
+      // 检查 字段 是否齐全必填字段是否填写
+      var mustfiled = this.mustField
+      var keyName = this.keyName
+      for (var key in keyName) {
+        // 判断 是否存在此字段
+        var keyChinaName = keyName[key]['chinaName']
+        if (xheaders.indexOf(keyChinaName) === -1) {
+          this.$message.error('表头信息错误，请勿修改表头信息！')
+          return false
+        }
+      }
+      var xlsForms = []
+      for (var key_ in xresults) {
+        var xlsForm = {} // 封装字段去后台
+        for (var key2 in keyName) {
+          var keyChinaName2 = keyName[key2]['chinaName']
+          if (!(Object.prototype.hasOwnProperty.call(xresults[key], keyChinaName2))) { // 不存在的字段
+            // 判断是否是必填字段
+            if (mustfiled.indexOf(keyChinaName2) !== -1) {
+              this.$message.error('必填字段不能为空！‘' + keyChinaName2 + '’')
+              return false
+            } else {
+              xlsForm[keyName[key2]['enName']] = ''
+            }
+          } else {
+            var tranferFiledValue = this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] })
+            xlsForm[keyName[key2]['enName']] = tranferFiledValue
+          }
+        }
+        xlsForms.push(xlsForm)
+      }
+      this.onSuccess && this.onSuccess(xlsForms)
+    },
+    // 转换字段
+    tranferFiledFun(tranObj) {
+      if (tranObj && tranObj.k !== '') {
+        console.log('ssss', this.tranferFiled)
+        var ss = this.tranferFiled
+        Object.getOwnPropertyNames(ss).forEach(function(key) {
+          if (tranObj.k === key) {
+            for (var i in ss[key]) {
+              console.log(ss[i])
+              if (ss[i]['id'] === tranObj.v) {
+                return ss[key][i]['value']
+              }
+            }
+            return tranObj.v
+          } else {
+            return tranObj.v
+          }
+        })
+      } else {
+        return ''
+      }
     },
     getHeaderRow(sheet) {
       const headers = []
