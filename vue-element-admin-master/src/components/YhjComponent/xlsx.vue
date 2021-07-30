@@ -161,11 +161,13 @@ export default {
               xlsForm[keyName[key2]['enName']] = ''
             }
           } else {
-            var tranferFiledValue = ''
+            var tranferFiledValue = 'aaaa'
             this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] }, function(r) {
+              console.log('--------------', r)
+              xlsForm[keyName[key2]['enName']] = r
               tranferFiledValue = r
             })
-            console.log('asdasdasda', keyName[key2]['enName'], tranferFiledValue)
+            console.log('--------33------', tranferFiledValue)
             xlsForm[keyName[key2]['enName']] = tranferFiledValue
           }
         }
@@ -175,6 +177,7 @@ export default {
     },
     // 转换字段
     tranferFiledFun(tranObj, callback) {
+      console.log('aaaaa')
       if (tranObj && tranObj.k !== '') {
         var ss = this.tranferFiled
         Object.getOwnPropertyNames(ss).forEach(function(key) {
@@ -186,6 +189,7 @@ export default {
                 return false
               }
             }
+            console.log('-7-7-7-7-7-7 : ')
             callback(tranObj.v)
             return false
           } else {
