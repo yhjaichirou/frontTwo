@@ -161,14 +161,10 @@ export default {
               xlsForm[keyName[key2]['enName']] = ''
             }
           } else {
-            var tranferFiledValue = 'aaaa'
             this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] }, function(r) {
-              console.log('--------------', r)
+              console.log('--------------', keyName[key2]['enName'], r)
               xlsForm[keyName[key2]['enName']] = r
-              tranferFiledValue = r
             })
-            console.log('--------33------', tranferFiledValue)
-            xlsForm[keyName[key2]['enName']] = tranferFiledValue
           }
         }
         xlsForms.push(xlsForm)
@@ -177,29 +173,34 @@ export default {
     },
     // 转换字段
     tranferFiledFun(tranObj, callback) {
-      console.log('aaaaa')
       if (tranObj && tranObj.k !== '') {
         var ss = this.tranferFiled
+        var bol = false
+        var rtv = ''
         Object.getOwnPropertyNames(ss).forEach(function(key) {
-          if (tranObj.k === key) {
+          if (key === '__ob__') {
+            console.log()
+          } else if (tranObj.k === key) {
+            bol = true
             for (var i in ss[key]) {
               if (ss[key][i]['value'] === tranObj.v) {
-                console.log('yhjythjyhj', ss[key][i]['value'], ss[key][i]['id'], tranObj.v)
-                callback(ss[key][i]['id'])
-                return false
+                rtv = ss[key][i]['id']
+                break
               }
             }
-            console.log('-7-7-7-7-7-7 : ')
-            callback(tranObj.v)
-            return false
           } else {
-            callback(tranObj.v)
-            return false
+            rtv = tranObj.v
           }
         })
+        if (bol) {
+          callback(rtv)
+        } else {
+          callback(rtv)
+        }
+        return
       } else {
         callback('')
-        return false
+        return
       }
     },
     getHeaderRow(sheet) {

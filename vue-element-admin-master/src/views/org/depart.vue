@@ -318,11 +318,16 @@ export default {
   },
   methods: {
     async xlsSuccess(xlsValues) {
-      console.log('导表返回', xlsValues)
-      await importXls({
+      var res = await importXls({
         'orgId': this.orgId,
         'data': xlsValues
       })
+      if (res.code === 200) {
+        this.$message({
+          type: 'success',
+          message: res.msg || '操作成功'
+        })
+      }
     },
     xlsBeforeUpload(rt) {
       console.log('导表qian返回', rt)

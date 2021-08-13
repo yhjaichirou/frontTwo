@@ -4,49 +4,94 @@
     <div class="project-body">
       <div class="left-project">
         <div class="header header--hidden">
-          <div class="card-header-title"><span class="ng-star-inserted"> 项目 </span></div>
-          <div>
-            <i class="el-icon-plus" style="margin-right: 20px;" @click="addProjectEvent(null)" />
-            <i class="el-icon-finished" />
-          </div>
+          <div class="card-header-title"><span class="ng-star-inserted"> 项目概况 </span></div>
+
         </div>
-
-        <input v-model="searchContent" type="text" autocomplete="off" class="el-input__inner" placeholder="搜索项目" @input="searchProject">
-        <el-radio-group v-model="searchStatus" size="mini" @change="searchProject">
-          <el-radio-button label="0" value="0">全部</el-radio-button>
-          <el-radio-button label="1" value="1">未完成</el-radio-button>
-          <el-radio-button label="2" value="2">已完成</el-radio-button>
-        </el-radio-group>
-        <ul>
-          <li
-            v-for="(item,index) in projectList"
-            :key="item.id"
-            class="ng-star-inserted"
-            :class="currProjectIndex==item.id?'active':''"
-            @click.prevent="clickProject(item.id)"
-          >
-            <a class="section-item" href="#">
-              <svg-icon icon-class="project2" />{{ item.name }}</a>
-            <div class="ng-star-inserted-btn">
-              <a v-if="item.status==7" class="section-item" href="#" title="提交审批" @click.prevent="authProject(item.id)">
-                <svg-icon icon-class="sp" /></a>
-              <a v-if="item.status==7" class="section-item" href="#" title="修改" @click.prevent="addProjectEvent(item.id)">
-                <svg-icon icon-class="update" /></a>
-              <a v-if="item.status==7" class="section-item" href="#" title="删除" @click.prevent="deleteProject(item.id,index)">
-                <svg-icon icon-class="del" /></a>
-            </div>
-          </li>
-        </ul>
-
+        <div style="padding: 10px;">
+          <panel-group
+            :all-pro-count="allMsg.allProject"
+            :all-com-pro-count="allMsg.allComProject"
+            :all-invest="allMsg.allInvest"
+            :all-people="allMsg.allPeople"
+            xs="24"
+            sm="24"
+            lg="24"
+            @handleSetLineChartData="handleSetLineChartData"
+          />
+        </div>
       </div>
       <div class="right-project">
+        <el-container style="height: 100%;">
+          <el-header>
+            <div>
+              <svg-icon icon-class="project2" />
+              <span class="card-header-title"> 项目 </span>
+            </div>
+            <div>
+              <i class="el-icon-plus" style="margin-right: 20px;" @click="addProjectEvent(null)" />
+              <i class="el-icon-finished" />
+            </div>
+          </el-header>
+          <el-main style="height: 100%;padding-top:10px;">
+            <input v-model="searchContent" type="text" autocomplete="off" class="el-input__inner" placeholder="搜索项目" @input="searchProject">
+            <el-radio-group v-model="searchStatus" size="mini" @change="searchProject">
+              <el-radio-button label="0" value="0">全部</el-radio-button>
+              <el-radio-button label="1" value="1">未完成</el-radio-button>
+              <el-radio-button label="2" value="2">已完成</el-radio-button>
+            </el-radio-group>
+            <el-table
+              :data="projectList"
+              style="width: 100%"
+
+              :row-class-name="tableRowClassName"
+            >
+              <el-table-column
+                prop="id"
+                label="ID"
+                width="80"
+              />
+              <el-table-column
+                prop="startDate"
+                label="日期"
+                width="180"
+              />
+              <el-table-column
+                prop="name"
+                label="姓名"
+              />
+              <el-table-column
+                prop="address"
+                label="地址"
+                width="220"
+              />
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="200"
+              >
+                <template #default="scope">
+                  <el-button type="text" size="small" class="c_watch" @click="clickProject(scope.row.id)">查看</el-button>
+                  <el-button type="text" size="small" class="c_edit" @click="addProjectEvent(scope.row.id)">修改</el-button>
+                  <el-button type="text" size="small" class="c_del" @click="deleteProject(scope.row.id)">删除</el-button>
+                  <el-button v-if="scope.row.status==7" type="text" size="small" @click="authProject(scope.row.id)">审核</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-main>
+        </el-container>
+      </div>
+    </div>
+
+    <!-- 查看详情 -->
+    <el-dialog id="yhj-detail-form" title="项目详情" :visible.sync="dialogProjectDetail">
+      <div class="yhj-detail-content" style="position: relative;">
         <div v-if="addShbObj !== ''" class="right-btns" @click="handleSHB">
           <div style="display: flex;align-items: center;justify-content: center;font-size: 14px;">
             <i class="el-icon-circle-plus" style="font-size: 16px;margin-right: 5px;" />前期手续办理情况
           </div>
 
         </div>
-        <el-tabs v-if="isHasThisProject" v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="项目概览" name="1">
             <div class="manager-card">
               <div class="manager-header">
@@ -745,22 +790,8 @@
 
           </el-tab-pane>
         </el-tabs>
-        <el-tabs v-else v-model="activeName" type="card">
-          <el-tab-pane label="项目概览" name="1">
-            <div style="padding: 10px;">
-              <panel-group
-                :all-pro-count="allMsg.allProject"
-                :all-com-pro-count="allMsg.allComProject"
-                :all-invest="allMsg.allInvest"
-                :all-people="allMsg.allPeople"
-                @handleSetLineChartData="handleSetLineChartData"
-              />
-            </div>
-
-          </el-tab-pane>
-        </el-tabs>
       </div>
-    </div>
+    </el-dialog>
 
     <!-- add projectform -->
     <el-dialog :visible.sync="dialogAddFormVisible" :title="dialogType==='edit'?'修改项目':'新建项目'">
@@ -1540,7 +1571,7 @@
           <el-col :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="所属阶段" prop="stageId" :label-width="formLabelWidth">
-                <el-select v-model="addTaskObj.stageId" placeholder="请选择所属阶段">
+                <el-select v-model="addTaskObj.stageId" placeholder="请选择所属阶段" @change="handleChangeStage">
                   <el-option v-for="item in stageList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -1618,16 +1649,16 @@
 
           <el-col :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="是否审核备任务" prop="isShb" :label-width="formLabelWidth">
-                <el-radio v-model="addTaskObj.isShb" label="是" /></el-radio>
-                <el-radio v-model="addTaskObj.isShb" label="否" /></el-radio>
+              <el-form-item label="是否前期手续办理任务" prop="isShb" :label-width="formLabelWidth">
+                <el-radio v-model="addTaskObj.isShb" label="是" :disabled="addTaskObj.executOrg === 2 ?'disabled':'none'" /></el-radio>
+                <el-radio v-model="addTaskObj.isShb" label="否" :disabled="addTaskObj.executOrg === 2 ?'disabled':'none'" /></el-radio>
               </el-form-item>
             </div>
           </el-col>
           <el-col v-if="addTaskObj.isShb === '是'" :span="12">
             <div class="grid-content bg-purple">
-              <el-form-item label="审核备类型" prop="shb" :label-width="formLabelWidth">
-                <el-select v-model="addTaskObj.shb" placeholder="请选择审核备类型">
+              <el-form-item label="前期手续办理类型" prop="shb" :label-width="formLabelWidth">
+                <el-select v-model="addTaskObj.shb" placeholder="请选择前期手续办理类型">
                   <el-option v-for="item in shbList" :key="item.number" :label="item.name" :value="item.number" />
                 </el-select>
               </el-form-item>
@@ -1660,6 +1691,8 @@
 import { getToken } from '@/utils/auth'
 import CountTo from 'vue-count-to'
 import {
+  importXls,
+
   getSHBOption,
   getTzqkList,
   getAllMsg,
@@ -1783,11 +1816,48 @@ export default {
       }
     }
     return {
+      keyName: [{
+        'chinaName': '单位名称',
+        'enName': 'name'
+      }, {
+        'chinaName': '单位负责人',
+        'enName': 'manager'
+      }, {
+        'chinaName': '单位负责人电话',
+        'enName': 'managerMobile'
+      }, {
+        'chinaName': '类型',
+        'enName': 'property'
+      }, {
+        'chinaName': '所在位置',
+        'enName': 'position'
+      }, {
+        'chinaName': '隶属单位ID',
+        'enName': 'pid'
+      }],
+      xlsMustField: ['单位名称', '单位负责人', '单位负责人电话', '类型'],
+      tranferFiled: {
+        'property': [{
+          'id': 1,
+          'value': '市发改委'
+        }, {
+          'id': 2,
+          'value': '各级发改委'
+        }, {
+          'id': 3,
+          'value': '职能部门'
+        }, {
+          'id': 4,
+          'value': '企业'
+        }]
+      },
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
       dialogFormVisible: false,
       updateProStatus: '',
+      dialogProjectDetail: false,
+
       tzqkList: [],
       orgId: '',
       activeName: '1',
@@ -2116,8 +2186,7 @@ export default {
         'DELAY': 0,
         'OVERDUE': 0
       },
-      // 总概况
-      isHasThisProject: false,
+
       lineChartData: lineChartData.newVisitis,
 
       // 项目文件
@@ -2170,7 +2239,33 @@ export default {
   },
   // inject: ['reload'],
   methods: {
-    handleRemove(file) {
+    tableRowClassName({ row, rowIndex }) {
+      if (rowIndex === 1) {
+        return 'warning-row'
+      } else if (rowIndex === 3) {
+        return 'success-row'
+      }
+      return ''
+    },
+    // 导表
+    async xlsSuccess(xlsValues) {
+      var res = await importXls({
+        'orgId': this.orgId,
+        'data': xlsValues
+      })
+      if (res.code === 200) {
+        this.$message({
+          type: 'success',
+          message: res.msg || '操作成功'
+        })
+      }
+    },
+    xlsBeforeUpload(rt) {
+      console.log('导表qian返回', rt)
+      return true
+    },
+
+    leRemove(file) {
       console.log(file)
     },
     handlePictureCardPreview(file) {
@@ -2298,7 +2393,7 @@ export default {
       this.thisProject = res.data
       this.thisProject.invest = Number(this.thisProject.invest)
       this.addShbObj = res.data
-      this.isHasThisProject = true
+      this.dialogProjectDetail = true
       this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2
         ? 'circle-success' : 'circle-error'
     },
@@ -2556,6 +2651,13 @@ export default {
         this.executorList = res.data
       }
     },
+    handleChangeStage(v) {
+      if (v === 2) {
+        this.addTaskObj.isShb = '是'
+      } else {
+        this.addTaskObj.isShb = '否'
+      }
+    },
     executorChange() {
       var cPRO = this.addTaskObj.executor
       console.log(cPRO)
@@ -2777,44 +2879,15 @@ export default {
       }
 
       .header {
-        height: 50px;
+        height: 60px;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 0 10px;
+        padding: 0 10px;
         color: #333;
-      }
-
-      .el-input__inner {
-        height: 28px;
-        line-height: 28px;
-        margin: 0px 10px;
-        width: calc(100% - 20px);
-        padding: 2px 10px;
-        font-size: 11px;
-      }
-
-      .toc-search-area {
-        padding: 0 20px 10px;
-
-      }
-
-      .section-item {
-        padding: 8px 8px 0px 8px;
-        color: #666;
-        display: block;
-        position: relative;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        -webkit-transition: -webkit-box-shadow .2s;
-        transition: -webkit-box-shadow .2s;
-        transition: box-shadow .2s;
-        transition: box-shadow .2s, -webkit-box-shadow .2s;
-        border-right: 4px solid transparent;
-        font-size:14px;
+        background-color: rgba(0, 206, 209,0.2);
       }
 
     }
@@ -2830,23 +2903,13 @@ export default {
       width: 100%;
       position: relative;
       height:100%;
+      .el-header{
+        background-color: rgba(0, 206, 209,0.2);
+      }
       .el-tabs--card{
         height:100%;
 
       }
-
-      .right-btns {
-        position: absolute;
-        right: 8px;
-        top: 12px;
-        z-index: 2;
-        cursor: pointer;
-      }
-
-      .right-btns:hover {
-        color: #4e8afa;
-      }
-
       .project-basic-property-line {
         display: block;
         margin: 10px 0;
@@ -2987,79 +3050,10 @@ export default {
           line-height: 18px;
         }
       }
-
-      .task-list-type {
-        color: #888;
-        display: flex;
-        flex: auto;
-        font-size: 14px;
-        padding: 0 5px;
-        justify-content: space-between;
-        background-color: white;
-
-        .task-list-type-left {}
-
-        .task-list-type-left {
-          ul {
-            li.active {
-              color: #4e8afa;
-            }
-          }
-        }
-
-        .task-list-type-right {
-          display: flex;
-          align-items: center;
-        }
-
-        ul {
-          display: flex;
-          list-style: none;
-          margin: 0;
-          padding: 5px 8px;
-
-          li {
-            padding: 5px;
-            border-right: 3px solid white;
-          }
-
-          li:nth-last-child {
-            border-right: none;
-          }
-        }
-
-        a {
-          cursor: pointer;
-        }
-
-        a:hover {
-          color: #4e8afa;
-        }
-
-      }
-
-      .task-list-body {
-
-        //阶段划分 上下线条
-        .el-collapse {
-          border: none;
-        }
-
-        .el-collapse-item {}
-
-        .el-collapse-item__wrap {
-          border-bottom: none !important;
-        }
-      }
-
-      .el-collapse-item__wrap {
-        border-bottom: none !important;
-      }
-
     }
 
     .el-radio-group {
-      margin: 10px !important;
+      margin: 5px 10px !important;
     }
     .el-select {
         width: 100%;
@@ -3092,11 +3086,264 @@ export default {
       height: auto !important;
     }
   }
+
+  #yhj-detail-form{
+    ::v-deep .el-dialog {
+      height: 80% !important;
+    }
+
+  }
+  .yhj-detail-content{
+    position: relative;
+    margin: -30px -20px;
+  }
+  .el-input__inner {
+    height: 36px;
+    line-height: 36px;
+    margin: 0px 10px;
+    width: 250px;
+    padding: 2px 10px;
+    font-size: 14px;
+    margin: 0px;
+  }
+
+  .toc-search-area {
+    padding: 0 20px 10px;
+
+  }
+
+  .section-item {
+    padding: 8px 8px 0px 8px;
+    color: #666;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-transition: -webkit-box-shadow .2s;
+    transition: -webkit-box-shadow .2s;
+    transition: box-shadow .2s;
+    transition: box-shadow .2s, -webkit-box-shadow .2s;
+    border-right: 4px solid transparent;
+    font-size:14px;
+  }
+  .right-btns {
+    position: absolute;
+    right: 8px;
+    top: 12px;
+    z-index: 2;
+    cursor: pointer;
+  }
+
+  .right-btns:hover {
+    color: #4e8afa;
+  }
+
+  .manager-card {
+    padding: 10px 10px;
+    color: #666;
+    background-color: white;
+
+    .manager-header {
+      display: flex;
+
+      .manager-bluer {
+        width: 3px;
+        background-color: #4e8afa;
+        margin-right: 5px;
+      }
+    }
+
+    .fj-svg {
+      width: 2em;
+      height: 2em;
+    }
+  }
+  .manager-card-content {
+      .d-flex {
+        margin: 10px auto;
+        background: #eef1f6;
+        border-bottom: 1px solid #eee;
+        line-height:40px;
+        .shbTile{
+          background-color: cadetblue;
+          text-align: center;
+          color: white;
+          font-weight: bold;
+        }
+        .project-basic-property {
+          margin-right:10px;
+          font-size: 13px;
+          line-height: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 100%;
+          border-bottom: 1px solid #88bcf4;
+          margin-bottom: 5px;
+
+          .project-property-item-name {
+            color: #667ab7;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+            border-left: solid 3px #88bcf4;
+            padding: 12px;
+            border-top-right-radius:10px;
+            background-color:#c5dcf0;
+            font-size: 14px;
+            height: 100%;
+            line-height: 40px;
+          }
+          .project-property-item-cono{
+            line-height: 40px;
+            float: right;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: calc(100% - 170px);
+            text-align: right;
+            padding-right: 10px;
+          }
+
+          .circle {
+            border-radius: 50%;
+            vertical-align: middle;
+            background: #aaa;
+            height: 18px;
+            width: 18px;
+            display: inline-block;
+          }
+
+          .circle-ing {
+            background-color: #71cd33;
+          }
+
+          .circle-success {
+            background-color: #30B08F;
+          }
+
+          .circle-error {
+            background-color: brown;
+          }
+        }
+      }
+
+      .project-basic-property-line {
+        display: block;
+        margin: 30px 0;
+        border-bottom: solid 1px #f3f3f3;
+      }
+    }
+    .detailShb {
+      .d-flex {
+        .el-row{
+          margin-top: 5px !important;
+        }
+        .project-property-item-cono{
+          width: calc(100% - 240px) !important;
+        }
+      }
+    }
+
+    //投资情况
+    .el-alert--success.is-light {
+      background-color: #e7faf0;
+      color: #13ce66;
+      padding: 8px 16px;
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 1;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-transition: opacity .2s;
+      transition: opacity .2s;
+    }
+
+    .el-alert__content {
+      display: table-cell;
+      padding: 0 8px;
+    }
+
+    .el-alert__title {
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .task-list-type {
+      color: #888;
+      display: flex;
+      flex: auto;
+      font-size: 14px;
+      padding: 0 5px;
+      justify-content: space-between;
+      background-color: white;
+
+      .task-list-type-left {}
+
+      .task-list-type-left {
+        ul {
+          li.active {
+            color: #4e8afa;
+          }
+        }
+      }
+
+      .task-list-type-right {
+        display: flex;
+        align-items: center;
+      }
+
+      ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 5px 8px;
+
+        li {
+          padding: 5px;
+          border-right: 3px solid white;
+        }
+
+        li:nth-last-child {
+          border-right: none;
+        }
+      }
+
+      a {
+        cursor: pointer;
+      }
+
+      a:hover {
+        color: #4e8afa;
+      }
+
+    }
+
+    .task-list-body {
+
+      //阶段划分 上下线条
+      .el-collapse {
+        border: none;
+      }
+
+      .el-collapse-item {}
+
+      .el-collapse-item__wrap {
+        border-bottom: none !important;
+      }
+    }
+
+    .el-collapse-item__wrap {
+      border-bottom: none !important;
+    }
+
 </style>
 <style>
   .el-radio-button--mini .el-radio-button__inner {
     padding: 5px 10px;
-    font-size: 11px;
+    font-size: 14px;
     border-radius: 0;
   }
 

@@ -1,1 +1,7 @@
-/*  */
+/* 容器头 */
+.el-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
