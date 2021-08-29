@@ -268,6 +268,7 @@ export default {
     async getUsers(pn, ps) {
       const res = await getUsers({ 'pn': pn, 'ps': ps, 'orgId': this.$store.getters.orgId, 'search': this.searchContent })
       this.usersList = res.data.list
+      this.dataMap.total = res.data.total
     },
     async getRoleList() {
       const res = await getRoleList(this.$store.getters.orgId, this.$store.getters.roleId)
@@ -305,11 +306,12 @@ export default {
     },
     async changeRole() {
       console.log(this.user.roleId)
-
+      this.user.orgId = ''
       const res = await getOrgList(this.$store.getters.orgId, this.user.roleId)
       this.orgList = res.data
     },
     async changeOrg() {
+      this.user.groupId = ''
       const res = await getGroupList(this.user.orgId)
       this.groupList = res.data
     },
@@ -349,23 +351,26 @@ export default {
       })
       if (isComfirm) {
         this.user.loginRole = this.loginRoleId
+        this.user.userId = this.$store.getters.userId
         const isEdit = this.dialogType === 'edit'
-        this.user.password = md5(this.user.newpassword)
         if (isEdit) {
+          console.log('asdasdasd', this.user)
           await updateUser(this.user)
-          for (let index = 0; index < this.usersList.length; index++) {
-            if (this.usersList[index].id === this.user.id) {
-              this.usersList.splice(index, 1, Object.assign({}, this.user))
-              break
-            }
-          }
+          // for (let index = 0; index < this.usersList.length; index++) {
+          //   if (this.usersList[index].id === this.user.id) {
+          //     this.usersList.splice(index, 1, Object.assign({}, this.user))
+          //     break
+          //   }
+          // }
         } else {
+          this.user.password = md5(this.user.newpassword)
           const {
             data
           } = await addUser(this.user)
           // this.user = data
           this.usersList.push(data)
         }
+        this.getUsers(this.dataMap.pn, this.dataMap.ps)
 
         const {
           account,

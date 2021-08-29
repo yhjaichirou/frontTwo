@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getGroup(orgId) {
+export function getGroup(data) {
   return request({
-    url: '/group/getGroup?orgId='+orgId,
-    method: 'get'
+    url: '/group/getGroup',
+    method: 'post',
+    data
   })
 }
 

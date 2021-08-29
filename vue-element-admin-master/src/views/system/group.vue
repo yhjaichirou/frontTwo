@@ -27,6 +27,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        :current-page="dataMap.pn"
+        :page-sizes="[20, 50, 100]"
+        :page-size="dataMap.ps"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="dataMap.total"
+        @size-change="handlePageSizeChange"
+        @current-change="handlePageCurrentChange"
+      />
     </div>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改分组':'新建分组'">
@@ -76,6 +85,12 @@ const defaultRole = {
 export default {
   data() {
     return {
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      },
       group: Object.assign({}, defaultRole),
       groupList: [],
       dialogVisible: false,
@@ -103,41 +118,22 @@ export default {
     //   this.serviceRoutes = res.data
     //   this.routes = this.generateRoutes(res.data)
     // },
+    async handlePageSizeChange(val) {
+      this.getGroup(this.dataMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.getGroup(val, this.dataMap.ps)
+    },
     async getGroup() {
-      var orgId = this.$store.getters.orgId
-      const res = await getGroup(orgId)
-      this.groupList = res.data
-      console.log(this.groupList)
+      const res = await getGroup({
+        'pn': this.dataMap.pn,
+        'ps': this.dataMap.ps,
+        'orgId': this.$store.getters.orgId
+      })
+      this.groupList = res.data.list
+      this.dataMap.total = res.data.total
     },
 
-    // Reshape getthe routes structure so that it looks the same as the sidebar
-    // generateRoutes(routes, basePath = '/') {
-    //   const res = []
-
-    //   for (let route of routes) {
-    //     // skip some route
-    //     if (route.hidden) { continue }
-
-    //     const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-    //     if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-    //       route = onlyOneShowingChild
-    //     }
-
-    //     const data = {
-    //       path: path.resolve(basePath, route.path),
-    //       title: route.meta && route.meta.title
-
-    //     }
-
-    //     // recursive child routes
-    //     if (route.children) {
-    //       data.children = this.generateRoutes(route.children, data.path)
-    //     }
-    //     res.push(data)
-    //   }
-    //   return res
-    // },
     generateArr(routes) {
       let data = []
       routes.forEach(route => {

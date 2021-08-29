@@ -77,6 +77,16 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-pagination
+              :current-page="dataMap.pn"
+              :page-sizes="[20, 50, 100]"
+              :page-size="dataMap.ps"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="dataMap.total"
+              @size-change="handleProPageSizeChange"
+              @current-change="handleProPageCurrentChange"
+            />
+
           </el-main>
         </el-container>
       </div>
@@ -1816,6 +1826,7 @@ export default {
       }
     }
     return {
+
       keyName: [{
         'chinaName': '单位名称',
         'enName': 'name'
@@ -1850,6 +1861,12 @@ export default {
           'id': 4,
           'value': '企业'
         }]
+      },
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
       },
       dialogImageUrl: '',
       dialogVisible: false,
@@ -2264,7 +2281,12 @@ export default {
       console.log('导表qian返回', rt)
       return true
     },
-
+    async handleProPageSizeChange(val) {
+      this.getProjectList(this.dataMap.pn, val)
+    },
+    async handleProPageCurrentChange(val) {
+      this.getProjectList(val, this.dataMap.ps)
+    },
     leRemove(file) {
       console.log(file)
     },
@@ -2375,14 +2397,19 @@ export default {
     },
     async getProjectList() {
       console.log(this.searchContent, this.searchStatus)
-      const res = await getAllProject(this.$store.getters.roleId, this.orgId, this.searchContent, this.searchStatus)
-      this.projectList = res.data
+      const res = await getAllProject({
+        'roleId': this.$store.getters.roleId,
+        'orgId': this.orgId,
+        'search': this.searchContent,
+        'searchStatus': this.searchStatus,
+        'pn': this.dataMap.pn,
+        'ps': this.dataMap.ps
+      })
+      this.projectList = res.data.list
+      this.dataMap.total = res.data.total
     },
-
     async searchProject() {
-      const res = await getAllProject(this.orgId, this.searchContent, this.searchStatus)
-      this.projectList = res.data
-      console.log(this.projectList)
+      this.getProjectList()
     },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
@@ -2682,7 +2709,6 @@ export default {
           return false
         }
       })
-      console.log(this.addTaskObj)
       if (isGo) {
         if (isEdit) {
           await updateTask(this.addTaskObj)

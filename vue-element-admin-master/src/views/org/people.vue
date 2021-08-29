@@ -1,7 +1,18 @@
 <template>
   <div class="app-container">
     <div class="container-header">
-      <BtnList :btn-data="btnList" />
+      <div style="display: flex;">
+        <BtnList :btn-data="btnList" />
+        <xlsx
+          :before-upload="xlsBeforeUpload"
+          :on-success="xlsSuccess"
+          tem-src="/xlsx/成员导入模板.xlsx"
+          :must-field="xlsMustField"
+          :tranfer-filed="tranferFiled"
+          :key-name="keyName"
+          btn-size=""
+        />
+      </div>
       <div class="search">
         <el-input v-model="searchContent" placeholder="请输入成员" @input="search">
           <i slot="prefix" class="el-input__icon el-icon-search" />
@@ -18,7 +29,7 @@
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="人员姓名" width="80">
+        <el-table-column align="center" label="人员姓名" width="120">
           <template slot-scope="scope">
             {{ scope.row.name }}
           </template>
@@ -28,11 +39,11 @@
             {{ scope.row.mobile }}
           </template>
         </el-table-column>
-        <el-table-column align="header-center" label="身份证号">
+        <!-- <el-table-column align="header-center" label="身份证号">
           <template slot-scope="scope">
             {{ scope.row.idcard }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="header-center" label="职务">
           <template slot-scope="scope">
             {{ scope.row.job }}
@@ -40,10 +51,10 @@
         </el-table-column>
         <el-table-column align="center" label="是否为领导" width="100">
           <template slot-scope="scope">
-            {{ scope.row.isLeader === 1 ? '是' : '否' }}
+            {{ scope.row.isLeader }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="年龄" width="100">
+        <!-- <el-table-column align="center" label="年龄" width="100">
           <template slot-scope="scope">
             {{ scope.row.age }}
           </template>
@@ -51,7 +62,7 @@
         <el-table-column align="center" label="性别" width="100">
           <template slot-scope="scope">
             {{ scope.row.sex }}
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column align="center" label="操作" width="180">
           <template slot-scope="scope">
@@ -79,9 +90,9 @@
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="people.mobile" placeholder="请输入手机号" />
         </el-form-item>
-        <el-form-item label="身份证号" prop="idcard">
+        <!-- <el-form-item label="身份证号" prop="idcard">
           <el-input v-model="people.idcard" type="text" placeholder="请输入身份证号" autocomplete="off" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="职务" prop="job">
           <el-input v-model="people.job" type="text" placeholder="请输入职务" autocomplete="off" />
         </el-form-item>
@@ -102,10 +113,12 @@
 // import path from 'path'
 import { deepClone } from '@/utils'
 import BtnList from '@/components/YhjComponent/btnList.vue'
+import xlsx from '@/components/YhjComponent/xlsx.vue'
 import {
   getPeopleList,
   // getPeople,
   deletePeople,
+  importPelXls,
   addPeople,
   updatePeople
 } from '@/api/depart'
@@ -127,7 +140,7 @@ const defaultPeople = {
 
 export default {
   components: {
-    BtnList
+    BtnList, xlsx
   },
   data() {
     var validateMoblie = (rule, value, callback) => {
@@ -139,15 +152,15 @@ export default {
         callback()
       }
     }
-    var validateIdcard = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入身份证号！'))
-      } else if (!(/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value))) {
-        callback(new Error('身份证号不正确！'))
-      } else {
-        callback()
-      }
-    }
+    // var validateIdcard = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入身份证号！'))
+    //   } else if (!(/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value))) {
+    //     callback(new Error('身份证号不正确！'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     var that = this
     return {
       btnList: [
@@ -163,6 +176,23 @@ export default {
           }
         }
       ],
+      loading: '',
+      keyName: [{
+        'chinaName': '人员名称',
+        'enName': 'name'
+      }, {
+        'chinaName': '手机号',
+        'enName': 'mobile'
+      }, {
+        'chinaName': '职务',
+        'enName': 'job'
+      }, {
+        'chinaName': '是否领导',
+        'enName': 'isLeader'
+      }],
+      xlsMustField: ['人员名称', '手机号', '职务', '是否领导'],
+      tranferFiled: {},
+
       people: Object.assign({}, defaultPeople),
       peopleList: [],
       searchContent: '',
@@ -182,7 +212,7 @@ export default {
       ruleForm: {
         name: '',
         mobile: '',
-        idcard: '',
+        // idcard: '',
         job: ''
       },
       rules: {
@@ -196,11 +226,11 @@ export default {
           validator: validateMoblie,
           trigger: 'blur'
         }],
-        idcard: [{
-          required: true,
-          validator: validateIdcard,
-          trigger: 'blur'
-        }],
+        // idcard: [{
+        //   required: true,
+        //   validator: validateIdcard,
+        //   trigger: 'blur'
+        // }],
         job: [{
           required: true,
           message: '请输入职位',
@@ -221,6 +251,33 @@ export default {
     this.getPeopleList(1, 20)
   },
   methods: {
+    async xlsSuccess(xlsValues) {
+      var res = await importPelXls({
+        'loginOrgId': this.$store.getters.orgId,
+        'loginUserId': this.$store.getters.userId,
+        'data': xlsValues
+      }).catch(() => {
+        this.loading.close()
+      })
+      this.$message({
+        type: 'success',
+        message: res.msg || '操作成功',
+        duration: 5 * 1000
+      })
+      this.getPeopleList(this.dataMap.pn, this.dataMap.ps)
+      this.loading.close()
+    },
+    xlsBeforeUpload(rt) {
+      console.log('导表qian返回', rt)
+      this.loading = this.$loading({
+        lock: true,
+        text: '导入中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+
+      return true
+    },
     generateArr(routes) {
       let data = []
       routes.forEach(route => {
@@ -246,7 +303,7 @@ export default {
       this.peopleList = res.data.list
     },
     search() {
-      this.getDepartList(1, 20)
+      this.getPeopleList(this.dataMap.pn, this.dataMap.ps)
     },
     handleAddPeople() {
       this.people = Object.assign({}, defaultPeople)
@@ -275,31 +332,34 @@ export default {
       if (isComfirm) {
         const isEdit = this.dialogType === 'edit'
         var UUserCard = this.people.idcard
-        this.people.sex = parseInt(UUserCard.substr(16, 1)) % 2 === 1 ? '男' : '女'
-        var myDate = new Date()
-        var month = myDate.getMonth() + 1
-        var day = myDate.getDate()
-        var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1
-        if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) === month && UUserCard.substring(12, 14) <= day) {
-          age++
+        if (!UUserCard) {
+          this.people.sex = parseInt(UUserCard.substr(16, 1)) % 2 === 1 ? '男' : '女'
+          var myDate = new Date()
+          var month = myDate.getMonth() + 1
+          var day = myDate.getDate()
+          var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1
+          if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) === month && UUserCard.substring(12, 14) <= day) {
+            age++
+          }
+          this.people.age = age
         }
-        this.people.age = age
         if (isEdit) {
           await updatePeople(this.people)
-          for (let index = 0; index < this.peopleList.length; index++) {
-            if (this.peopleList[index].id === this.people.id) {
-              this.peopleList.splice(index, 1, Object.assign({}, this.people))
-              break
-            }
-          }
+          // for (let index = 0; index < this.peopleList.length; index++) {
+          //   if (this.peopleList[index].id === this.people.id) {
+          //     this.peopleList.splice(index, 1, Object.assign({}, this.people))
+          //     break
+          //   }
+          // }
         } else {
           this.people.orgId = this.$store.getters.orgId
           const {
             data
           } = await addPeople(this.people)
           this.people.id = data
-          this.peopleList.push(this.people)
+          // this.peopleList.push(this.people)
         }
+        this.getPeopleList(this.dataMap.pn, this.dataMap.ps)
         this.$message({
           type: 'success',
           message: '操作成功!'

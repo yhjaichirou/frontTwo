@@ -27,6 +27,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        :current-page="dataMap.pn"
+        :page-sizes="[20, 50, 100]"
+        :page-size="dataMap.ps"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="dataMap.total"
+        @size-change="handlePageSizeChange"
+        @current-change="handlePageCurrentChange"
+      />
     </div>
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新增角色'">
       <el-form :model="role" label-width="80px" label-position="left">
@@ -81,6 +90,12 @@ const defaultRole = {
 export default {
   data() {
     return {
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      },
       role: Object.assign({}, defaultRole),
       routes: [],
       rolesList: [],
@@ -105,14 +120,24 @@ export default {
     this.getRoles()
   },
   methods: {
+    async handlePageSizeChange(val) {
+      this.getUsers(this.dataMap.pn, val)
+    },
+    async handlePageCurrentChange(val) {
+      this.getUsers(val, this.dataMap.ps)
+    },
     async getRoutes() {
       const res = await getRoutes()
       // var serviceRoutes = menu(res.data)
       this.routes = res.data
     },
     async getRoles() {
-      const res = await getRoles()
-      this.rolesList = res.data
+      const res = await getRoles({
+        'pn': this.dataMap.pn,
+        'ps': this.dataMap.ps
+      })
+      this.rolesList = res.data.list
+      this.dataMap.total = res.data.total
     },
     generateArr(routes) {
       let data = []

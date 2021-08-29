@@ -114,7 +114,7 @@
           <el-col v-if="currProperty===1" :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
-                <el-select v-model="depart.property" placeholder="请选择单位性质">
+                <el-select v-model="depart.property" placeholder="请选择单位性质" @change="handleProperChange">
                   <el-option label="各级发改委" value="2" />
                   <el-option label="职能部门" value="3" />
                   <el-option label="企业" value="4" />
@@ -125,7 +125,7 @@
           <el-col v-if="currProperty===2" :span="12">
             <div class="grid-content bg-purple">
               <el-form-item label="单位性质" prop="property" :label-width="formLabelWidth">
-                <el-select v-model="depart.property" placeholder="请选择单位性质" @change="handleProperChange()">
+                <el-select v-model="depart.property" placeholder="请选择单位性质" @change="handleProperChange">
                   <el-option label="职能部门" value="3" />
                   <el-option label="企业" value="4" />
                 </el-select>
@@ -145,8 +145,7 @@
             <div class="grid-content bg-purple">
               <el-form-item label="隶属关系" :label-width="formLabelWidth">
                 <el-select v-model="depart.pid" placeholder="请选择隶属关系">
-                  <el-option label="请选择" value="" />
-                  <el-option v-for="(upitem,index) in upDapartList" :key="index" :label="upitem.name" :value="upitem.id" />
+                  <el-option v-for="(upitem,index) in upDapartList" :key="index" :label="upitem.name" :value="upitem.id" :disabled="upitem.id==depart.id" />
                 </el-select>
               </el-form-item>
             </div>
@@ -215,6 +214,7 @@ export default {
       }
     }
     return {
+      loading: '',
       keyName: [{
         'chinaName': '单位名称',
         'enName': 'name'
@@ -319,18 +319,27 @@ export default {
   methods: {
     async xlsSuccess(xlsValues) {
       var res = await importXls({
-        'orgId': this.orgId,
+        'loginOrgId': this.$store.getters.orgId,
+        'loginUserId': this.$store.getters.userId,
         'data': xlsValues
+      }).catch(() => {
+        this.loading.close()
       })
-      if (res.code === 200) {
-        this.$message({
-          type: 'success',
-          message: res.msg || '操作成功'
-        })
-      }
+      this.$message({
+        type: 'success',
+        message: res.msg || '操作成功'
+      })
+      this.getDepartList(this.dataMap.pn, this.dataMap.ps)
+      this.loading.close()
     },
     xlsBeforeUpload(rt) {
       console.log('导表qian返回', rt)
+      this.loading = this.$loading({
+        lock: true,
+        text: '导入中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       return true
     },
     async getOrgtypes() {
@@ -338,9 +347,10 @@ export default {
       this.typeList = res.data
     },
     handleProperChange() {
-      this.getUpOrgs()
+      this.getUpOrgs('')
     },
-    async getUpOrgs() {
+    async getUpOrgs(pid_) {
+      this.depart.pid = pid_
       const res = await getUpOrgs(this.depart.property)
       this.upDapartList = res.data
     },
@@ -357,12 +367,13 @@ export default {
         'ps': ps,
         'orgId': this.orgId,
         'searchContent': this.searchContent,
-        '': this.searchStatus
+        'searchStatus': this.searchStatus
       })
       this.departList = res.data.list
+      this.dataMap.total = res.data.total
     },
     searchProject() {
-      this.getDepartList(1, 20)
+      this.getDepartList(this.dataMap.pn, this.dataMap.ps)
     },
 
     async addDepartEvent() {
@@ -377,7 +388,7 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.depart = deepClone(scope.row)
-      this.getUpOrgs()
+      this.getUpOrgs(this.depart.pid)
       this.depart.property = this.depart.property + ''
       console.log(this.depart)
     },
@@ -415,27 +426,29 @@ export default {
         }
       })
       if (isGo) {
+        this.depart.loginOrgId = this.$store.getters.orgId
+        this.depart.loginUserId = this.$store.getters.userId
         if (isEdit) {
           await updateDepart(this.depart)
-          for (let index = 0; index < this.departList.length; index++) {
-            if (this.departList[index].id === this.depart.id) {
-              this.departList.splice(index, 1, Object.assign({}, this.depart))
-              break
-            }
-          }
+          // for (let index = 0; index < this.departList.length; index++) {
+          //   if (this.departList[index].id === this.depart.id) {
+          //     this.departList.splice(index, 1, Object.assign({}, this.depart))
+          //     break
+          //   }
+          // }
         } else {
           this.depart.orgId = this.orgId
           const {
             data
           } = await addDepart(this.depart)
           this.depart.id = data
-          this.getDepartList(this.dataMap.pn, this.dataMap.ps)
           // this.departList.push(this.depart)
         }
+        this.getDepartList(this.dataMap.pn, this.dataMap.ps)
         const {
           id,
           name,
-          managerName
+          manager
         } = this.depart
         this.dialogVisible = false
         this.$notify({
@@ -444,7 +457,7 @@ export default {
           message: `
               <div>组织ID: ${id}</div>
               <div>组织名称: ${name}</div>
-              <div>负责人: ${managerName}</div>
+              <div>负责人: ${manager}</div>
             `,
           type: 'success'
         })

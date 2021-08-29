@@ -12,10 +12,11 @@ export function getAllMsg(orgId) {
     method: 'get'
   })
 }
-export function getAllProject(roleId, orgId, search, status) {
+export function getAllProject(data) {
   return request({
-    url: '/project/getAllProject?orgId=' + orgId + '&search=' + search + '&status=' + status + '&roleId=' + roleId,
-    method: 'get'
+    url: '/project/getAllProject',
+    method: 'post',
+    data
   })
 }
 export function getAllProjectTask(pn, ps, roleId, orgId, search, status) {

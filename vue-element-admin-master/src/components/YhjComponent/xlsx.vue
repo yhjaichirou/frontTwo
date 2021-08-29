@@ -161,10 +161,15 @@ export default {
               xlsForm[keyName[key2]['enName']] = ''
             }
           } else {
-            this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] }, function(r) {
-              console.log('--------------', keyName[key2]['enName'], r)
-              xlsForm[keyName[key2]['enName']] = r
-            })
+            // 判断是否有需要转换的字段
+            if (JSON.stringify(this.tranferFiled) !== '{}') {
+              this.tranferFiledFun({ 'k': keyName[key2]['enName'], 'v': xresults[key_][keyChinaName2] }, function(r) {
+                console.log('----转换的字段------', keyName[key2]['enName'], r)
+                xlsForm[keyName[key2]['enName']] = r
+              })
+            } else {
+              xlsForm[keyName[key2]['enName']] = xresults[key_][keyChinaName2]
+            }
           }
         }
         xlsForms.push(xlsForm)

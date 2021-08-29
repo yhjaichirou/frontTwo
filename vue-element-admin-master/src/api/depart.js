@@ -77,6 +77,14 @@ export function getPeople(peoId) {
   })
 }
 
+export function importPelXls(data) {
+  return request({
+    url: '/depart/importPelXls',
+    method: 'post',
+    data
+  })
+}
+
 export function addPeople(data) {
   return request({
     url: '/depart/addOrUpdateDepart',
