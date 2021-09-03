@@ -71,9 +71,10 @@
               >
                 <template #default="scope">
                   <el-button type="text" size="small" class="c_watch" @click="clickProject(scope.row.id)">查看</el-button>
-                  <el-button type="text" size="small" class="c_edit" @click="addProjectEvent(scope.row.id)">修改</el-button>
+                  <el-button v-if="scope.row.status!=7 && scope.row.status!=8 && scope.row.status!=9" type="text" size="small" class="c_edit" @click="addProjectEvent(scope.row.id)">修改</el-button>
                   <el-button type="text" size="small" class="c_del" @click="deleteProject(scope.row.id)">删除</el-button>
                   <el-button v-if="scope.row.status==7" type="text" size="small" @click="authProject(scope.row.id)">审核</el-button>
+                  <el-button v-if="scope.row.status==1" type="text" size="small" @click="dispatchProject(scope.row.id)">调度</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -1694,6 +1695,26 @@
       </div>
     </el-dialog>
 
+    <!-- 调度 -->
+    <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis">
+      <el-form-item label="调度部门">
+        <el-select v-model="form.region" placeholder="请选择调度部门">
+          <el-option label="区域一" value="shanghai" />
+          <el-option label="区域二" value="beijing" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="调度人员">
+        <el-select v-model="form.region" placeholder="请选择调度人员">
+          <el-option label="区域一" value="shanghai" />
+          <el-option label="区域二" value="beijing" />
+        </el-select>
+      </el-form-item>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dispatchVis = false">取 消</el-button>
+        <el-button type="primary" @click="clickUpdateStatus">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -1720,6 +1741,7 @@ import {
   updateProjectSHB,
   deleteProject,
   authProject,
+  dispatchProject,
   // 任务请求
   getAllTaskList,
   getAllCountMap,
@@ -1872,6 +1894,7 @@ export default {
       dialogVisible: false,
       disabled: false,
       dialogFormVisible: false,
+      dispatchVis: false,
       updateProStatus: '',
       dialogProjectDetail: false,
 
@@ -2424,6 +2447,7 @@ export default {
       this.projectStatusClass = this.thisProject.status === 1 ? 'circle-ing' : this.thisProject.status === 2
         ? 'circle-success' : 'circle-error'
     },
+
     async authProject(id) {
       this.$confirm('请确认项目及任务无误，提交后将无法修改，确定提交吗？', '提交审核', {
         confirmButtonText: '确定',
@@ -2440,6 +2464,27 @@ export default {
         .catch(err => {
           console.error(err)
         })
+    },
+    async dispatchProject(id) {
+      this.$alert(`<strong>这是 <i>HTML</i> 片段</strong>
+      <el-form-item label="活动区域">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+
+      `, '选择调度组织和人员', {
+        dangerouslyUseHTMLString: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(action => {
+        dispatchProject(id)
+        this.$message({
+          type: 'success',
+          message: '已提交成功!'
+        })
+      })
     },
     async addProjectEvent(id) {
       // 表单固定值填充
