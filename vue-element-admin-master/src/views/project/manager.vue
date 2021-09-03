@@ -1698,20 +1698,44 @@
     <!-- 调度 -->
     <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis">
       <el-form-item label="调度部门">
-        <el-select v-model="form.region" placeholder="请选择调度部门">
+        <el-select v-model="dispatch.depart" placeholder="请选择调度部门">
           <el-option label="区域一" value="shanghai" />
           <el-option label="区域二" value="beijing" />
         </el-select>
       </el-form-item>
       <el-form-item label="调度人员">
-        <el-select v-model="form.region" placeholder="请选择调度人员">
+        <el-select v-model="dispatch.people" placeholder="请选择调度人员">
           <el-option label="区域一" value="shanghai" />
           <el-option label="区域二" value="beijing" />
         </el-select>
       </el-form-item>
+      <el-form-item label="调度内容描述">
+        <el-select v-model="dispatch.people" placeholder="请输入调度内容">
+          <el-option label="区域一" value="shanghai" />
+          <el-option label="区域二" value="beijing" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="调度时间">
+        <el-time-select
+          v-model="dispatch.startTime"
+          placeholder="起始时间"
+          start="08:30"
+          step="00:15"
+          end="18:30"
+        />
+        <el-time-select
+          v-model="endTime"
+          placeholder="结束时间"
+          start="08:30"
+          step="00:15"
+          end="18:30"
+          :min-time="dispatch.startTime"
+        />
+      </el-form-item>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dispatchVis = false">取 消</el-button>
-        <el-button type="primary" @click="clickUpdateStatus">确 定</el-button>
+        <el-button type="primary" @click="clickDispatch">确 定</el-button>
       </div>
     </el-dialog>
 
