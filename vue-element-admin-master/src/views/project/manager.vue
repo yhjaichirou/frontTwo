@@ -13,9 +13,9 @@
             :all-com-pro-count="allMsg.allComProject"
             :all-invest="allMsg.allInvest"
             :all-people="allMsg.allPeople"
-            xs="24"
-            sm="24"
-            lg="24"
+            :xs="24"
+            :sm="24"
+            :lg="24"
             @handleSetLineChartData="handleSetLineChartData"
           />
         </div>
@@ -1696,46 +1696,47 @@
     </el-dialog>
 
     <!-- 调度 -->
-    <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis">
-      <el-form-item label="调度部门">
-        <el-select v-model="dispatch.depart" placeholder="请选择调度部门">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="调度人员">
-        <el-select v-model="dispatch.people" placeholder="请选择调度人员">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="调度内容描述">
-        <el-select v-model="dispatch.people" placeholder="请输入调度内容">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="调度时间">
-        <el-time-select
-          v-model="dispatch.startTime"
-          placeholder="起始时间"
-          start="08:30"
-          step="00:15"
-          end="18:30"
-        />
-        <el-time-select
-          v-model="endTime"
-          placeholder="结束时间"
-          start="08:30"
-          step="00:15"
-          end="18:30"
-          :min-time="dispatch.startTime"
-        />
-      </el-form-item>
-
+    <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis" width="50%">
+      <el-form ref="ruleDispatchForm" :model="dispatch" :rules="ruleDispatch">
+        <el-form-item label="调度部门" prop="dOrgId">
+          <el-select v-model="dispatch.dOrgId" placeholder="请选择调度部门">
+            <el-option label="区域一" value="shanghai" />
+            <el-option label="区域二" value="beijing" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="调度人员" prop="dUserId">
+          <el-select v-model="dispatch.dUserId" placeholder="请选择调度人员">
+            <el-option label="区域一" value="shanghai" />
+            <el-option label="区域二" value="beijing" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="调度内容描述" prop="dContent">
+          <el-select v-model="dispatch.dContent" placeholder="请输入调度内容">
+            <el-option label="区域一" value="shanghai" />
+            <el-option label="区域二" value="beijing" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="调度时间" prop="dStartTime">
+          <el-time-select
+            v-model="dispatch.dStartTime"
+            placeholder="起始时间"
+            start="08:30"
+            step="00:15"
+            end="18:30"
+          />
+          <el-time-select
+            v-model="endTime"
+            placeholder="结束时间"
+            start="08:30"
+            step="00:15"
+            end="18:30"
+            :min-time="dispatch.dEndTime"
+          />
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dispatchVis = false">取 消</el-button>
-        <el-button type="primary" @click="clickDispatch">确 定</el-button>
+        <el-button type="primary" @click="submitDispatchProject">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -1922,6 +1923,37 @@ export default {
       updateProStatus: '',
       dialogProjectDetail: false,
 
+      dispatch: {},
+      ruleDispatch: {
+        dOrgId: [{
+          required: true,
+          message: '请选择调度人员',
+          trigger: 'change'
+        }],
+        dUserId: [{
+          required: true,
+          message: '请选择调度组织',
+          trigger: 'change'
+        }],
+        dContent: [{
+          required: true,
+          message: '请输入项目名称',
+          trigger: 'blur'
+        }],
+        dStartTime: [{
+          type: 'date',
+          required: true,
+          message: '请选择对接日期',
+          trigger: 'change'
+        }],
+        dEndTime: [{
+          type: 'date',
+          required: true,
+          message: '请选择对接日期',
+          trigger: 'change'
+        }]
+      },
+
       tzqkList: [],
       orgId: '',
       activeName: '1',
@@ -1985,7 +2017,7 @@ export default {
       addShbObj: '',
       shbOption: [],
       shbOption1: [],
-      shbOption2: [],
+      shbOption2: [{ option: '' }, { option: '' }],
       shbOption3: [],
       shbOption4: [],
       rules: {
@@ -2413,6 +2445,8 @@ export default {
       this.shbOption4 = res.data.filter((item, index, arr) => {
         return item.step === 4
       })
+
+      console.log('this.shbOption2 ::', this.shbOption2)
     },
 
     // 切换项目内容项
@@ -2490,26 +2524,16 @@ export default {
         })
     },
     async dispatchProject(id) {
-      this.$alert(`<strong>这是 <i>HTML</i> 片段</strong>
-      <el-form-item label="活动区域">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-
-      `, '选择调度组织和人员', {
-        dangerouslyUseHTMLString: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(action => {
-        dispatchProject(id)
-        this.$message({
-          type: 'success',
-          message: '已提交成功!'
-        })
+      this.dispatchVis = true
+    },
+    async submitDispatchProject(id) {
+      dispatchProject(id)
+      this.$message({
+        type: 'success',
+        message: '已提交成功!'
       })
     },
+
     async addProjectEvent(id) {
       // 表单固定值填充
       const res = await getAllFormParam(this.orgId)
