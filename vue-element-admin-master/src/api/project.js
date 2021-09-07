@@ -99,10 +99,11 @@ export function authProject(projectId) {
     method: 'post'
   })
 }
-export function dispatchProject(projectId) {
+export function dispatchProject(data) {
   return request({
-    url: `/project/dispatchProject/${projectId}`,
-    method: 'post'
+    url: `/project/dispatchProject`,
+    method: 'post',
+    data
   })
 }
 

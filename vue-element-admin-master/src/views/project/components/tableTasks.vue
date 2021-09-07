@@ -42,7 +42,7 @@
       <el-table-column prop="startDateStr" label="开始时间" width="150" />
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.edit" type="text" size="small" @click.native.prevent="updateRow(scope.$index, scope)">
+          <el-button type="text" size="small" @click.native.prevent="updateRow(scope.$index, scope)">
             修改
           </el-button>
           <el-button v-if="scope.row.del" type="text" size="small" style="color:#f56c6c" @click.native.prevent="deleteRow(scope.$index, scope)">
@@ -55,7 +55,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="zxdialogVisible" :title="currtask.isEdit?'执行任务':'任务详情'">
+    <el-dialog :visible.sync="zxdialogVisible" :title="currtask.isEdit?'执行任务':'任务详情'" width="50%">
       <el-form :model="currtask" label-width="80px" label-position="left">
         <div class="list-li">
           <div class="list-li-title">
@@ -337,7 +337,7 @@ export default {
     .list-li-row {
       display: flex;
       flex-direction: row;
-
+      padding: 0 5px;
       .list-li-row-icon {
         font-size: 30px;
         width: 30px;

@@ -38,8 +38,8 @@
               </div>
               <div class="bottom clearfix">
                 <time class="time" />
-                <el-button type="text" class="button" @click.stop.prevent="openGTT(item.id)">甘特图</el-button>
-                <el-button type="text" class="button" @click.stop.prevent="openReportFrom(item.id)">查看报表</el-button>
+                <el-button v-if="item.status==1 || item.status==2" type="text" class="button" @click.stop.prevent="openGTT(item.id)">甘特图</el-button>
+                <el-button v-if="item.status==1 || item.status==2" type="text" class="button" @click.stop.prevent="openReportFrom(item.id)">查看报表</el-button>
                 <el-button type="text" class="button">
                   <svg-icon icon-class="browse" @click.stop.prevent="openThisTask(item.id)" />
                 </el-button>

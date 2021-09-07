@@ -42,7 +42,6 @@
             <el-table
               :data="projectList"
               style="width: 100%"
-
               :row-class-name="tableRowClassName"
             >
               <el-table-column
@@ -51,18 +50,28 @@
                 width="80"
               />
               <el-table-column
-                prop="startDate"
-                label="日期"
+                prop="name"
+                label="项目名称"
+              />
+              <el-table-column
+                prop="startDateStr"
+                label="开始日期"
                 width="180"
               />
               <el-table-column
-                prop="name"
-                label="姓名"
+                prop="approveCode"
+                label="项目审批代码"
+                width="220"
               />
               <el-table-column
-                prop="address"
-                label="地址"
-                width="220"
+                prop="statusStr"
+                label="状态"
+                width="80"
+              />
+              <el-table-column
+                prop="isDispatch"
+                label="是否调度中"
+                width="80"
               />
               <el-table-column
                 fixed="right"
@@ -74,7 +83,7 @@
                   <el-button v-if="scope.row.status!=7 && scope.row.status!=8 && scope.row.status!=9" type="text" size="small" class="c_edit" @click="addProjectEvent(scope.row.id)">修改</el-button>
                   <el-button type="text" size="small" class="c_del" @click="deleteProject(scope.row.id)">删除</el-button>
                   <el-button v-if="scope.row.status==7" type="text" size="small" @click="authProject(scope.row.id)">审核</el-button>
-                  <el-button v-if="scope.row.status==1" type="text" size="small" @click="dispatchProject(scope.row.id)">调度</el-button>
+                  <el-button v-if="scope.row.status==1 && scope.row.isDispatch==null " type="text" size="small" @click="dispatchProject(scope.row.id)">调度</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -94,7 +103,7 @@
     </div>
 
     <!-- 查看详情 -->
-    <el-dialog id="yhj-detail-form" title="项目详情" :visible.sync="dialogProjectDetail">
+    <el-dialog id="yhj-detail-form" title="项目详情" :visible.sync="dialogProjectDetail" width="80%">
       <div class="yhj-detail-content" style="position: relative;">
         <div v-if="addShbObj !== ''" class="right-btns" @click="handleSHB">
           <div style="display: flex;align-items: center;justify-content: center;font-size: 14px;">
@@ -771,14 +780,14 @@
               </div>
 
               <el-table :data="fileMap.list" style="width: 100%">
-                <el-table-column prop="thumb" label="类型" width="150">
+                <el-table-column prop="thumb" label="类型" width="100">
                   <template slot-scope="scope">
                     <svg-icon class="fj-svg" :icon-class="scope.row.thumb" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="fileName" label="文件名" />
                 <el-table-column prop="taskName" label="所属任务" />
-                <el-table-column prop="date" label="上传时间" width="280" />
+                <el-table-column prop="date" label="上传时间" width="180" />
                 <el-table-column fixed="right" label="操作" width="180">
                   <template slot-scope="scope">
                     <el-button type="text" size="small">
@@ -1696,41 +1705,28 @@
     </el-dialog>
 
     <!-- 调度 -->
-    <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis" width="50%">
+    <el-dialog id="yhj-updatestatus-form" title="调度" :visible.sync="dispatchVis" width="30%">
       <el-form ref="ruleDispatchForm" :model="dispatch" :rules="ruleDispatch">
         <el-form-item label="调度部门" prop="dOrgId">
-          <el-select v-model="dispatch.dOrgId" placeholder="请选择调度部门">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+          <el-select v-model="dispatch.dOrgId" placeholder="请选择调度部门" @change="dispatchOrgChange">
+            <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.id==orgId" />
           </el-select>
         </el-form-item>
         <el-form-item label="调度人员" prop="dUserId">
           <el-select v-model="dispatch.dUserId" placeholder="请选择调度人员">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+            <el-option v-for="item in disOrgPels" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="调度内容描述" prop="dContent">
-          <el-select v-model="dispatch.dContent" placeholder="请输入调度内容">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
+          <el-input v-model="dispatch.dContent" type="textarea" placeholder="请输入调度内容" />
         </el-form-item>
         <el-form-item label="调度时间" prop="dStartTime">
-          <el-time-select
-            v-model="dispatch.dStartTime"
-            placeholder="起始时间"
-            start="08:30"
-            step="00:15"
-            end="18:30"
-          />
-          <el-time-select
-            v-model="endTime"
-            placeholder="结束时间"
-            start="08:30"
-            step="00:15"
-            end="18:30"
-            :min-time="dispatch.dEndTime"
+          <el-date-picker
+            v-model="dispatch.dStartEndTime"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
       </el-form>
@@ -1782,6 +1778,7 @@ import { getOrgtypes } from '@/api/depart'
 import yhjTaskTable from './components/tableTasks.vue'
 import PanelGroup from './components/PanelGroup'
 import InvestInfo from './components/InvestInfo'
+import { dateFormatyMdhms } from '../../utils/dateutil.js'
 const baseURL = process.env.VUE_APP_BASE_API
 const defaultProject = {
   id: '',
@@ -1940,19 +1937,14 @@ export default {
           message: '请输入项目名称',
           trigger: 'blur'
         }],
-        dStartTime: [{
-          type: 'date',
-          required: true,
-          message: '请选择对接日期',
-          trigger: 'change'
-        }],
-        dEndTime: [{
+        dStartEndTime: [{
           type: 'date',
           required: true,
           message: '请选择对接日期',
           trigger: 'change'
         }]
       },
+      disOrgPels: [],
 
       tzqkList: [],
       orgId: '',
@@ -2325,6 +2317,7 @@ export default {
   // },
   created() {
     this.orgId = this.$store.getters.orgId
+    this.userId = this.$store.getters.userId
     this.orgName = this.$store.getters.orgName
     this.getProjectList()
     this.getAllOrgs()
@@ -2336,9 +2329,9 @@ export default {
   // inject: ['reload'],
   methods: {
     tableRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
+      if (row.status === 7) {
         return 'warning-row'
-      } else if (rowIndex === 3) {
+      } else if (row.status === 2) {
         return 'success-row'
       }
       return ''
@@ -2523,15 +2516,37 @@ export default {
           console.error(err)
         })
     },
+    // 调度
     async dispatchProject(id) {
+      this.dispatch.proId = id
+      this.dispatch.operUserId = this.userId
       this.dispatchVis = true
     },
     async submitDispatchProject(id) {
-      dispatchProject(id)
+      var sed = this.dispatch.dStartEndTime
+      if (!sed || sed.length < 2) {
+        this.$message({
+          type: 'error',
+          message: '日期格式错误!'
+        })
+      }
+      var dStartTime = dateFormatyMdhms(sed[0])
+      var dEndTime = dateFormatyMdhms(sed[1])
+      this.dispatch.dStartTime = dStartTime
+      this.dispatch.dEndTime = dEndTime
+      console.log('提交调度：', this.dispatch, dStartTime, dEndTime)
+      dispatchProject(this.dispatch)
       this.$message({
         type: 'success',
         message: '已提交成功!'
       })
+      this.dispatchVis = false
+      this.getProjectList()
+    },
+    async dispatchOrgChange(op) {
+      this.disOrgPels = []
+      const res = await getJoiners(op)
+      this.disOrgPels = res.data
     },
 
     async addProjectEvent(id) {
