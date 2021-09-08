@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="container-header">
-      <el-input v-model="searchContent" style="width: 20%;" placeholder="请输入" @input="getYjs">
+      <el-input v-model="searchContent" style="width: 20%;" placeholder="请输入" @input="getDbList">
         <i slot="prefix" class="el-input__icon el-icon-search" />
       </el-input>
 
@@ -9,66 +9,82 @@
         v-model="searchStatus"
         class="yhj-el-radio-group"
         style="margin-bottom: 30px;"
-        placeholder="搜索预警内容"
-        @change="getYjs"
+        placeholder="搜索督办的任务名称(可模糊)"
+        @change="getDbList"
       >
-        <el-radio-button label="0" value="0">全部预警</el-radio-button>
-        <el-radio-button label="1" value="1">我负责的预警</el-radio-button>
-        <el-radio-button label="2" value="2">进行中的预警</el-radio-button>
-        <el-radio-button label="3" value="3">已完成的预警</el-radio-button>
+        <el-radio-button label="0" value="0">全部</el-radio-button>
+        <el-radio-button label="1" value="1">督办中</el-radio-button>
+        <el-radio-button label="2" value="2">已处理</el-radio-button>
       </el-radio-group>
     </div>
     <div class="project-body">
-      <el-table :data="yjList" style="width: 100%;margin-top:30px;" border>
+      <el-table :data="dbList" style="width: 100%;margin-top:30px;" border>
         <el-table-column align="center" label="ID" width="60">
           <template slot-scope="scope">
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="预警名称" width="220">
+        <el-table-column align="center" label="督办项目名称" width="220">
           <template slot-scope="scope">
-            {{ scope.row.title }}
+            {{ scope.row.proName }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="预警类型" width="220">
+        <el-table-column align="center" label="督办任务名称" width="220">
           <template slot-scope="scope">
-            {{ scope.row.typeStr }}
+            {{ scope.row.taskName }}
           </template>
         </el-table-column>
-        <el-table-column align="header-center" label="预警描述">
+        <el-table-column align="center" label="督办时间" width="220">
           <template slot-scope="scope">
-            {{ scope.row.stip }}
+            {{ scope.row.dbTimeStr }}
           </template>
         </el-table-column>
-        <el-table-column align="header-center" label="预警时间">
+        <el-table-column align="header-center" label="督办组织">
           <template slot-scope="scope">
-            {{ scope.row.time }}
+            {{ scope.row.dbCreateOrgName }}
+          </template>
+        </el-table-column>
+        <el-table-column align="header-center" label="督办人">
+          <template slot-scope="scope">
+            {{ scope.row.dbCreaterName }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+            <el-button type="primary" size="small" @click="handleDeal(scope.row.id)">处理</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        :current-page="dataMap.pn"
+        :page-sizes="[20, 50, 100]"
+        :page-size="dataMap.ps"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="dataMap.total"
+        @size-change="handlePSChange"
+        @current-change="handlePSChange"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import {
-  getYjs
-} from '@/api/yj'
+  getDbList, dealDb
+} from '@/api/task'
 export default {
   data() {
     return {
       orgId: '',
-      showContainer: true,
-      tabPosition: '0',
       searchContent: '',
       searchStatus: '0',
-      yjList: []
+      dbList: [],
+      dataMap: {
+        'pn': 1,
+        'ps': 20,
+        'list': [],
+        'total': 0
+      }
     }
   },
   computed: {
@@ -79,13 +95,24 @@ export default {
   created() {
     this.orgId = this.$store.getters.orgId
     this.orgName = this.$store.getters.orgName
-    this.getYjs()
+    this.getDbList()
   },
   methods: {
-    async getYjs() {
-      const res = await getYjs(this.orgId, this.searchContent, this.searchStatus)
-      this.yjList = res.data
-      console.log(this.yjList)
+    async handlePSChange() {
+      this.getDbList()
+    },
+    async getDbList() {
+      const res = await getDbList({ pn: this.dataMap.pn, ps: this.dataMap.ps, dbOrg: this.orgId, search: this.searchContent, status: this.searchStatus })
+      this.dbList = res.list
+      this.dataMap.total = res.count
+      console.log(this.dbList)
+    },
+    async handleDeal(id) {
+      const res = await dealDb({ id: id })
+      this.$message({
+        type: 'success',
+        message: res.msg || '操作成功'
+      })
     }
   }
 }
@@ -323,18 +350,5 @@ export default {
 
   .clearfix:after {
     clear: both
-  }
-</style>
-<style>
-  .yhj-el-radio-group {
-    margin: 0px !important;
-  }
-
-  .padding0 {
-    padding: 0 !important;
-  }
-
-  .width100 {
-    width: 100% !important;
   }
 </style>
