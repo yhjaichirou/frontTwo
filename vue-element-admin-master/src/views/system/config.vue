@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="form" class="demo-form-inline">
+    <el-form :inline="true" :model="form" class="demo-form-inline" style="background-color: white;">
       <div class="manager-card">
         <div class="manager-header">
           <div class="manager-bluer" />
@@ -66,6 +66,7 @@
           </el-form-item>
         </div>
       </div>
+      <el-button type="primary" @click="onSubmit()">保 存</el-button>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="onSubmit()">保 存</el-button>
@@ -75,7 +76,11 @@
 </template>
 
 <script>
-import { getConfig, updateConfig, getUserList } from '@/api/config'
+import {
+  getConfig,
+  updateConfig,
+  getUserList
+} from '@/api/config'
 export default {
   data() {
     return {
